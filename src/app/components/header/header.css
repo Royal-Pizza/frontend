@@ -8,7 +8,7 @@
 
 .site-header .logo h1 {
   margin: 0;
-  color: #e63946;
+  color: --main-red;
 }
 
 .main-nav a {

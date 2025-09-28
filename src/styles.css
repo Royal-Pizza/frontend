@@ -1,0 +1,72 @@
+/* =========================================
+   Variables globales pour couleurs et police
+   ========================================= */
+:root {
+  --main-orange: #e0850f;      /* couleur principale du site pour le background */
+  --main-red: #b1000f;         /* couleur pour titres et hover */
+  --main-font: Arial, sans-serif; /* police globale */
+}
+
+/* =========================================
+   Body global (wrapper flex vertical)
+   ========================================= */
+/* Body en flex vertical */
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;  /* prend toute la hauteur de l’écran */
+  margin: 0;
+  padding: 0;
+  font-family: var(--main-font);
+}
+
+
+/* Main prend tout l'espace restant entre header et footer */
+main {
+  flex: 1;                 /* s’étend automatiquement */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;  /* centre verticalement le contenu */
+  align-items: center;      /* centre horizontalement */
+  text-align: center;
+  background-color: var(--main-orange);
+  padding: 20px;
+}
+
+
+
+/* =========================================
+   Titres globaux
+   ========================================= */
+h1, h2 {
+  color: var(--main-red); /* rouge pour tous les titres */
+  text-align: center;     /* toujours centrés */
+}
+
+/* =========================================
+   Paragraphes globaux
+   ========================================= */
+p {
+  font-size: 1.2rem; /* taille lisible */
+  margin: 20px 0;    /* espace vertical */
+}
+
+/* =========================================
+   Images globales
+   ========================================= */
+img {
+  border-radius: 20px; /* coins arrondis */
+  max-width: 100%;     /* ne dépasse jamais le parent */
+  height: auto;        /* conserve les proportions */
+}
+
+/* =========================================
+   Classes réutilisables pour flex centré
+   ========================================= */
+.flex-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
