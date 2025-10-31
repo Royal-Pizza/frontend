@@ -1,1 +1,27 @@
-<p>order works!</p>
+<div class="order-container">
+  <div *ngFor="let pizza of orders | keyvalue">
+    <h3>{{ pizza.key }}</h3>
+    <ul>
+      <li *ngFor="let line of pizza.value" class="line-item">
+        <div class="line-details">
+          Taille : {{ line.sizeName }}<br>
+          <em>Quantité : {{ line.quantity }} x {{ line.price }}€</em>
+        </div>
+        <div class="line-price">
+          {{ line.quantity * line.price }}€
+        </div>
+        <div class="line-actions">
+          <button mat-flat-button color="warn" (click)="removeFromBasket(pizza.key, line.sizeName)">
+            <mat-icon>remove</mat-icon>
+          </button>
+          <button mat-icon-button color="primary" (click)="addToBasket(pizza.key, line.sizeName, line.price)">
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div class="order-total">
+    Total : {{ calculateTotal() }}€
+  </div>
+</div>
