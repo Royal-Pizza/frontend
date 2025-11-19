@@ -6,6 +6,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { ApiService } from '../../services/api/api';
 import { formatErrorMessage } from '../../tools/functions';
 import { PopupComponent } from '../popup/popup';
+import { Router, RouterModule } from '@angular/router';
+import { AuthService } from '../../services/auth/auth';
 
 @Component({
   selector: 'app-order',
@@ -20,7 +22,7 @@ export class OrderComponent implements OnInit {
   popupMessage: string = '';
   popupVisible: boolean = false;
 
-  constructor(private orderService: OrderService, private apiService: ApiService) { }
+  constructor(private orderService: OrderService, private apiService: ApiService, private authService: AuthService, private router: Router) { }
 
   ngOnInit(): void {
     this.orders = this.orderService.getBasket();
@@ -63,16 +65,34 @@ export class OrderComponent implements OnInit {
     this.apiService.purchasePizza(this.orders).subscribe({
       next: (response) => {
         console.log('Commande réussie :', response);
-        this.popupMessage = response;
-        this.popupVisible = true;
+        this.popupMessage = response.message || 'Commande réussie !';
+        localStorage.setItem('authToken', response.token);
         this.clearBasket();
       },
       error: (error) => {
-        console.error('Erreur lors de la commande :', error);
         this.popupMessage = formatErrorMessage(error);
+        console.error('Erreur lors de la commande :', error);
         console.log('Popup message set to:', this.popupMessage);
         this.popupVisible = true;
+        if (this.popupMessage?.includes('Le token a expiré') || this.popupMessage?.includes('Token invalide ou corrompu')) {
+          // attente de 5 secondes avant de rediriger
+          setTimeout(() => {
+            this.apiService.logoutCustomer().subscribe({
+              next: () => {
+                console.log('Basket saved.');
+              },
+              error: (err) => {
+                console.error('Erreur lors du logout :', err);
+              },
+            });
+            console.log('Déconnecté !');
+            this.router.navigate(['/home']);
+          }, 5000);
+        }
       }
+
     });
+    this.popupVisible = true;
+
   }
 }

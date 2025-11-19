@@ -30,7 +30,7 @@ export class OrderService {
   }
 
   /** Sauvegarde le panier dans le localStorage */
-  private saveBasket(basket: { [key: string]: OrderLine[] }): void {
+  public saveBasket(basket: { [key: string]: OrderLine[] }): void {
     localStorage.setItem('basket', JSON.stringify(basket));
     this.countItemSubject.next(this.getTotalItemCount());
   }

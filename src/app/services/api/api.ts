@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { map } from 'rxjs/operators';
+import { finalize, map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -8,6 +8,7 @@ import { Customer, NewCustomer, LoginDTO } from '../../models/customer.model';
 import { toTitleCase } from '../../tools/functions';
 import { AuthService } from '../auth/auth';
 import { OrderLine } from '../../models/orderLine.model';
+import { OrderService } from '../order/order-service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,8 +16,10 @@ import { OrderLine } from '../../models/orderLine.model';
 export class ApiService {
 
   private authService: AuthService;
-  constructor(private http: HttpClient, authService: AuthService) {
+  private orderService: OrderService;
+  constructor(private http: HttpClient, authService: AuthService, orderService: OrderService) {
     this.authService = authService;
+    this.orderService = orderService;
   }
 
   getPizzas(): Observable<Pizza[]> {
@@ -34,16 +37,33 @@ export class ApiService {
     return this.http.post<Customer>(`${environment.backendBaseUrl}/customers/register`, customer);
   }
 
-  loginCustomer(email: string, password: string): Observable<string> {
+  logoutCustomer(): Observable<any> {
+    const basket = this.orderService.getBasket();
+    const token = localStorage.getItem('authToken');
+
+    const headers = this.getHeaderWithAuthToken();
+
+    return this.http.post(`${environment.backendBaseUrl}/customers/logout`, basket, { headers })
+      .pipe(
+        finalize(() => {
+          // Toujours exécuté : succès ou erreur
+          this.authService.logout();
+          this.orderService.clearBasket();
+        })
+      );
+  }
+
+  loginCustomer(email: string, password: string): Observable<any> {
+    const credentials = { email: email.trim().toLowerCase(), password };
     return this.http.post(`${environment.backendBaseUrl}/customers/login`,
-      { email: email.trim().toLowerCase(), password },
-      { responseType: 'text' });
+      credentials,
+      { responseType: 'json' });
   }
 
   loginCustomerWithInfo(email: string, password: string): Observable<Customer> {
     return this.loginCustomer(email, password).pipe(
-      map(token => {
-        const payload = JSON.parse(atob(token.split('.')[1])); // atob = decode base64 et split('.')[1] permet d'obtenir le payload
+      map(dico => {
+        const payload = JSON.parse(atob(dico.token.split('.')[1])); // atob = decode base64 et split('.')[1] permet d'obtenir le payload
 
         const customer: Customer = {
           idCustomer: payload.id,
@@ -53,24 +73,26 @@ export class ApiService {
           wallet: payload.wallet,
           isAdmin: payload.isAdmin
         };
-        this.authService.login(token, customer);
+        this.authService.login(dico.token, customer, dico.basket);
+        this.orderService.saveBasket(dico.basket);
         return customer;
       })
     );
   }
 
-  purchasePizza(dico: { [key: string]: OrderLine[] }): Observable<string> {
-    const token = localStorage.getItem('authToken');
-
-    const headers = {
-      'Authorization': `Bearer ${token}`
-    };
+  purchasePizza(dico: { [key: string]: OrderLine[] }): Observable<any> {
+    const headers = this.getHeaderWithAuthToken();
 
     // Indique à Angular de traiter la réponse comme du texte brut
     return this.http.post(`${environment.backendBaseUrl}/purchases/buy`, dico, {
       headers,
-      responseType: 'text'
+      responseType: 'json'
     });
+  }
+
+  private getHeaderWithAuthToken(): { [header: string]: string } {
+    const token = localStorage.getItem('authToken') || '';
+    return { 'Authorization': `Bearer ${token}` };
   }
 
 }
