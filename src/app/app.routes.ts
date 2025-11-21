@@ -5,6 +5,7 @@ import { LogingComponent } from './components/login/login';
 import { SignupComponent } from './components/signup/signup';
 import { PizzaDetailComponent } from './components/pizza-detail/pizza-detail';
 import { OrderComponent } from './components/order/order';
+import { InvoicesComponent } from './components/invoices/invoices';
 
 export const routes: Routes = [
   //{ path: '', component: HomeComponent }, // page d'accueil
@@ -15,6 +16,7 @@ export const routes: Routes = [
   { path: 'signup', component: SignupComponent },
   { path: 'menu/:namePizza', component: PizzaDetailComponent }, // 👈 route pour le détail
   { path: 'basket', component: OrderComponent },
+  { path: 'invoices', component: InvoicesComponent },
   { path: 'customers', redirectTo: 'home', pathMatch: 'full' },
   { path: 'ingredients', redirectTo: 'home', pathMatch: 'full' },
 ];
