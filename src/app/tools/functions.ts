@@ -1,3 +1,6 @@
+import { Invoice } from "../models/invoice.model";
+import { AdaptedOrderLine, OrderLine } from "../models/orderLine.model";
+
 export function toTitleCase(str: string): string {
   return str
     .toLowerCase()
@@ -36,4 +39,22 @@ export function formatErrorMessage(err: any): string | any {
     console.log('typeof err.error:', typeof err.error);
     console.log('typeof err:', typeof err);
     return error;
+}
+
+export function adaptFormatInvoice(invoice: Invoice): { [key: string]: [AdaptedOrderLine] } {
+  const dico: { [key: string]: [AdaptedOrderLine] } = {};
+  const orderLines: OrderLine[] = invoice.orderLineDTOs;
+  for(const orderLine of orderLines) {
+  const adaptedOrderLine: AdaptedOrderLine= {
+      nameSize: orderLine.nameSize,
+      quantity: orderLine.quantity,
+      price: orderLine.price
+    };
+    if(!dico[orderLine.namePizza]) {
+      dico[orderLine.namePizza] = [adaptedOrderLine];
+    } else {
+      dico[orderLine.namePizza].push(adaptedOrderLine);
+    }
+  }
+  return dico;
 }
