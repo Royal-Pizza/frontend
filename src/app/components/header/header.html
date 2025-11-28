@@ -16,7 +16,14 @@
     <!-- Si connecté -->
     <ng-container *ngIf="isLoggedIn">
       <a routerLink="/invoices">Mes Factures</a>
+      
+    <!-- Ajout du lien Panier avec badge si le panier n'est pas vide-->
+    <ng-container *ngIf="countItems > 0">
+      <a routerLink="/basket" [matBadge]="countItems">Panier</a>
+    </ng-container>
+    <ng-container *ngIf="countItems === 0">
       <a routerLink="/basket">Panier</a>
+    </ng-container>
       <a routerLink="/settings">Paramètres</a>
       <a (click)="logout()">Déconnexion</a>
     </ng-container>
