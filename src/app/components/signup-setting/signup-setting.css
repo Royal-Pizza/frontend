@@ -1,0 +1,106 @@
+.password-wrapper {
+  position: relative;
+  flex: 1;           /* prend tout l’espace restant, comme les autres inputs */
+}
+
+.password-wrapper input {
+  width: 100%;
+  padding-right: 30px; /* laisse de la place pour l’œil */
+}
+
+
+.toggle-eye {
+  position: absolute;
+  right: 10px; /* collé à droite de l’input */
+  top: 50%;
+  transform: translateY(-50%); 
+  cursor: pointer;
+  user-select: none;
+  font-size: 18px;
+}
+
+.password-criteria small.valid {
+  color: green;
+}
+.password-criteria small.invalid {
+  color: red;
+}
+
+.register-btn{
+  margin-top: 5px;
+}
+
+/* ==============================
+   Styles spécifiques utilisateur connecté
+   ============================== */
+.connected-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 15px;
+  text-align: center;
+}
+
+.connected-actions a,
+.connected-actions button {
+  display: block;
+  width: 100%;          /* Tous les boutons ont la même largeur */
+  max-width: 300px;     /* limite pour ne pas étirer les boutons */
+  padding: 10px;
+  border-radius: 5px;
+  font-weight: bold;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  box-sizing: border-box;
+  transition: background-color 0.3s ease;
+  text-align: center;
+  margin: 0 auto;       /* centre horizontalement si largeur max */
+}
+
+/* Changer mot de passe */
+.connected-actions a.change-password {
+  background-color: #457b9d;
+  color: white;
+}
+.connected-actions a.change-password:hover {
+  background-color: #1d3557;
+}
+
+/* Recharger le portefeuille */
+.connected-actions a.wallet-recharge {
+  background-color: #2a9d8f;
+  color: white;
+}
+.connected-actions a.wallet-recharge:hover {
+  background-color: #21867a;
+}
+
+/* Supprimer le compte */
+.connected-actions button.delete-account {
+  background-color: #e63946;
+  color: white;
+}
+.connected-actions button.delete-account:hover {
+  background-color: #d62828;
+}
+
+/* Modifier les paramètres */
+.connected-actions button.update-settings {
+  background-color: #f4a261;
+  color: white;
+}
+.connected-actions button.update-settings:hover {
+  background-color: #e76f51;
+}
+
+/* Optionnel : petits textes explicatifs */
+.connected-actions small {
+  display: block;
+  font-size: 0.8rem;
+  color: #555;
+  margin-top: -5px;
+  margin-bottom: 5px;
+}
+
+
