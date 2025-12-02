@@ -7,6 +7,8 @@ import { HeaderComponent } from '../header/header';
 import { FooterComponent } from '../footer/footer';
 import { Router, RouterModule } from '@angular/router';
 import { formatErrorMessage } from '../../tools/functions';
+import { LoaderService } from '../../services/loaderService/loader-service';
+import {pipe, finalize} from 'rxjs';
 
 @Component({
   selector: 'app-menu',
@@ -20,7 +22,7 @@ export class MenuComponent implements OnInit {
   pizzas: Pizza[] = [];
   isConnected: boolean = false;
 
-  constructor(private router: Router, private apiService: ApiService) {
+  constructor(private router: Router, private apiService: ApiService, private loaderService: LoaderService) {
 
   }
 
@@ -30,7 +32,12 @@ export class MenuComponent implements OnInit {
   }
 
   loadPizzas(): void {
-    this.apiService.getPizzas().subscribe({
+    this.loaderService.show();
+    this.apiService.getPizzas()
+    .pipe(
+      finalize(() => this.loaderService.hide())
+    )
+    .subscribe({
       next: (data: any[]) => {
         this.pizzas = data;
         console.log('Pizzas reçues :', this.pizzas);
