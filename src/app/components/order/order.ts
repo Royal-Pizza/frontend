@@ -10,23 +10,24 @@ import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth/auth';
 import { LoaderService } from '../../services/loaderService/loader-service';
 import { delay, finalize, pipe } from 'rxjs';
+import { PopupService } from '../../services/popup/popup';
 
 @Component({
   selector: 'app-order',
-  imports: [CommonModule, MatIconModule, PopupComponent
-  ],
+  imports: [CommonModule, MatIconModule],
   templateUrl: './order.html',
   styleUrls: ['./order.css']
 })
 export class OrderComponent implements OnInit {
 
   orders: { [key: string]: AdaptedOrderLine[] } = {};
-  popupMessage: string = '';
-  popupVisible: boolean = false;
 
-  constructor(private orderService: OrderService, private apiService: ApiService, private authService: AuthService, private loaderService: LoaderService, private router: Router) { }
+  constructor(private orderService: OrderService, private apiService: ApiService, private authService: AuthService, private loaderService: LoaderService, private popupService: PopupService, private router: Router) { }
 
   ngOnInit(): void {
+    if (!localStorage.getItem('customer')) {
+      this.router.navigate(['/login']);
+    }
     this.orders = this.orderService.getBasket();
   }
 
@@ -63,8 +64,8 @@ export class OrderComponent implements OnInit {
     return Math.round(price * 100) / 100;
   }
 
-sendOrder(): void {
-  this.loaderService.show();
+  sendOrder(): void {
+    this.loaderService.show();
 
     this.apiService.purchasePizza(this.orders)
       .pipe(
@@ -73,17 +74,16 @@ sendOrder(): void {
       )
       .subscribe({
         next: (response) => {
-          this.popupMessage = response.message || 'Commande réussie !';
+          this.popupService.showMessage(response.message || 'Commande réussie !');
           localStorage.setItem('authToken', response.token);
           this.clearBasket();
         },
         error: (error) => {
-          this.popupMessage = formatErrorMessage(error);
+          this.popupService.showMessage(formatErrorMessage(error));
         }
       });
-      this.popupVisible = true;
 
-}
+  }
 
 
 }

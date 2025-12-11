@@ -3,7 +3,9 @@ import { finalize, map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Pizza } from '../../models/pizza.model';
+import { NewPizza, Pizza, UpdatedPizza } from '../../models/pizza.model';
+import { Ingredient } from '../../models/ingredient.model';
+
 import { Customer, NewCustomer, LoginDTO } from '../../models/customer.model';
 import { toTitleCase } from '../../tools/functions';
 import { AuthService } from '../auth/auth';
@@ -24,12 +26,17 @@ export class ApiService {
     this.orderService = orderService;
   }
 
-  getPizzas(): Observable<Pizza[]> {
+  getPizzasAvailable(): Observable<Pizza[]> {
     return this.http.get<Pizza[]>(`${environment.backendBaseUrl}/pizzas`);
   }
 
   getPizzaById(idPizza: any): Observable<Pizza> {
     return this.http.get<Pizza>(`${environment.backendBaseUrl}/pizzas/${idPizza}`);
+  }
+
+  getAllPizzas(): Observable<Pizza[]> {
+    const headers = ApiService.getHeaderWithAuthToken();
+    return this.http.get<Pizza[]>(`${environment.backendBaseUrl}/pizzas/all`, { headers });
   }
 
   createCustomer(customer: NewCustomer): Observable<Customer> {
@@ -121,9 +128,38 @@ export class ApiService {
     return this.http.get<Invoice[]>(`${environment.backendBaseUrl}/purchases/invoices/customer/${idCustomer}`, { headers });
   }
 
+  addPizza(newPizza: NewPizza): Observable<any> {
+    const headers = ApiService.getHeaderWithAuthToken();
+    return this.http.post(`${environment.backendBaseUrl}/pizzas/add`, newPizza, { headers, responseType: 'json' });
+  }
+
+  updatePizza(pizza: UpdatedPizza): Observable<any> {
+    const headers = ApiService.getHeaderWithAuthToken();
+    return this.http.post(`${environment.backendBaseUrl}/pizzas/update`, pizza, { headers, responseType: 'json' });
+  }
+
+  getAllIngredients(): Observable<Ingredient[]> {
+    const headers = ApiService.getHeaderWithAuthToken();
+    return this.http.get<Ingredient[]>(`${environment.backendBaseUrl}/ingredients`, { headers });
+  }
+
+  createIngredient(ingredientName: string): Observable<any> {
+    const headers = ApiService.getHeaderWithAuthToken();
+    return this.http.post(`${environment.backendBaseUrl}/ingredients/add`, ingredientName, { headers, responseType: 'json' });
+  }
+
+  updateIngredient(ingredient: Ingredient): Observable<any> {
+    const headers = ApiService.getHeaderWithAuthToken();
+    return this.http.post(`${environment.backendBaseUrl}/ingredients/update`, ingredient, { headers, responseType: 'json' });
+  }
+
+  deleteIngredient(idIngredient: number): Observable<any> {
+    const headers = ApiService.getHeaderWithAuthToken();
+    return this.http.post(`${environment.backendBaseUrl}/ingredients/delete`, idIngredient, { headers, responseType: 'json' });
+  }
+  
   private static getHeaderWithAuthToken(): { [header: string]: string } { // { [header: string]: string } veut dire un objet avec des clés de type string et des valeurs de type string
     const token = localStorage.getItem('authToken') || '';
     return { 'Authorization': `Bearer ${token}` };
   }
-
 }

@@ -1,7 +1,7 @@
 <div class="form-container">
   <h2>Recharger le portefeuille</h2>
 
-  <form [formGroup]="rechargeForm" (ngSubmit)="onSubmit()">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
     <div class="form-group">
       <label>Montant (€)</label>
@@ -10,7 +10,7 @@
 
     <div *ngIf="submitted && f['amount'].errors" class="error">
       <small *ngIf="f['amount'].errors['required']">Le montant est requis.</small>
-      <small *ngIf="f['amount'].errors['minAmount']">Le montant doit être strictement supérieur à 10 €.</small>
+      <small *ngIf="f['amount'].errors['minAmount']">Le montant doit être strictement supérieur à 9.99 €.</small>
       <small *ngIf="f['amount'].errors['twoDecimals']">Le montant ne peut avoir que 2 chiffres après la virgule.</small>
     </div>
 
