@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, finalize } from 'rxjs';
 import { AdaptedOrderLine } from '../../models/orderLine.model';
-import { ApiService } from '../api/api';
-import { LoaderService } from '../loaderService/loader-service';
-
+import { LoaderService } from '../tools/loader/loader-service';
+import { BasketService } from '../httpRequest/basket/basket-service';
 @Injectable({
   providedIn: 'root'
 })
@@ -20,7 +19,7 @@ export class OrderService {
   countItem$ = this.countItemSubject.asObservable();
 
   constructor(
-    private apiService: ApiService,
+    private basketService: BasketService,
     private loaderService: LoaderService
   ) {}
 
@@ -64,7 +63,7 @@ export class OrderService {
     this.updateLocalBasket(basket);
 
     this.loaderService.show();
-    this.apiService.saveBasketToServer(basket)
+    this.basketService.saveBasket(basket)
       .pipe(
         finalize(() => this.loaderService.hide())
       )
@@ -78,7 +77,7 @@ export class OrderService {
   public refreshBasketFromServer(): void {
     this.loaderService.show();
 
-    this.apiService.getBasketFromServer()
+    this.basketService.getBasket()
       .pipe(
         finalize(() => this.loaderService.hide())
       )

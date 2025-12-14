@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { jsPDF } from 'jspdf';
 import { Invoice } from '../../models/invoice.model';
-import { adaptFormatInvoice } from '../../tools/functions';
-import { LOGO_URL } from '../../tools/constantes';
+import { adaptFormatInvoice } from '../../utils/functions';
+import { LOGO_URL } from '../../utils/constantes';
 import { AdaptedOrderLine } from '../../models/orderLine.model';
 
 @Injectable({

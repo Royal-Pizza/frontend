@@ -1,3 +1,4 @@
+import { HttpHeaders } from "@angular/common/http";
 import { Invoice } from "../models/invoice.model";
 import { AdaptedOrderLine, OrderLine } from "../models/orderLine.model";
 
@@ -59,4 +60,11 @@ export function adaptFormatInvoice(invoice: Invoice): { [key: string]: [AdaptedO
     }
   }
   return dico;
+}
+
+export function getHeaders(): HttpHeaders {
+  const token = localStorage.getItem('authToken') || '';
+  return new HttpHeaders({
+    Authorization: `Bearer ${token}`
+  });
 }
