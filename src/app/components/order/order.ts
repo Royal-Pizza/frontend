@@ -1,89 +1,122 @@
-import { Component, OnInit } from '@angular/core';
-import { OrderService } from '../../services/order/order-service';
-import { AdaptedOrderLine } from '../../models/orderLine.model';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+
+import { OrderService } from '../../services/order/order-service';
+import { AdaptedOrderLine } from '../../models/orderLine.model';
 import { ApiService } from '../../services/api/api';
-import { formatErrorMessage } from '../../tools/functions';
-import { PopupComponent } from '../popup/popup';
-import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth/auth';
 import { LoaderService } from '../../services/loaderService/loader-service';
-import { delay, finalize, pipe } from 'rxjs';
 import { PopupService } from '../../services/popup/popup';
+import { formatErrorMessage } from '../../tools/functions';
+import { Customer } from '../../models/customer.model';
 
 @Component({
   selector: 'app-order',
+  standalone: true,
   imports: [CommonModule, MatIconModule],
   templateUrl: './order.html',
   styleUrls: ['./order.css']
 })
-export class OrderComponent implements OnInit {
+export class OrderComponent implements OnInit, OnDestroy {
 
   orders: { [key: string]: AdaptedOrderLine[] } = {};
+  customer: Customer | null = null;
 
-  constructor(private orderService: OrderService, private apiService: ApiService, private authService: AuthService, private loaderService: LoaderService, private popupService: PopupService, private router: Router) { }
+  private basketSub?: Subscription;
+
+  constructor(
+    private orderService: OrderService,
+    private apiService: ApiService,
+    private authService: AuthService,
+    private loaderService: LoaderService,
+    private popupService: PopupService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
-    if (!localStorage.getItem('customer')) {
+    const customerRaw = localStorage.getItem('customer');
+    if (!customerRaw) {
       this.router.navigate(['/login']);
+      return;
     }
-    this.orders = this.orderService.getBasket();
+
+    this.customer = JSON.parse(customerRaw);
+
+    this.basketSub = this.orderService.basket$.subscribe(basket => {
+      this.orders = basket;
+    });
+
+    this.orderService.refreshBasketFromServer();
   }
 
+  ngOnDestroy(): void {
+    this.basketSub?.unsubscribe();
+  }
+
+  // Ajouter
   addToBasket(pizzaName: string, sizeName: string, price: number): void {
     this.orderService.addToBasket(pizzaName, sizeName, price);
-    this.orders = this.orderService.getBasket();
   }
 
+  // Retirer
   removeFromBasket(pizzaName: string, sizeName: string): void {
     this.orderService.removeFromBasket(pizzaName, sizeName);
-    this.orders = this.orderService.getBasket();
   }
 
+  // Vider
   clearBasket(): void {
     this.orderService.clearBasket();
-    this.orders = this.orderService.getBasket();
   }
 
+  // Panier vide
   isEmptyBasket(): boolean {
     return Object.keys(this.orders).length === 0;
   }
 
+  // Total
   calculateTotal(): number {
     let total = 0;
+
     for (const pizza of Object.values(this.orders)) {
       for (const line of pizza) {
         total += line.price * line.quantity;
       }
     }
+
     return this.roundPrice(total);
   }
 
-  roundPrice(price: number): number {
+  private roundPrice(price: number): number {
     return Math.round(price * 100) / 100;
   }
 
+  // Commander
   sendOrder(): void {
+    if (!this.customer) return;
+
     this.loaderService.show();
 
     this.apiService.purchasePizza(this.orders)
-      .pipe(
-        delay(5000), // simule 5 secondes minimum
-        finalize(() => this.loaderService.hide())
-      )
+      .pipe()
       .subscribe({
         next: (response) => {
           this.popupService.showMessage(response.message || 'Commande réussie !');
+
           localStorage.setItem('authToken', response.token);
+
+          this.customer!.wallet -= this.calculateTotal();
+          localStorage.setItem('customer', JSON.stringify(this.customer));
+
           this.clearBasket();
+          this.loaderService.hide();
         },
         error: (error) => {
           this.popupService.showMessage(formatErrorMessage(error));
+          this.loaderService.hide();
         }
       });
-
   }
-
-
 }

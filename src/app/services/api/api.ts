@@ -20,10 +20,8 @@ import { Router } from '@angular/router';
 export class ApiService {
 
   private authService: AuthService;
-  private orderService: OrderService;
-  constructor(private http: HttpClient, authService: AuthService, orderService: OrderService, private router: Router) {
+  constructor(private http: HttpClient, authService: AuthService, private router: Router) {
     this.authService = authService;
-    this.orderService = orderService;
   }
 
   getPizzasAvailable(): Observable<Pizza[]> {
@@ -46,21 +44,13 @@ export class ApiService {
     return this.http.post<Customer>(`${environment.backendBaseUrl}/customers/register`, customer);
   }
 
-  logoutCustomer(): Observable<any> {
-    const basket = this.orderService.getBasket();
+  logoutCustomer(): void {
     const token = localStorage.getItem('authToken');
 
     const headers = ApiService.getHeaderWithAuthToken();
 
-    return this.http.post(`${environment.backendBaseUrl}/customers/logout`, basket, { headers })
-      .pipe(
-        finalize(() => {
-          // Toujours exécuté : succès ou erreur
-          this.authService.logout();
-          this.orderService.clearBasket();
-          this.router.navigate(['/home']);
-        })
-      );
+    this.authService.logout();
+    this.router.navigate(['/home']);
   }
 
   loginCustomer(email: string, password: string): Observable<any> {
@@ -84,12 +74,11 @@ export class ApiService {
           isAdmin: payload.isAdmin
         };
         this.authService.login(dico.token, customer, dico.basket);
-        this.orderService.saveBasket(dico.basket);
         return customer;
       })
     );
   }
-  
+
   updateCustomer(customer: Customer): Observable<any> {
     const headers = ApiService.getHeaderWithAuthToken();
     customer.lastName = customer.lastName.trim().toUpperCase();
@@ -110,6 +99,16 @@ export class ApiService {
   deleteCustomer(): Observable<any> {
     const headers = ApiService.getHeaderWithAuthToken();
     return this.http.post(`${environment.backendBaseUrl}/customers/deleteAccount`, {}, { headers, responseType: 'json' });
+  }
+
+  getBasketFromServer(): Observable<{ [key: string]: AdaptedOrderLine[] }> {
+    const headers = ApiService.getHeaderWithAuthToken();
+    return this.http.get<{ [key: string]: AdaptedOrderLine[] }>(`${environment.backendBaseUrl}/customers/basket`, { headers });
+  }
+
+  saveBasketToServer(dico: { [key: string]: AdaptedOrderLine[] }): Observable<any> {
+    const headers = ApiService.getHeaderWithAuthToken();
+    return this.http.post(`${environment.backendBaseUrl}/customers/saveBasket`, dico, { headers, responseType: 'json' });
   }
 
   purchasePizza(dico: { [key: string]: AdaptedOrderLine[] }): Observable<any> {
@@ -162,7 +161,7 @@ export class ApiService {
     const headers = ApiService.getHeaderWithAuthToken();
     return this.http.post(`${environment.backendBaseUrl}/ingredients/delete`, idIngredient, { headers, responseType: 'json' });
   }
-  
+
   private static getHeaderWithAuthToken(): { [header: string]: string } { // { [header: string]: string } veut dire un objet avec des clés de type string et des valeurs de type string
     const token = localStorage.getItem('authToken') || '';
     return { 'Authorization': `Bearer ${token}` };

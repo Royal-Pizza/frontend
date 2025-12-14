@@ -1,4 +1,10 @@
 <div *ngIf="!isEmptyBasket()" class="order-container">
+  
+  <!-- Affichage du budget -->
+  <div class="customer-budget" *ngIf="customer">
+    Votre budget est de : {{ customer.wallet | number:'1.2-2' }}€
+  </div>
+
   <div *ngFor="let pizza of orders | keyvalue">
     <h3>{{ pizza.key }}</h3>
     <ul>
@@ -21,16 +27,17 @@
       </li>
     </ul>
   </div>
+  
   <div class="order-total">
     Total : {{ calculateTotal() }}€
   </div>
+
   <div class="button-section">
     <button class="button" color="clear" (click)="clearBasket()">Vider le panier</button>
     <button class="button" color="order" (click)="sendOrder()">Passer la commande</button>
   </div>
 </div>
-<div *ngIf="isEmptyBasket()">
-  <p>Votre panier est vide.</p>
+
+<div *ngIf="isEmptyBasket()" class="empty-basket-message">
+  Votre panier est vide.
 </div>
-
-

@@ -8,6 +8,7 @@ import { formatErrorMessage } from '../../tools/functions';
 import { LoaderService } from '../../services/loaderService/loader-service';
 import { pipe, finalize } from 'rxjs';
 import { PopupService } from '../../services/popup/popup';
+import { OrderService } from '../../services/order/order-service';
 
 @Component({
   selector: 'app-menu',
@@ -22,7 +23,9 @@ export class MenuComponent implements OnInit {
   isConnected: boolean = false;
   isAdmin: boolean = false;
 
-  constructor(private router: Router, private apiService: ApiService, private loaderService: LoaderService, private popupService: PopupService) {
+  constructor(private router: Router, private apiService: ApiService,
+    private loaderService: LoaderService, private popupService: PopupService,
+    private orderService: OrderService) {
 
   }
 
@@ -54,8 +57,9 @@ export class MenuComponent implements OnInit {
             console.log('Pizzas reçues :', this.pizzas);
           },
           error: (err) => {
-            err = formatErrorMessage(err) !== undefined ? formatErrorMessage(err) : '';
-            const str = 'Erreur chargement pizzas ' + err;
+            const formattedError = formatErrorMessage(err);
+            const str = 'Erreur chargement pizzas ' + (formattedError ?? '');
+
             this.popupService.showMessage(str);
           }
         });
@@ -103,6 +107,8 @@ export class MenuComponent implements OnInit {
     this.apiService.updatePizza(updatedPizza).subscribe({
       next: () => {
         this.loadPizzas(); // Recharger la liste des pizzas après la mise à jour
+        this.orderService.refreshBasketFromServer(); // Met à jour le panier
+        console.log("panier : ", this.orderService.getBasket())
       },
       error: (err) => console.error('Erreur mise à jour pizza', formatErrorMessage(err))
     });
