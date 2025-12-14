@@ -2,12 +2,11 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { delay, finalize, Subscription } from 'rxjs';
 
 import { OrderService } from '../../services/order/order-service';
 import { AdaptedOrderLine } from '../../models/orderLine.model';
 import { ApiService } from '../../services/api/api';
-import { AuthService } from '../../services/auth/auth';
 import { LoaderService } from '../../services/loaderService/loader-service';
 import { PopupService } from '../../services/popup/popup';
 import { formatErrorMessage } from '../../tools/functions';
@@ -30,7 +29,6 @@ export class OrderComponent implements OnInit, OnDestroy {
   constructor(
     private orderService: OrderService,
     private apiService: ApiService,
-    private authService: AuthService,
     private loaderService: LoaderService,
     private popupService: PopupService,
     private router: Router
@@ -43,6 +41,27 @@ export class OrderComponent implements OnInit, OnDestroy {
       return;
     }
 
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      this.router.navigate(['/login']);
+      return;
+    }
+    this.loaderService.show();
+    this.apiService.checkToken()
+      .pipe(
+        delay(5000),
+        finalize(() => {
+          this.loaderService.hide();
+          //
+        })
+      )
+    .subscribe({
+      error: (err) => {
+        this.popupService.showMessage(formatErrorMessage(err));
+        this.apiService.logoutCustomer();
+        this.router.navigate(['/login']);
+      }
+    });
     this.customer = JSON.parse(customerRaw);
 
     this.basketSub = this.orderService.basket$.subscribe(basket => {
@@ -89,7 +108,7 @@ export class OrderComponent implements OnInit, OnDestroy {
     return this.roundPrice(total);
   }
 
-  private roundPrice(price: number): number {
+  roundPrice(price: number): number {
     return Math.round(price * 100) / 100;
   }
 
@@ -100,7 +119,9 @@ export class OrderComponent implements OnInit, OnDestroy {
     this.loaderService.show();
 
     this.apiService.purchasePizza(this.orders)
-      .pipe()
+      .pipe(
+        finalize(() => this.loaderService.hide())
+      )
       .subscribe({
         next: (response) => {
           this.popupService.showMessage(response.message || 'Commande réussie !');
@@ -111,11 +132,9 @@ export class OrderComponent implements OnInit, OnDestroy {
           localStorage.setItem('customer', JSON.stringify(this.customer));
 
           this.clearBasket();
-          this.loaderService.hide();
         },
         error: (error) => {
           this.popupService.showMessage(formatErrorMessage(error));
-          this.loaderService.hide();
         }
       });
   }
