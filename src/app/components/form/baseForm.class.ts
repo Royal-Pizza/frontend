@@ -6,7 +6,7 @@ import { Subject } from 'rxjs';
 // Abstract class à étendre
 export abstract class BaseFormComponent implements OnDestroy {
 
-  form!: FormGroup; 
+  form!: FormGroup;
 
   submitted = false;
   success: boolean | null = null;
