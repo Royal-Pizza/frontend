@@ -4,16 +4,6 @@ Frontend Angular pour la plateforme de commande de pizzas Royal Pizza.
 
 ---
 
-## 📋 Table des matières
-
-1. [Prérequis](#prérequis)
-2. [Installation](#installation)
-3. [Démarrage](#démarrage)
-5. [Utilisateurs de Test](#utilisateurs-de-test)
-6. [Fonctionnalités](#fonctionnalités)
-
----
-
 ## ⚙️ Prérequis
 
 Avant de lancer l'application, vous devez avoir en place :
@@ -104,20 +94,6 @@ npm start
 ```
 
 L'application démarre sur **http://localhost:4200**
-
-### Build Production
-
-```bash
-ng build --configuration production
-```
-
-Le build sera généré dans le dossier `dist/`
-
-### Lancer les Tests
-
-```bash
-ng test
-```
 
 ---
 
