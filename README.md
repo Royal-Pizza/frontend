@@ -113,34 +113,17 @@ La base de données contient **3 utilisateurs de test** pour tester l'applicatio
 - **Email :** `pierre.martin@gmail.com`
 - **Mot de passe :** `Pm4$Z8!kWQe6@T`
 - **Rôle :** USER
-- **Statut :** Compte désactivé ❌ (`available = false`)
-
-**⚠️ Réactivation nécessaire :** 
-Ce compte doit se réinscrire pour réactiver l'accès. Une fois réinscrit, il pourra commander comme un client normal.
-
-```sql
--- État dans la base :
-SELECT first_name, last_name, email_address, is_admin, available 
-FROM customer;
-
--- Résultat :
--- Jean    | Dupont   | jean.dupont@gmail.com      | true  | true
--- Pierre  | Martin   | pierre.martin@gmail.com    | false | true
--- Nicolas | Bernard  | nicolas.bernard@gmail.com  | false | true
-```
+- **Statut :** Compte actif ✅
 
 ### 3️⃣ **Nicolas Bernard** (Client)
 - **Email :** `nicolas.bernard@gmail.com`
 - **Mot de passe :** `Nb7@C!5RkX9$H2`
 - **Rôle :** USER
-- **Statut :** Compte désactivé ❌ (`available = false`)
-
-**⚠️ Réactivation nécessaire :** 
-Comme Pierre, ce compte doit se réinscrire pour accéder à nouveau à la plateforme.
+- **Statut :** Compte actif ✅
 
 ---
 
-## 🔄 Signification de `available`
+## 🔄 Signification du Statut
 
 | Valeur | Signification | Action Requise |
 |--------|---------------|-----------------|
@@ -149,7 +132,7 @@ Comme Pierre, ce compte doit se réinscrire pour accéder à nouveau à la plate
 
 ### Réactivation d'un Compte
 
-Si un compte a `available = false`, l'utilisateur doit :
+Si un compte a son Statut inactif (`available = false`), l'utilisateur doit :
 1. Cliquer sur "S'inscrire" dans le login
 2. Entrer le même email
 3. Choisir un nouveau mot de passe
@@ -176,13 +159,8 @@ Si un compte a `available = false`, l'utilisateur doit :
 - ✅ **Gestion du catalogue :**
   - Ajouter/modifier/supprimer des pizzas
   - Gérer les ingrédients
-  - Gérer les tailles disponibles
 - ✅ **Gestion tarifaire :**
-  - Définir les prix par pizza et taille
-  - Historique des prix
-- ✅ **Gestion des utilisateurs :**
-  - Lister tous les clients
-  - Gérer les rôles et statuts
+  - Définir les prix par pizza
 
 ---
 
@@ -206,12 +184,6 @@ Le frontend utilise une architecture **composant-service** :
 │  (Form, Menu, etc)  │
 └─────────────────────┘
 ```
-
-### Points de Connexion Clés
-
-- **Login :** `POST /api/auth/login` → Récupère JWT
-- **Menu :** `GET /api/pizzas` → Liste les pizzas
-- **Commande :** `POST /api/invoices` → Crée une facture
 
 ---
 
@@ -266,9 +238,3 @@ npm install
 ```bash
 ng serve --port 4201
 ```
-
----
-
-## 📄 Licence
-
-Propriétaire - Royal Pizza 2024
