@@ -1,24 +1,348 @@
-# 🍕 Royal Pizza - Frontend Angular
+# 🍕 Royal Pizza - Frontend
 
-Frontend Angular pour la plateforme de commande de pizzas Royal Pizza.
+**[EN](#english-section) | [FR](#french-section)**
+
+<a id="english-section"></a>
+## English
+
+### Overview
+
+Angular modern frontend for the Royal Pizza pizza ordering platform. Features a complete ordering system with admin capabilities for managing the catalog, ingredients, pricing, and user accounts. Built with Angular 20, Angular Material, and TypeScript.
 
 ---
 
-## 📋 Table des matières
+## 📋 Table of Contents
 
-1. [Prérequis](#prérequis)
+1. [Prerequisites](#prerequisites)
 2. [Installation](#installation)
-3. [Démarrage](#démarrage)
-5. [Utilisateurs de Test](#utilisateurs-de-test)
-6. [Fonctionnalités](#fonctionnalités)
+3. [Running](#running)
+4. [Test Users](#test-users)
+5. [Features](#features)
+6. [Architecture](#architecture)
+7. [API Configuration](#api-configuration)
+8. [Troubleshooting](#troubleshooting)
+9. [Resources](#resources)
 
 ---
 
-## ⚙️ Prérequis
+## ✅ Prerequisites
 
-Avant de lancer l'application, vous devez avoir en place :
+<a id="prerequisites"></a>
 
-### 1. **Base de Données et Backend** 
+### Backend & Database
+
+The Java/Spring backend and PostgreSQL database must be running.
+
+**Quick setup with Docker Compose:**
+```bash
+git clone https://github.com/Royal-Pizza/docker.git
+cd docker
+docker compose -f docker-compose.yml up --build
+```
+
+This automatically launches:
+- PostgreSQL (port 5432)
+- Backend Spring Boot (port 8081)
+
+**Full documentation:**
+- [Docker Setup](https://github.com/Royal-Pizza/docker)
+- [Backend API](https://github.com/Royal-Pizza/backend)
+
+### Node.js & npm
+
+```bash
+node --version  # v20.11+ recommended (Angular 20)
+npm --version   # v10+
+```
+
+### Angular CLI (Optional)
+
+While not required, it's helpful for development:
+
+```bash
+npm install -g @angular/cli@20.3.3
+ng version
+```
+
+
+---
+
+## 🚀 Installation
+
+<a id="installation"></a>
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/Royal-Pizza/frontend.git
+cd frontend
+```
+
+### 2. Install dependencies
+
+The project uses **Angular 20** with **Angular Material 20.2.x**. Install all dependencies:
+
+```bash
+npm install
+```
+
+For a clean installation, use:
+```bash
+npm ci
+```
+
+### 3. (Optional) Configure Backend API
+
+By default, the frontend connects to `http://localhost:8081/api-backend`. If your backend runs on a different address, edit [src/environments/environment.ts](src/environments/environment.ts):
+
+```typescript
+export const environment = {
+  production: false,
+  backendBaseUrl: 'http://localhost:8081/api-backend'
+};
+```
+
+---
+
+## ▶️ Running
+
+<a id="running"></a>
+
+### Development Server
+
+```bash
+npm start
+```
+
+or
+
+```bash
+ng serve
+```
+
+The application runs on **http://localhost:4200**
+
+### Production Build
+
+```bash
+ng build --configuration production
+```
+
+Output is generated in the `dist/` folder.
+
+### Run Tests
+
+```bash
+ng test
+```
+
+Tests run in watch mode by default using Karma and Jasmine.
+
+---
+
+## 🧪 Testing
+
+The project includes unit tests for components and services. Test files use the `.spec.ts` convention.
+
+**Running tests:**
+- All tests: `ng test`
+- Specific test file: `ng test --include='**/menu.spec.ts'`
+- Coverage report: `ng test --code-coverage`
+
+Test files are located alongside their source files:
+```
+src/
+├── app/
+│   ├── components/
+│   │   ├── menu/
+│   │   │   ├── menu.ts
+│   │   │   └── menu.spec.ts
+│   │   ├── login/
+│   │   │   ├── login.ts
+│   │   │   └── login.spec.ts
+│   │   └── ...
+│   └── services/
+│       └── ...
+```
+
+---
+
+## 👤 Test Users
+
+<a id="test-users"></a>
+
+The database includes **3 test accounts**:
+
+### 1️⃣ **Jean Dupont** (Administrator)
+- **Email:** `jean.dupont@gmail.com`
+- **Password:** `Jd9!Fq7@L2xR#M`
+- **Role:** ADMIN ✅
+- **Status:** Active ✅
+
+**Access:** All features + catalog management
+
+### 2️⃣ **Pierre Martin** (Client)
+- **Email:** `pierre.martin@gmail.com`
+- **Password:** `Pm4$Z8!kWQe6@T`
+- **Role:** USER
+- **Status:** Active ✅ (`available = true`)
+
+**Note:** To become inactive, must unsubscribe and re-subscribe.
+
+### 3️⃣ **Nicolas Bernard** (Client)
+- **Email:** `nicolas.bernard@gmail.com`
+- **Password:** `Nb7@C!5RkX9$H2`
+- **Role:** USER
+- **Status:** Active ✅ (`available = true`)
+
+**Note:** To become inactive, must unsubscribe and re-subscribe.
+
+---
+
+## 🎨 Features
+
+<a id="features"></a>
+
+### For Regular Users
+
+- ✅ Browse pizza catalog
+- ✅ View pizza details and ingredients
+- ✅ Add pizzas to basket
+- ✅ Manage basket (quantity, deletion)
+- ✅ Place orders using wallet
+- ✅ View order history
+- ✅ Recharge wallet
+- ✅ Update profile information
+
+### For Administrators
+
+- ✅ All regular user features
+- ✅ **Catalog Management:**
+  - Add/edit/delete pizzas
+  - Manage ingredients
+  - Manage available sizes
+- ✅ **Pricing Management:**
+  - Set prices by pizza and size
+  - Price history
+- ✅ **User Management:**
+  - List all customers
+  - Manage roles and statuses
+
+---
+
+## 🏗️ Architecture
+
+<a id="architecture"></a>
+
+The frontend uses a **component-service** architecture:
+
+```
+┌──────────────────────┐
+│   HTTP Services      │  (REST API calls)
+│ (httpRequest/)       │
+└──────────┬───────────┘
+           │
+┌──────────▼───────────┐
+│  Domain Services     │  (Business logic)
+│  (order/, tools/)    │
+└──────────┬───────────┘
+           │
+┌──────────▼───────────┐
+│   Components         │  (UI / Presentation)
+│ (Form, Menu, etc)    │
+└──────────────────────┘
+```
+
+### Key Integration Points
+
+- **Login:** `POST /api-backend/customers/login` → Retrieve JWT token
+- **Menu:** `GET /api-backend/pizzas` → List all pizzas
+- **Order:** `POST /api-backend/invoices` → Create invoice
+
+---
+
+## � API Configuration
+
+<a id="api-configuration"></a>
+
+By default, the frontend connects to `http://localhost:8081/api-backend`. See [Installation - Step 3](#installation) to customize this address.
+
+---
+
+## 🔗 Resources
+
+<a id="resources"></a>
+
+- **Backend Repository:** https://github.com/Royal-Pizza/backend
+- **Docker & Database Setup:** https://github.com/Royal-Pizza/docker
+- **Angular Documentation:** https://angular.io/docs
+- **Backend API Endpoints:** [See Backend README](https://github.com/Royal-Pizza/backend#api-endpoints)
+
+---
+
+## 🐛 Troubleshooting
+
+<a id="troubleshooting"></a>
+
+### "Cannot find module @angular/core"
+```bash
+npm install
+```
+
+### "Backend not responding (CORS error)"
+- Ensure backend is running on `http://localhost:8081`
+- Verify `environment.ts` → `backendBaseUrl` is correct
+
+### "Invalid token"
+- Token expired → Re-login
+- Verify backend and frontend use the same `jwt.expiration` setting
+
+### "Port 4200 already in use"
+```bash
+ng serve --port 4201
+```
+
+---
+
+## 📄 License
+
+**Proprietary - Royal Pizza 2024**
+
+This project and all its contents are the exclusive property of Royal Pizza. Unauthorized copying, distribution, or use is strictly prohibited.
+
+For licensing inquiries, contact the Royal Pizza development team.
+
+---
+
+<a id="french-section"></a>
+## Français
+
+### Vue d'ensemble
+
+Frontend Angular moderne pour la plateforme de commande de pizzas Royal Pizza. Permet aux utilisateurs de parcourir le catalogue, passer des commandes et recharger leur wallet. Les administrateurs peuvent gérer le catalogue, les ingrédients, les tarifs et les comptes utilisateurs. Construit avec Angular 20, Angular Material et TypeScript.
+
+---
+
+## 📋 Table des matières (Français)
+
+1. [Prérequis](#prerequisites-fr)
+2. [Installation](#installation-fr)
+3. [Démarrage](#running-fr)
+4. [Utilisateurs de Test](#test-users-fr)
+5. [Fonctionnalités](#features-fr)
+6. [Architecture](#architecture-fr)
+7. [Configuration de l'API](#api-config-fr)
+8. [Dépannage](#troubleshooting-fr)
+9. [Ressources](#resources-fr)
+
+---
+
+## ✅ Prérequis
+
+<a id="prerequisites-fr"></a>
+
+### Backend & Base de Données
+
 Le backend Java/Spring et la base de données PostgreSQL doivent être en cours d'exécution.
 
 **Installation rapide avec Docker Compose :**
@@ -30,42 +354,33 @@ docker compose -f docker-compose.yml up --build
 
 Cela lance automatiquement :
 - PostgreSQL (port 5432)
-- Backend Spring Boot (port 8080)
+- Backend Spring Boot (port 8081)
 
-**Documentation complète :** 
-- [Docker Setup](https://github.com/Royal-Pizza/docker)
-- [Backend API](https://github.com/Royal-Pizza/backend)
+**Documentation complète :**
+- [Configuration Docker](https://github.com/Royal-Pizza/docker)
+- [API Backend](https://github.com/Royal-Pizza/backend)
 
-### 2. **Node.js et npm**
+### Node.js & npm
+
 ```bash
 node --version  # v20.11+ recommandé (Angular 20)
 npm --version   # v10+
 ```
 
-### 3. **Angular CLI**
+### Angular CLI (Optionnel)
+
+Bien que non obligatoire, c'est utile pour le développement :
+
 ```bash
 npm install -g @angular/cli@20.3.3
 ng version
 ```
 
-### 4. **Dépendances Angular (20.x)**
-Le projet est sur **Angular 20** et **Angular Material 20.2.x**. Vérifiez ces versions pour éviter les erreurs de composants (ex. `mat-flat-button`, `mat-icon-button`).
-
-- `@angular/core`: 20.3.x
-- `@angular/material` / `@angular/cdk`: 20.2.x
-- `zone.js`: 0.15.x
-- `rxjs`: 7.8.x
-- `typescript`: 5.9.x
-
-Si votre machine a une CLI ou des dépendances plus anciennes, forcez l'installation propre :
-```bash
-npm ci
-```
-
-
 ---
 
 ## 🚀 Installation
+
+<a id="installation-fr"></a>
 
 ### 1. Cloner le repository
 
@@ -76,18 +391,25 @@ cd frontend
 
 ### 2. Installer les dépendances
 
+Le projet utilise **Angular 20** avec **Angular Material 20.2.x**. Installez toutes les dépendances :
+
 ```bash
 npm install
 ```
 
-### 3. Configurer l'API Backend
+Pour une installation propre, utilisez :
+```bash
+npm ci
+```
 
-Éditer [src/environments/environment.ts](src/environments/environment.ts) pour pointer vers le backend :
+### 3. (Optionnel) Configurer l'API Backend
+
+Par défaut, le frontend se connecte à `http://localhost:8081/api-backend`. Si votre backend s'exécute sur une adresse différente, éditez [src/environments/environment.ts](src/environments/environment.ts) :
 
 ```typescript
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:8080/api'
+  backendBaseUrl: 'http://localhost:8081/api-backend'
 };
 ```
 
@@ -95,15 +417,21 @@ export const environment = {
 
 ## ▶️ Démarrage
 
-### Développement
+<a id="running-fr"></a>
+
+### Serveur de Développement
 
 ```bash
-ng serve
-# ou
 npm start
 ```
 
-L'application démarre sur **http://localhost:4200**
+ou
+
+```bash
+ng serve
+```
+
+L'application s'exécute sur **http://localhost:4200**
 
 ### Build Production
 
@@ -111,7 +439,7 @@ L'application démarre sur **http://localhost:4200**
 ng build --configuration production
 ```
 
-Le build sera généré dans le dossier `dist/`
+Le résultat est généré dans le dossier `dist/`.
 
 ### Lancer les Tests
 
@@ -119,159 +447,153 @@ Le build sera généré dans le dossier `dist/`
 ng test
 ```
 
+Les tests s'exécutent en mode surveillance par défaut en utilisant Karma et Jasmine.
+
+---
+
+## 🧪 Tests
+
+Le projet contient des tests unitaires pour les composants et les services. Les fichiers de test utilisent la convention `.spec.ts`.
+
+**Lancer les tests :**
+- Tous les tests : `ng test`
+- Un fichier de test spécifique : `ng test --include='**/menu.spec.ts'`
+- Rapport de couverture : `ng test --code-coverage`
+
+Les fichiers de test sont situés à côté de leurs fichiers source :
+```
+src/
+├── app/
+│   ├── components/
+│   │   ├── menu/
+│   │   │   ├── menu.ts
+│   │   │   └── menu.spec.ts
+│   │   ├── login/
+│   │   │   ├── login.ts
+│   │   │   └── login.spec.ts
+│   │   └── ...
+│   └── services/
+│       └── ...
+```
+
 ---
 
 ## 👤 Utilisateurs de Test
 
-La base de données contient **3 utilisateurs de test** pour tester l'application :
+<a id="test-users-fr"></a>
+
+La base de données contient **3 comptes de test** :
 
 ### 1️⃣ **Jean Dupont** (Administrateur)
 - **Email :** `jean.dupont@gmail.com`
 - **Mot de passe :** `Jd9!Fq7@L2xR#M`
 - **Rôle :** ADMIN ✅
-- **Statut :** Compte actif ✅
+- **Statut :** Actif ✅
 
-**Accès :** Tous les fonctionnalités + gestion du catalogue
+**Accès :** Toutes les fonctionnalités + gestion du catalogue
 
 ### 2️⃣ **Pierre Martin** (Client)
 - **Email :** `pierre.martin@gmail.com`
 - **Mot de passe :** `Pm4$Z8!kWQe6@T`
 - **Rôle :** USER
-- **Statut :** Compte désactivé ❌ (`available = false`)
+- **Statut :** Actif ✅ (`available = true`)
 
-**⚠️ Réactivation nécessaire :** 
-Ce compte doit se réinscrire pour réactiver l'accès. Une fois réinscrit, il pourra commander comme un client normal.
-
-```sql
--- État dans la base :
-SELECT first_name, last_name, email_address, is_admin, available 
-FROM customer;
-
--- Résultat :
--- Jean    | Dupont   | jean.dupont@gmail.com      | true  | true
--- Pierre  | Martin   | pierre.martin@gmail.com    | false | true
--- Nicolas | Bernard  | nicolas.bernard@gmail.com  | false | true
-```
+**Note :** Pour devenir inactif, doit se désinscrire et se réinscrire.
 
 ### 3️⃣ **Nicolas Bernard** (Client)
 - **Email :** `nicolas.bernard@gmail.com`
 - **Mot de passe :** `Nb7@C!5RkX9$H2`
 - **Rôle :** USER
-- **Statut :** Compte désactivé ❌ (`available = false`)
+- **Statut :** Actif ✅ (`available = true`)
 
-**⚠️ Réactivation nécessaire :** 
-Comme Pierre, ce compte doit se réinscrire pour accéder à nouveau à la plateforme.
-
----
-
-## 🔄 Signification de `available`
-
-| Valeur | Signification | Action Requise |
-|--------|---------------|-----------------|
-| `true` | Compte actif et accessible | Connexion directe possible ✅ |
-| `false` | Compte désactivé | **Doit se réinscrire** pour réactiver l'accès |
-
-### Réactivation d'un Compte
-
-Si un compte a `available = false`, l'utilisateur doit :
-1. Cliquer sur "S'inscrire" dans le login
-2. Entrer le même email
-3. Choisir un nouveau mot de passe
-4. Le compte sera réactivé (`available = true`)
+**Note :** Pour devenir inactif, doit se désinscrire et se réinscrire.
 
 ---
 
-## 🎨 Fonctionnalités Principales
+## 🎨 Fonctionnalités
 
-### 👨‍💼 Pour les Clients Réguliers
+<a id="features-fr"></a>
 
-- ✅ Consulter le catalogue de pizzas
+### Pour les Clients Réguliers
+
+- ✅ Parcourir le catalogue de pizzas
 - ✅ Voir les détails et ingrédients de chaque pizza
 - ✅ Ajouter des pizzas au panier
 - ✅ Gérer le panier (quantité, suppression)
-- ✅ Passer une commande avec wallet
+- ✅ Passer une commande avec le wallet
 - ✅ Consulter l'historique des commandes
-- ✅ Recharger son wallet
-- ✅ Modifier son profil
+- ✅ Recharger le wallet
+- ✅ Modifier les informations du profil
 
-### 🔐 Pour les Administrateurs
+### Pour les Administrateurs
 
-- ✅ Toutes les fonctionnalités client
-- ✅ **Gestion du catalogue :**
+- ✅ Toutes les fonctionnalités des clients réguliers
+- ✅ **Gestion du Catalogue :**
   - Ajouter/modifier/supprimer des pizzas
   - Gérer les ingrédients
   - Gérer les tailles disponibles
-- ✅ **Gestion tarifaire :**
+- ✅ **Gestion des Tarifs :**
   - Définir les prix par pizza et taille
   - Historique des prix
-- ✅ **Gestion des utilisateurs :**
+- ✅ **Gestion des Utilisateurs :**
   - Lister tous les clients
   - Gérer les rôles et statuts
 
 ---
 
-## 🌍 Architecture Angular
+## 🏗️ Architecture
+
+<a id="architecture-fr"></a>
 
 Le frontend utilise une architecture **composant-service** :
 
 ```
-┌─────────────────────┐
-│   HTTP Services     │  (Appels API REST)
-│  (httpRequest/)     │
-└────────┬────────────┘
-         │
-┌────────▼────────────┐
-│  Domain Services    │  (Logique métier)
-│   (order/, tools/)  │
-└────────┬────────────┘
-         │
-┌────────▼────────────┐
-│    Components       │  (UI / Présentation)
-│  (Form, Menu, etc)  │
-└─────────────────────┘
+┌──────────────────────┐
+│   Services HTTP      │  (Appels API REST)
+│  (httpRequest/)      │
+└──────────┬───────────┘
+           │
+┌──────────▼───────────┐
+│  Services Métier     │  (Logique métier)
+│  (order/, tools/)    │
+└──────────┬───────────┘
+           │
+┌──────────▼───────────┐
+│    Composants        │  (UI / Présentation)
+│  (Form, Menu, etc)   │
+└──────────────────────┘
 ```
 
 ### Points de Connexion Clés
 
-- **Login :** `POST /api/auth/login` → Récupère JWT
-- **Menu :** `GET /api/pizzas` → Liste les pizzas
-- **Commande :** `POST /api/invoices` → Crée une facture
+- **Login :** `POST /api-backend/customers/login` → Récupère le token JWT
+- **Menu :** `GET /api-backend/pizzas` → Liste toutes les pizzas
+- **Commande :** `POST /api-backend/invoices` → Crée une facture
+
+---
+
+## 🔧 Configuration de l'API
+
+<a id="api-config-fr"></a>
+
+La configuration par défaut se connecte à `http://localhost:8081/api-backend`. Voir [Installation - Étape 3](#installation-fr) pour personnaliser cette adresse.
 
 ---
 
 ## 🔗 Ressources
 
-- **Backend :** https://github.com/Royal-Pizza/backend
-- **Docker & Base de Données :** https://github.com/Royal-Pizza/docker
-- **Angular Docs :** https://angular.io/docs
-- **API Endpoints :** [Backend README](https://github.com/Royal-Pizza/backend#-api-endpoints)
+<a id="resources-fr"></a>
+
+- **Repository Backend :** https://github.com/Royal-Pizza/backend
+- **Configuration Docker et Base de Données :** https://github.com/Royal-Pizza/docker
+- **Documentation Angular :** https://angular.io/docs
+- **Endpoints API Backend :** [Voir Backend README](https://github.com/Royal-Pizza/backend#api-endpoints)
 
 ---
 
-## 📝 Workflow Typique
+## 🐛 Dépannage
 
-1. **Démarrer Docker Compose**
-   ```bash
-   cd ../docker && docker compose up --build
-   ```
-
-2. **Lancer le Frontend**
-   ```bash
-   npm start
-   ```
-
-3. **Accéder à l'application**
-   ```
-   http://localhost:4200
-   ```
-
-4. **Se connecter** avec l'un des 3 comptes de test
-
-5. **Commencer à commander des pizzas** 🍕
-
----
-
-## 🐛 Troubleshooting
+<a id="troubleshooting-fr"></a>
 
 ### "Cannot find module @angular/core"
 ```bash
@@ -279,12 +601,12 @@ npm install
 ```
 
 ### "Backend not responding (CORS error)"
-- Vérifier que le backend tourne sur `http://localhost:8080`
-- Vérifier `environment.ts` → `apiUrl` correct
+- Vérifiez que le backend s'exécute sur `http://localhost:8081`
+- Vérifiez `environment.ts` → `backendBaseUrl` est correct
 
 ### "Invalid token"
 - Token expiré → Se reconnecter
-- Vérifier que le backend et le frontend utilisent la même `app.jwt.secret`
+- Vérifiez que le backend et le frontend utilisent le même paramètre `jwt.expiration`
 
 ### "Port 4200 already in use"
 ```bash
@@ -295,4 +617,8 @@ ng serve --port 4201
 
 ## 📄 Licence
 
-Propriétaire - Royal Pizza 2024
+**Propriétaire - Royal Pizza 2024**
+
+Ce projet et tous ses contenus sont la propriété exclusive de Royal Pizza. Toute copie, distribution ou utilisation non autorisée est strictement interdite.
+
+Pour les demandes de licence, contactez l'équipe de développement de Royal Pizza.
