@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { Customer, NewCustomer } from '../../../models/customer.model';
@@ -9,7 +9,8 @@ import { getHeaders, toTitleCase } from '../../../utils/functions';
   providedIn: 'root'
 })
 export class CustomerService {
-  constructor(private http: HttpClient) {}
+  
+  private http = inject(HttpClient);
 
   register(customer: NewCustomer): Observable<Customer> {
     customer.firstName = toTitleCase(customer.firstName.trim());

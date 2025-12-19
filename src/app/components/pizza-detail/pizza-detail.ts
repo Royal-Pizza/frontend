@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Pizza } from '../../models/pizza.model';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -15,7 +15,9 @@ export class PizzaDetailComponent implements OnInit {
   pizza?: Pizza;
   isConnected: boolean = false;
 
-  constructor(private route: ActivatedRoute, private pizzaService: PizzaService, private orderService: OrderService) {}
+    private route = inject(ActivatedRoute);
+    private pizzaService = inject(PizzaService);
+    private orderService = inject(OrderService);
 
   addToBasket(pizzaName: string, sizeName: string, price: number): void {
     this.orderService.addToBasket(pizzaName, sizeName, price);

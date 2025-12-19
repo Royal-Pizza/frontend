@@ -1,5 +1,5 @@
 // src/app/components/update-password/update-password.ts
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
@@ -9,7 +9,6 @@ import { CustomerService } from '../../../services/httpRequest/customer/customer
 
 @Component({
   selector: 'app-update-password',
-  standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './update-password.html',
   styleUrls: ['./update-password.css']
@@ -23,7 +22,11 @@ export class UpdatePasswordComponent extends BaseFormComponent {
   passwordHasLower = false;
   passwordHasSpecial = false;
 
-  constructor(private fb: FormBuilder, private customerService: CustomerService, private router: Router) {
+  private fb = inject(FormBuilder);
+  private customerService = inject(CustomerService)
+  private router = inject(Router);
+  
+  constructor() {
     super();
 
     if (!localStorage.getItem('customer')) {

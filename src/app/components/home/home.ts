@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Customer } from '../../models/customer.model';
 import { CommonModule } from '@angular/common';
@@ -9,14 +9,15 @@ import { AuthService } from '../../services/httpRequest/auth/auth-service';
   selector: 'app-home',
   templateUrl: './home.html',
   styleUrls: ['./home.css'],
-  standalone: true,
   imports: [CommonModule]
 })
 export class HomeComponent implements OnInit {
   customer: Customer | null = null;
   logoUrl = LOGO_URL;
 
-  constructor(private router: Router, private authService: AuthService) {}
+  private router = inject(Router);
+  private authService = inject(AuthService);
+  constructor() {}
 
   ngOnInit() {
     this.authService.isLoggedIn$.subscribe(isLoggedIn => {

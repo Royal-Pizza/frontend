@@ -14,4 +14,4 @@ bootstrapApplication(App, {
     provideRouter(routes)                     // ← configure le routing
   ]
 })
-.catch((err) => console.error(err));
+  .catch((err) => console.error(err));

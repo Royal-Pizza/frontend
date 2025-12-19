@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject, finalize } from 'rxjs';
 import { AdaptedOrderLine } from '../../models/orderLine.model';
 import { LoaderService } from '../tools/loader/loader-service';
@@ -18,10 +18,8 @@ export class OrderService {
   private countItemSubject = new BehaviorSubject<number>(this.getTotalItemCount());
   countItem$ = this.countItemSubject.asObservable();
 
-  constructor(
-    private basketService: BasketService,
-    private loaderService: LoaderService
-  ) {}
+  private basketService = inject(BasketService);
+  private loaderService = inject(LoaderService);
 
   /* ---------- Utils ---------- */
 
