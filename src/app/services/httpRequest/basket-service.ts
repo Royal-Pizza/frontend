@@ -1,9 +1,9 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../../environments/environment';
-import { BasketData } from '../../../models/basket.model';
-import { getHeaders } from '../../../utils/functions';
+import { environment } from '../../../environments/environment';
+import { BasketData } from '../../models/basket.model';
+import { getHeaders } from '../../utils/functions';
 
 
 

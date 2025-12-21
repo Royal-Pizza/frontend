@@ -1,9 +1,9 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../../environments/environment';
-import { Ingredient } from '../../../models/ingredient.model';
-import { getHeaders } from '../../../utils/functions';
+import { environment } from '../../../environments/environment';
+import { Ingredient } from '../../models/ingredient.model';
+import { getHeaders } from '../../utils/functions';
 
 @Injectable({
   providedIn: 'root'
@@ -16,8 +16,8 @@ export class IngredientService {
    * Récupère tous les ingrédients
    */
   getAll(): Observable<Ingredient[]> {
-    return this.http.get<Ingredient[]>(this.baseUrl, { 
-      headers: getHeaders() 
+    return this.http.get<Ingredient[]>(this.baseUrl, {
+      headers: getHeaders()
     });
   }
 
@@ -25,8 +25,8 @@ export class IngredientService {
    * Recherche par nom partiel
    */
   search(partialName: string): Observable<Ingredient[]> {
-    return this.http.get<Ingredient[]>(`${this.baseUrl}/${partialName}`, { 
-      headers: getHeaders() 
+    return this.http.get<Ingredient[]>(`${this.baseUrl}/${partialName}`, {
+      headers: getHeaders()
     });
   }
 
@@ -35,8 +35,8 @@ export class IngredientService {
    * @param name Nom de l'ingrédient
    */
   add(name: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}/add`, name, { 
-      headers: getHeaders() 
+    return this.http.post(`${this.baseUrl}/add`, name, {
+      headers: getHeaders()
     });
   }
 
@@ -44,8 +44,8 @@ export class IngredientService {
    * Modifie un ingrédient existant
    */
   update(ingredient: Ingredient): Observable<any> {
-    return this.http.post(`${this.baseUrl}/update`, ingredient, { 
-      headers: getHeaders() 
+    return this.http.post(`${this.baseUrl}/update`, ingredient, {
+      headers: getHeaders()
     });
   }
 
@@ -53,8 +53,8 @@ export class IngredientService {
    * Supprime un ingrédient par son ID
    */
   delete(id: number): Observable<any> {
-    return this.http.post(`${this.baseUrl}/delete`, id, { 
-      headers: getHeaders() 
+    return this.http.post(`${this.baseUrl}/delete`, id, {
+      headers: getHeaders()
     });
   }
 }

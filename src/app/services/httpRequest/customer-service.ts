@@ -1,9 +1,9 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../../environments/environment';
-import { Customer, NewCustomer } from '../../../models/customer.model';
-import { getHeaders, toTitleCase } from '../../../utils/functions';
+import { environment } from '../../../environments/environment';
+import { Customer, NewCustomer } from '../../models/customer.model';
+import { getHeaders, toTitleCase } from '../../utils/functions';
 
 @Injectable({
   providedIn: 'root'

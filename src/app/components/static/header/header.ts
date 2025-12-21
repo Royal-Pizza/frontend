@@ -1,8 +1,8 @@
 import { Component, inject, effect } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { MatBadgeModule } from '@angular/material/badge';
-import { OrderService } from '../../../services/order/order-service';
-import { AuthService } from '../../../services/httpRequest/auth/auth-service';
+import { OrderService } from '../../../services/httpRequest/order-service';
+import { AuthService } from '../../../services/httpRequest/auth-service';
 
 @Component({
   selector: 'app-header',

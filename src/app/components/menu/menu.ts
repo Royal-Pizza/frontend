@@ -5,11 +5,11 @@ import { finalize } from 'rxjs';
 
 import { Pizza, UpdatedPizza } from '../../models/pizza.model';
 import { formatErrorMessage } from '../../utils/functions';
-import { LoaderService } from '../../services/tools/loader/loader-service';
-import { PopupService } from '../../services/tools/popup/popup';
-import { OrderService } from '../../services/order/order-service';
-import { PizzaService } from '../../services/httpRequest/pizza/pizza-service';
-import { AuthService } from '../../services/httpRequest/auth/auth-service';
+import { LoaderService } from '../../services/tools/loader-service';
+import { PopupService } from '../../services/tools/popup';
+import { OrderService } from '../../services/httpRequest/order-service';
+import { PizzaService } from '../../services/httpRequest/pizza-service';
+import { AuthService } from '../../services/httpRequest/auth-service';
 
 @Component({
   selector: 'app-menu',
@@ -38,9 +38,9 @@ export class MenuComponent implements OnInit {
 
   loadPizzas(): void {
     this.loaderService.show();
-    
-    const request$ = this.isAdmin() 
-      ? this.pizzaService.getAll() 
+
+    const request$ = this.isAdmin()
+      ? this.pizzaService.getAll()
       : this.pizzaService.getAvailable();
 
     request$
@@ -64,10 +64,10 @@ export class MenuComponent implements OnInit {
       next: () => {
         // MISE À JOUR LOCALE (Optimistic UI)
         // On évite un appel réseau getAll() complet en modifiant juste l'item dans le signal
-        this.pizzas.update(list => 
+        this.pizzas.update(list =>
           list.map(p => p.idPizza === pizza.idPizza ? { ...p, available: !p.available } : p)
         );
-        
+
         // On rafraîchit le panier pour s'assurer que si la pizza est devenue indisponible, 
         // elle est gérée côté panier serveur/client.
         this.orderService.refreshBasketFromServer();

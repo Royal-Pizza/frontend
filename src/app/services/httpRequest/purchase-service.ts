@@ -1,10 +1,10 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { environment } from '../../../../environments/environment';
-import { AdaptedOrderLine } from '../../../models/orderLine.model';
-import { Invoice } from '../../../models/invoice.model';
-import { getHeaders } from '../../../utils/functions';
+import { environment } from '../../../environments/environment';
+import { AdaptedOrderLine } from '../../models/orderLine.model';
+import { Invoice } from '../../models/invoice.model';
+import { getHeaders } from '../../utils/functions';
 import { AuthService } from '../auth/auth-service'; // Importe ton nouveau AuthService
 
 @Injectable({
@@ -13,15 +13,15 @@ import { AuthService } from '../auth/auth-service'; // Importe ton nouveau AuthS
 export class PurchaseService {
   private http = inject(HttpClient);
   private authService = inject(AuthService); // On injecte l'auth
-  
+
   private readonly baseUrl = `${environment.backendBaseUrl}/purchases`;
 
   /**
    * Finalise l'achat des pizzas présentes dans le panier
    */
   purchasePizza(dico: { [key: string]: AdaptedOrderLine[] }): Observable<any> {
-    return this.http.post(`${this.baseUrl}/buy`, dico, { 
-      headers: getHeaders() 
+    return this.http.post(`${this.baseUrl}/buy`, dico, {
+      headers: getHeaders()
     });
   }
 
@@ -37,8 +37,8 @@ export class PurchaseService {
       console.error("Tentative de récupérer des factures sans être connecté");
     }
 
-    return this.http.get<Invoice[]>(`${this.baseUrl}/invoices/customer/${customerId}`, { 
-      headers: getHeaders() 
+    return this.http.get<Invoice[]>(`${this.baseUrl}/invoices/customer/${customerId}`, {
+      headers: getHeaders()
     });
   }
 }

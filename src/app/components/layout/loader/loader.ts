@@ -1,6 +1,6 @@
 import { Component, inject, computed } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { LoaderService } from '../../../services/tools/loader/loader-service';
+import { LoaderService } from '../../../services/tools/loader-service';
 
 @Component({
   selector: 'app-loader',
@@ -10,6 +10,6 @@ import { LoaderService } from '../../../services/tools/loader/loader-service';
   styleUrls: ['./loader.css'],
 })
 export class LoaderComponent {
-  private  readonly loaderService = inject(LoaderService);
+  private readonly loaderService = inject(LoaderService);
   public readonly isLoading = computed(() => this.loaderService.isLoading());
 }

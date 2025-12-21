@@ -1,6 +1,6 @@
 import { Component, inject, computed, Signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { PopupService } from '../../../services/tools/popup/popup';
+import { PopupService } from '../../../services/tools/popup';
 
 @Component({
   selector: 'app-popup',

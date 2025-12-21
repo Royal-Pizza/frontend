@@ -7,10 +7,10 @@ import { finalize, map } from 'rxjs'; // Ajout de map
 import { BaseFormComponent } from '../baseForm.class';
 import { Customer, NewCustomer } from '../../../models/customer.model';
 import { formatErrorMessage } from '../../../utils/functions';
-import { AuthService } from '../../../services/httpRequest/auth/auth-service';
-import { CustomerService } from '../../../services/httpRequest/customer/customer-service';
-import { LoaderService } from '../../../services/tools/loader/loader-service';
-import { PopupService } from '../../../services/tools/popup/popup';
+import { AuthService } from '../../../services/httpRequest/auth-service';
+import { CustomerService } from '../../../services/httpRequest/customer-service';
+import { LoaderService } from '../../../services/tools/loader-service';
+import { PopupService } from '../../../services/tools/popup';
 
 @Component({
   selector: 'app-signup',

@@ -1,7 +1,7 @@
 import { Component, inject, Signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { LOGO_URL } from '../../utils/constantes';
-import { AuthService } from '../../services/httpRequest/auth/auth-service';
+import { AuthService } from '../../services/httpRequest/auth-service';
 import { Customer } from '../../models/customer.model';
 
 @Component({
