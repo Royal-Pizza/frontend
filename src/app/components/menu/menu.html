@@ -2,51 +2,60 @@
   <h2 class="text-center mb-4">Notre menu de pizzas</h2>
 
   <div class="row justify-content-center">
+    
+    @for (pizza of pizzas(); track pizza.idPizza) {
+      <div class="col-lg-4 col-md-6 col-sm-12 mb-4 d-flex justify-content-center">
+        <div class="pizza-card position-relative" [class.unavailable]="!pizza.available">
 
-    <!-- Boucle sur les pizzas -->
-    <div *ngFor="let pizza of pizzas" class="col-lg-4 col-md-6 col-sm-12 mb-4 d-flex justify-content-center">
-      <div class="pizza-card position-relative" [class.unavailable]="!pizza.available">
+          @if (isAdmin()) {
+            <div class="toggle-container">
+              <label class="switch">
+                <input type="checkbox" 
+                       [checked]="pizza.available" 
+                       (change)="toggleAvailability(pizza)">
+                <span class="slider round"></span>
+              </label>
+            </div>
+          }
 
+          <h3 class="pizza-name">{{ pizza.namePizza }}</h3>
+          <p class="pizza-price">Prix : {{ pizza.pricePizza['normale'] | currency:'EUR' }}</p>
 
-        <!-- Toggle en haut à droite SÉPARÉ du titre -->
-        <div *ngIf="isAdmin" class="toggle-container">
-          <label class="switch">
-            <input type="checkbox" [checked]="pizza.available" (change)="toggleAvailability(pizza)">
-            <span class="slider round"></span>
-          </label>
-        </div>
+          <div class="pizza-image-wrapper">
+            @if (pizza.image) {
+              <img [src]="'data:image/jpeg;base64,' + pizza.image" [alt]="pizza.namePizza">
+            }
+          </div>
 
-        <!-- Titre CENTRÉ et jamais impacté par le toggle -->
-        <h3 class="pizza-name">{{ pizza.namePizza }}</h3>
+          <div class="btn-group">
+            @if (pizza.available) {
+              <button class="details-btn" (click)="goToPizza(pizza.namePizza)">Voir détails</button>
+            }
+            @if (isAdmin()) {
+              <button class="edit-btn" (click)="goToEditPizza(pizza.namePizza)">Modifier</button>
+            }
+          </div>
 
-        <p class="pizza-price">Prix : {{ pizza.pricePizza['normale'] | currency:'EUR' }}</p>
-
-        <div class="pizza-image-wrapper">
-          <img *ngIf="pizza.image" [src]="'data:image/jpeg;base64,' + pizza.image" alt="{{ pizza.namePizza }}">
-        </div>
-
-
-        <div class="btn-group" *ngIf="pizza.available">
-          <button class="details-btn" (click)="goToPizza(pizza.namePizza)">Voir détails</button>
-          <button *ngIf="isAdmin" class="edit-btn" (click)="goToEditPizza(pizza.namePizza)">Modifier</button>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- Carte Nouvelle Pizza (admin) -->
-    <div *ngIf="isAdmin" class="col-lg-4 col-md-6 col-sm-12 mb-4 d-flex justify-content-center">
-      <div class="pizza-card add-card" (click)="goToNewPizza()">
-        <div class="add-content">
-          <span class="plus">+</span>
-          <p>Nouvelle pizza</p>
         </div>
       </div>
-    </div>
+    } @empty {
+      @if (!isAdmin()) {
+        <div class="col-12 text-center">
+          <p>Aucune pizza disponible pour le moment. Veuillez revenir plus tard.</p>
+        </div>
+      }
+    }
+
+    @if (isAdmin()) {
+      <div class="col-lg-4 col-md-6 col-sm-12 mb-4 d-flex justify-content-center">
+        <div class="pizza-card add-card" (click)="goToNewPizza()">
+          <div class="add-content">
+            <span class="plus">+</span>
+            <p>Nouvelle pizza</p>
+          </div>
+        </div>
+      </div>
+    }
 
   </div>
-</div>
-
-<div *ngIf="!pizzas || pizzas.length === 0 && !isAdmin">
-  <p>Aucune pizza disponible pour le moment. Veuillez revenir plus tard.</p>
 </div>

@@ -5,3 +5,5 @@ export interface Basket {
   idCustomer: number;
   items: { [pizzaName: string]: AdaptedOrderLine };
 }
+
+export type BasketData = { [key: string]: AdaptedOrderLine[] };

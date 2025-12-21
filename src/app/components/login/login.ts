@@ -1,5 +1,4 @@
-import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, signal, WritableSignal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { Customer } from '../../models/customer.model';
@@ -8,36 +7,41 @@ import { AuthService } from '../../services/httpRequest/auth/auth-service';
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, FormsModule, RouterModule],
+  standalone: true,
+  imports: [FormsModule, RouterModule], // Plus besoin de CommonModule pour @if
   templateUrl: './login.html',
   styleUrls: ['./login.css']
 })
-export class LogingComponent {
-  email: string = '';
-  password: string = '';
-  submitted: boolean = false;
-  error: string = '';
+export class LoginComponent {
 
-  private authService = inject(AuthService);
-  private router = inject(Router);
+  public readonly email: WritableSignal<string> = signal('');
+  public readonly password: WritableSignal<string> = signal('');
+  public readonly submitted: WritableSignal<boolean> = signal(false);
+  public readonly error: WritableSignal<string> = signal('');
+
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+
   constructor() {
-
     // Redirection si déjà connecté
-    if (localStorage.getItem('authToken')) {
+    if(this.authService.isLoggedIn()) {
       this.router.navigate(['/home']);
     }
   }
 
   onSubmit() {
-    this.submitted = true;
-    this.error = '';
+    this.submitted.set(true);
+    this.error.set('');
 
-    if (!this.email || !this.password) {
-      this.error = 'Veuillez renseigner tous les champs';
+    const emailVal = this.email();
+    const passwordVal = this.password();
+
+    if (!emailVal || !passwordVal) {
+      this.error.set('Veuillez renseigner tous les champs');
       return;
     }
 
-    this.authService.login(this.email, this.password).subscribe({
+    this.authService.login(emailVal, passwordVal).subscribe({
       next: (customer: Customer) => {
         console.log('Connecté !', customer);
 
@@ -45,8 +49,8 @@ export class LogingComponent {
         this.router.navigate(['/home']);
       },
       error: (err) => {
-        err = formatErrorMessage(err);
-        this.error = err || 'Erreur lors de la connexion';
+        const message = formatErrorMessage(err);
+        this.error.set(message || 'Erreur lors de la connexion');
       }
     });
   }

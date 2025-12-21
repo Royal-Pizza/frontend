@@ -1,37 +1,59 @@
 <div class="ingredient-container">
-
   <h2>Gestion des ingrédients</h2>
 
-  <!-- Recherche -->
-  <input type="text" placeholder="Rechercher un ingrédient" [(ngModel)]="searchValue" 
-    (input)="onSearchChange()"/>
+  <div class="search-box">
+    <input 
+      type="text" 
+      placeholder="Rechercher un ingrédient..." 
+      [ngModel]="searchValue()" 
+      (ngModelChange)="searchValue.set($event)"
+      (input)="onSearchChange()"
+    />
+  </div>
 
-  <!-- Bouton ajout rapide si recherche ne retourne rien -->
-  <button
-    class="add-button"
-    *ngIf="ingredients.length === 0 && searchValue.length >= 1"
-    (click)="addIngredient(searchValue)">
-    ➕ Ajouter "{{ searchValue }}"
-  </button>
+  @if (hasNoResults()) {
+    <button
+      type="button"
+      class="add-button-quick"
+      (click)="addIngredient(searchValue())">
+      ➕ Ajouter "{{ searchValue() }}" à la base de données
+    </button>
+  }
 
-  <!-- Liste des ingrédients -->
-  <ul>
-    <li *ngFor="let ingredient of ingredients">
-      <input [(ngModel)]="ingredient.nameIngredient" />
-      <button (click)="updateIngredient(ingredient)">💾</button>
-      <button (click)="deleteIngredient(ingredient.idIngredient)">🗑️</button>
-    </li>
+  <ul class="ingredient-list">
+    @for (ingredient of ingredients(); track (ingredient.idIngredient || $index)) {
+      <li class="ingredient-item">
+        <input [(ngModel)]="ingredient.nameIngredient" class="edit-input" />
+        
+        <div class="actions">
+          <button (click)="updateIngredient(ingredient)" title="Enregistrer">💾</button>
+          <button (click)="deleteIngredient(ingredient.idIngredient)" title="Supprimer">🗑️</button>
+        </div>
+      </li>
+    } @empty {
+      @if (searchValue() === '') {
+        <li class="ingredient-item">Aucun ingrédient trouvé.</li>
+      }
+    }
   </ul>
 
   <hr />
 
-  <!-- Ajout manuel -->
-  <h3>Ajouter un nouvel ingrédient</h3>
-  <input
-    type="text"
-    placeholder="Nom de l'ingrédient"
-    [(ngModel)]="newIngredientName"
-  />
-  <button (click)="addIngredient()">Ajouter</button>
-
+  <div class="add-manual">
+    <h3>Ajouter un nouvel ingrédient</h3>
+    <div class="form-row">
+      <input
+        type="text"
+        placeholder="Nom de l'ingrédient"
+        [ngModel]="newIngredientName()"
+        (ngModelChange)="newIngredientName.set($event)"
+      />
+      <button 
+        type="button"
+        (click)="addIngredient()" 
+        [disabled]="!newIngredientName()">
+        Ajouter
+      </button>
+    </div>
+  </div>
 </div>
