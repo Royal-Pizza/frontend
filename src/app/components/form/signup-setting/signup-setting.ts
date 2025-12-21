@@ -7,9 +7,9 @@ import { finalize, map } from 'rxjs'; // Ajout de map
 import { BaseFormComponent } from '../baseForm.class';
 import { Customer, NewCustomer } from '../../../models/customer.model';
 import { formatErrorMessage } from '../../../utils/functions';
-import { AuthService } from '../../../services/httpRequest/auth-service';
 import { CustomerService } from '../../../services/httpRequest/customer-service';
 import { LoaderService } from '../../../services/tools/loader-service';
+import { AuthService } from '../../../services/httpRequest/auth-service';
 import { PopupService } from '../../../services/tools/popup';
 
 @Component({

@@ -12,8 +12,8 @@ import { PopupService } from '../../../services/tools/popup';
 import { OrderService } from '../../../services/httpRequest/order-service';
 import { IngredientService } from '../../../services/httpRequest/ingredient-service';
 import { PizzaService } from '../../../services/httpRequest/pizza-service';
-import { AuthService } from '../../../services/httpRequest/auth-service';
 import { toTitleCase, formatErrorMessage } from '../../../utils/functions';
+import { AuthService } from '../../../services/httpRequest/auth-service';
 
 @Component({
   selector: 'app-pizza-form',
