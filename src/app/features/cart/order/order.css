@@ -8,7 +8,7 @@
   background-color: #fff3e0; /* fond clair crème */
   padding: 20px;
   border-radius: 15px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   font-family: var(--main-font);
 }
 
@@ -32,7 +32,7 @@
 }
 
 .order-container li {
-  display: flex;  /* utilise flexbox pour aligner les éléments */
+  display: flex; /* utilise flexbox pour aligner les éléments */
   justify-content: space-between;
   align-items: center;
   padding: 12px 0; /* un peu plus d'espace vertical pour respirer */
@@ -44,7 +44,7 @@
    ========================================= */
 .order-container .line-details {
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
   align-items: flex-start;
 }
 
@@ -52,8 +52,8 @@
 .order-container .line-price {
   font-weight: bold;
   color: var(--main-orange);
-  margin-left: auto;   /* Pousse le prix vers la droite */
-  margin-right: 20px;  /* CORRECTION : Espace entre le prix et le bouton [-] */
+  margin-left: auto; /* Pousse le prix vers la droite */
+  margin-right: 20px; /* CORRECTION : Espace entre le prix et le bouton [-] */
 }
 
 /* =========================================
@@ -69,21 +69,23 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 35px;  /* Taille fixe pour un bouton bien carré/rond */
+  width: 35px; /* Taille fixe pour un bouton bien carré/rond */
   height: 35px;
   padding: 5px;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: opacity 0.2s, background-color 0.2s;
+  transition:
+    opacity 0.2s,
+    background-color 0.2s;
 }
 
-.line-actions button[color="warn"] {
+.line-actions button[color='warn'] {
   background-color: var(--main-red); /* Rouge d'origine */
 }
 
-.line-actions button[color="primary"] {
+.line-actions button[color='primary'] {
   background-color: #1976d2; /* Bleu d'origine */
 }
 
@@ -123,11 +125,11 @@
   font-weight: bold;
 }
 
-.order-container .button-section .button[color="clear"] {
+.order-container .button-section .button[color='clear'] {
   background-color: var(--main-yellow);
 }
 
-.order-container .button-section .button[color="order"] {
+.order-container .button-section .button[color='order'] {
   background-color: var(--main-red);
 }
 

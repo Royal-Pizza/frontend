@@ -9,9 +9,8 @@ import { appConfig } from './app/app.config';
 bootstrapApplication(App, {
   ...appConfig,
   providers: [
-    ...(appConfig.providers || []),          // garder les providers existants
-    importProvidersFrom(HttpClientModule),   // ← fournit HttpClient à tous les services root
-    provideRouter(routes)                     // ← configure le routing
-  ]
-})
-  .catch((err) => console.error(err));
+    ...(appConfig.providers || []), // garder les providers existants
+    importProvidersFrom(HttpClientModule), // ← fournit HttpClient à tous les services root
+    provideRouter(routes), // ← configure le routing
+  ],
+}).catch((err) => console.error(err));

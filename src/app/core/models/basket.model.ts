@@ -1,4 +1,4 @@
-import { AdaptedOrderLine } from "./orderLine.model";
+import { AdaptedOrderLine } from './orderLine.model';
 
 export interface Basket {
   token: string;

@@ -17,7 +17,7 @@ import { AuthService } from '../../../core/auth/auth-service';
   standalone: true,
   imports: [FormsModule],
   templateUrl: './ingredient.component.html',
-  styleUrls: ['./ingredient.component.css']
+  styleUrls: ['./ingredient.component.css'],
 })
 export class IngredientComponent implements OnInit {
   private readonly ingredientService = inject(IngredientService);
@@ -37,10 +37,7 @@ export class IngredientComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this.searchSubject.pipe(
-      debounceTime(400),
-      distinctUntilChanged()
-    ).subscribe(term => {
+    this.searchSubject.pipe(debounceTime(400), distinctUntilChanged()).subscribe((term) => {
       this.performSearch(term);
     });
 
@@ -49,11 +46,12 @@ export class IngredientComponent implements OnInit {
 
   loadAllIngredients(): void {
     this.loaderService.show();
-    this.ingredientService.getAll()
+    this.ingredientService
+      .getAll()
       .pipe(finalize(() => this.loaderService.hide()))
       .subscribe({
-        next: data => this.ingredients.set(data || []),
-        error: err => this.popupService.showMessage(formatErrorMessage(err))
+        next: (data) => this.ingredients.set(data || []),
+        error: (err) => this.popupService.showMessage(formatErrorMessage(err)),
       });
   }
 
@@ -70,16 +68,17 @@ export class IngredientComponent implements OnInit {
     }
 
     this.loaderService.show();
-    this.ingredientService.search(term)
+    this.ingredientService
+      .search(term)
       .pipe(finalize(() => this.loaderService.hide()))
       .subscribe({
-        next: data => {
+        next: (data) => {
           this.ingredients.set(data || []);
           if (!data || data.length === 0) {
             this.popupService.showMessage('Ingrédient introuvable, voulez-vous l’ajouter ?');
           }
         },
-        error: err => this.popupService.showMessage(formatErrorMessage(err))
+        error: (err) => this.popupService.showMessage(formatErrorMessage(err)),
       });
   }
 
@@ -87,14 +86,15 @@ export class IngredientComponent implements OnInit {
     const updatedName = toTitleCase(ingredient.nameIngredient);
     this.loaderService.show();
 
-    this.ingredientService.update({ ...ingredient, nameIngredient: updatedName })
+    this.ingredientService
+      .update({ ...ingredient, nameIngredient: updatedName })
       .pipe(finalize(() => this.loaderService.hide()))
       .subscribe({
         next: () => {
           this.popupService.showMessage('Mis à jour avec succès');
           this.loadAllIngredients();
         },
-        error: err => this.popupService.showMessage(formatErrorMessage(err))
+        error: (err) => this.popupService.showMessage(formatErrorMessage(err)),
       });
   }
 
@@ -102,14 +102,15 @@ export class IngredientComponent implements OnInit {
     if (!confirm('Supprimer ?')) return;
 
     this.loaderService.show();
-    this.ingredientService.delete(id)
+    this.ingredientService
+      .delete(id)
       .pipe(finalize(() => this.loaderService.hide()))
       .subscribe({
         next: () => {
-          this.ingredients.update(list => list.filter(i => i.idIngredient !== id));
+          this.ingredients.update((list) => list.filter((i) => i.idIngredient !== id));
           this.popupService.showMessage('Supprimé');
         },
-        error: err => this.popupService.showMessage(formatErrorMessage(err))
+        error: (err) => this.popupService.showMessage(formatErrorMessage(err)),
       });
   }
 
@@ -118,7 +119,8 @@ export class IngredientComponent implements OnInit {
     if (!name) return;
 
     this.loaderService.show();
-    this.ingredientService.add(name)
+    this.ingredientService
+      .add(name)
       .pipe(finalize(() => this.loaderService.hide()))
       .subscribe({
         next: (newIng) => {
@@ -126,13 +128,13 @@ export class IngredientComponent implements OnInit {
           if (!newIng || !newIng.idIngredient) {
             this.loadAllIngredients();
           } else {
-            this.ingredients.update(list => [...list, newIng]);
+            this.ingredients.update((list) => [...list, newIng]);
           }
           this.newIngredientName.set('');
           this.searchValue.set(''); // On vide aussi la recherche si on vient du bouton rapide
           this.popupService.showMessage('Ajouté');
         },
-        error: (err) => this.popupService.showMessage(formatErrorMessage(err))
+        error: (err) => this.popupService.showMessage(formatErrorMessage(err)),
       });
   }
 }

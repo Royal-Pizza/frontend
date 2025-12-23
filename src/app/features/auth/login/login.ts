@@ -10,10 +10,9 @@ import { AuthService } from '../../../core/auth/auth-service';
   standalone: true,
   imports: [FormsModule, RouterModule], // Plus besoin de CommonModule pour @if
   templateUrl: './login.html',
-  styleUrls: ['./login.css']
+  styleUrls: ['./login.css'],
 })
 export class LoginComponent {
-
   public readonly email: WritableSignal<string> = signal('');
   public readonly password: WritableSignal<string> = signal('');
   public readonly submitted: WritableSignal<boolean> = signal(false);
@@ -51,7 +50,7 @@ export class LoginComponent {
       error: (err) => {
         const message = formatErrorMessage(err);
         this.error.set(message || 'Erreur lors de la connexion');
-      }
+      },
     });
   }
 }

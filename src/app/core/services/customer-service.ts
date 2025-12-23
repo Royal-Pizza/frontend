@@ -6,7 +6,7 @@ import { Customer, NewCustomer } from '../models/customer.model';
 import { getHeaders, toTitleCase } from '../../shared/utils/functions';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CustomerService {
   private http = inject(HttpClient);
@@ -26,26 +26,30 @@ export class CustomerService {
   update(customer: Customer): Observable<any> {
     const formatted = this.formatCustomerData(customer);
     return this.http.post(`${this.baseUrl}/update`, formatted, {
-      headers: getHeaders()
+      headers: getHeaders(),
     });
   }
 
   changePassword(password: string): Observable<any> {
     return this.http.post(`${this.baseUrl}/updatePassword`, password, {
-      headers: getHeaders()
+      headers: getHeaders(),
     });
   }
 
   rechargeWallet(amount: number): Observable<any> {
     return this.http.post(`${this.baseUrl}/walletRecharge`, amount, {
-      headers: getHeaders()
+      headers: getHeaders(),
     });
   }
 
   delete(): Observable<any> {
-    return this.http.post(`${this.baseUrl}/deleteAccount`, {}, {
-      headers: getHeaders()
-    });
+    return this.http.post(
+      `${this.baseUrl}/deleteAccount`,
+      {},
+      {
+        headers: getHeaders(),
+      },
+    );
   }
 
   /**
@@ -56,7 +60,7 @@ export class CustomerService {
       ...data,
       firstName: toTitleCase(data.firstName.trim()),
       lastName: data.lastName.trim().toUpperCase(),
-      emailAddress: data.emailAddress.trim().toLowerCase()
+      emailAddress: data.emailAddress.trim().toLowerCase(),
     };
   }
 }

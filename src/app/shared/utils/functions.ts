@@ -1,24 +1,23 @@
-import { HttpHeaders } from "@angular/common/http";
-import { Invoice } from "../../core/models/invoice.model";
-import { AdaptedOrderLine, OrderLine } from "../../core/models/orderLine.model";
+import { HttpHeaders } from '@angular/common/http';
+import { Invoice } from '../../core/models/invoice.model';
+import { AdaptedOrderLine, OrderLine } from '../../core/models/orderLine.model';
 
 export function toTitleCase(str: string): string {
   return str
     .toLowerCase()
     .split(' ') // on sépare les mots par espaces
-    .map(word =>
-      word
-        .split('-') // on sépare les sous-mots par tirets
-        .map(sub => sub.charAt(0).toUpperCase() + sub.slice(1)) // capitalise chaque sous-mot
-        .join('-') // on remet les sous-mots ensemble avec le tiret
+    .map(
+      (word) =>
+        word
+          .split('-') // on sépare les sous-mots par tirets
+          .map((sub) => sub.charAt(0).toUpperCase() + sub.slice(1)) // capitalise chaque sous-mot
+          .join('-'), // on remet les sous-mots ensemble avec le tiret
     )
     .join(' ') // on remet les mots ensemble avec un espace
     .trim(); // on enlève les espaces superflus au début et à la fin
-
 }
 
 export function formatErrorMessage(err: any): string | any {
-
   let error;
   // Si le backend renvoie un vrai objet JSON
   if (err.error && typeof err.error === 'object') {
@@ -51,7 +50,7 @@ export function adaptFormatInvoice(invoice: Invoice): { [key: string]: [AdaptedO
     const adaptedOrderLine: AdaptedOrderLine = {
       nameSize: orderLine.nameSize,
       quantity: orderLine.quantity,
-      price: orderLine.price
+      price: orderLine.price,
     };
     if (!dico[orderLine.namePizza]) {
       dico[orderLine.namePizza] = [adaptedOrderLine];
@@ -65,6 +64,6 @@ export function adaptFormatInvoice(invoice: Invoice): { [key: string]: [AdaptedO
 export function getHeaders(): HttpHeaders {
   const token = localStorage.getItem('authToken') || '';
   return new HttpHeaders({
-    Authorization: `Bearer ${token}`
+    Authorization: `Bearer ${token}`,
   });
 }

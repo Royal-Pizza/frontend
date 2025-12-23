@@ -9,7 +9,7 @@ import { AuthService } from '../../core/auth/auth-service';
   standalone: true,
   templateUrl: './home.html',
   styleUrls: ['./home.css'],
-  imports: [] // Angular 20 : Plus besoin de CommonModule pour @if
+  imports: [], // Angular 20 : Plus besoin de CommonModule pour @if
 })
 export class HomeComponent {
   private readonly authService = inject(AuthService);

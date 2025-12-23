@@ -6,17 +6,19 @@
   padding-top: 55px; /* espace réservé pour le toggle */
   width: 380px;
   min-height: 360px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   align-items: center;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
   position: relative;
 }
 
 .pizza-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
 }
 
 /* Carte et contenu en mode indisponible */
@@ -30,7 +32,6 @@
   pointer-events: auto;
   opacity: 1;
 }
-
 
 /* ========== Toggle en haut à droite (complètement indépendant) ========== */
 .toggle-container {
@@ -64,7 +65,7 @@
 }
 
 .slider:before {
-  content: "";
+  content: '';
   position: absolute;
   height: 20px;
   width: 20px;
@@ -105,9 +106,9 @@ input:checked + .slider:before {
 /* ========== Image ========== */
 
 .pizza-image-wrapper {
-  width: 220px;      /* largeur du carré */
-  height: 220px;     /* hauteur du carré */
-  overflow: hidden;  /* cache ce qui dépasse */
+  width: 220px; /* largeur du carré */
+  height: 220px; /* hauteur du carré */
+  overflow: hidden; /* cache ce qui dépasse */
   border-radius: 12px;
   margin-bottom: 15px;
   display: flex;
@@ -121,7 +122,6 @@ input:checked + .slider:before {
   height: 100%;
   object-fit: cover; /* ajuste sans déformer */
 }
-
 
 /* ========== Boutons ========== */
 .btn-group {
@@ -142,11 +142,19 @@ input:checked + .slider:before {
   cursor: pointer;
 }
 
-.details-btn { background-color: #ff9800; }
-.details-btn:hover { background-color: #f57c00; }
+.details-btn {
+  background-color: #ff9800;
+}
+.details-btn:hover {
+  background-color: #f57c00;
+}
 
-.edit-btn { background-color: #1976d2; }
-.edit-btn:hover { background-color: #0d47a1; }
+.edit-btn {
+  background-color: #1976d2;
+}
+.edit-btn:hover {
+  background-color: #0d47a1;
+}
 
 /* ========== Carte "Nouvelle pizza" ========== */
 .add-card {
@@ -157,7 +165,7 @@ input:checked + .slider:before {
 
 .add-card:hover {
   border-color: #777;
-  background-color: rgba(255,255,255,0.3);
+  background-color: rgba(255, 255, 255, 0.3);
 }
 
 .add-content {

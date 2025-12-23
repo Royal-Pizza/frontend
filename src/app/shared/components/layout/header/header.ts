@@ -9,7 +9,7 @@ import { AuthService } from '../../../../core/auth/auth-service';
   standalone: true,
   imports: [RouterModule, MatBadgeModule],
   templateUrl: './header.html',
-  styleUrls: ['./header.css']
+  styleUrls: ['./header.css'],
 })
 export class HeaderComponent {
   private readonly router = inject(Router);
@@ -21,8 +21,8 @@ export class HeaderComponent {
   public readonly countItems = this.orderService.countItem;
 
   constructor() {
-
-    effect(() => { // Lorsque le statut de connexion change
+    effect(() => {
+      // Lorsque le statut de connexion change
       if (this.isLoggedIn()) {
         this.orderService.refreshBasketFromServer();
       } else {

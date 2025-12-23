@@ -15,7 +15,7 @@ import { AuthService } from '../../../core/auth/auth-service';
   standalone: true, // Toujours privilégier le standalone en Angular 18+
   imports: [CommonModule], // On garde CommonModule pour les PIPES (date, number)
   templateUrl: './invoices.html',
-  styleUrls: ['./invoices.css']
+  styleUrls: ['./invoices.css'],
 })
 export class InvoicesComponent implements OnInit {
   private readonly purchaseService = inject(PurchaseService);
@@ -32,10 +32,9 @@ export class InvoicesComponent implements OnInit {
   private loadInvoices(): void {
     this.loaderService.show();
 
-    this.purchaseService.getAllInvoicesByCustomer()
-      .pipe(
-        finalize(() => this.loaderService.hide())
-      )
+    this.purchaseService
+      .getAllInvoicesByCustomer()
+      .pipe(finalize(() => this.loaderService.hide()))
       .subscribe({
         next: (data) => {
           this.err.set('');
@@ -43,7 +42,7 @@ export class InvoicesComponent implements OnInit {
         },
         error: (error) => {
           this.err.set(formatErrorMessage(error));
-        }
+        },
       });
   }
 

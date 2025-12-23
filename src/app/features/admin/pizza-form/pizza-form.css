@@ -7,7 +7,7 @@
   margin: 40px auto;
   font-family: var(--main-font);
   text-align: left;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .pizza-form-container h2 {
@@ -27,9 +27,9 @@
   margin-bottom: 5px;
 }
 
-.form-group input[type="text"],
-.form-group input[type="number"],
-.form-group input[type="file"] {
+.form-group input[type='text'],
+.form-group input[type='number'],
+.form-group input[type='file'] {
   padding: 10px;
   border: 1px solid #000;
   border-radius: 6px;
@@ -75,8 +75,8 @@
   border: 2px solid #000;
 }
 
-button[type="submit"],
-button[type="button"] {
+button[type='submit'],
+button[type='button'] {
   width: 100%;
   padding: 12px;
   font-size: 1rem;
@@ -88,21 +88,21 @@ button[type="button"] {
   transition: 0.2s;
 }
 
-button[type="submit"] {
+button[type='submit'] {
   background-color: var(--main-red);
   color: #fff;
 }
 
-button[type="submit"]:hover {
+button[type='submit']:hover {
   background-color: #8b000c;
 }
 
-button[type="button"] {
+button[type='button'] {
   background-color: #333;
   color: #fff;
 }
 
-button[type="button"]:hover {
+button[type='button']:hover {
   background-color: #555;
 }
 

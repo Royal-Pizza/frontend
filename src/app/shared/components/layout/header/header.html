@@ -13,17 +13,18 @@
       }
 
       <a routerLink="/invoices" routerLinkActive="active">Mes Factures</a>
-      
-      <a routerLink="/basket" 
-         routerLinkActive="active"
-         [matBadge]="countItems() > 0 ? countItems() : null" 
-         matBadgeColor="warn">
-         Panier
+
+      <a
+        routerLink="/basket"
+        routerLinkActive="active"
+        [matBadge]="countItems() > 0 ? countItems() : null"
+        matBadgeColor="warn"
+      >
+        Panier
       </a>
 
       <a routerLink="/settings" routerLinkActive="active">Paramètres</a>
       <a (click)="logout()" class="logout-link">Déconnexion</a>
-
     } @else {
       <a routerLink="/login" routerLinkActive="active">Connexion</a>
       <a routerLink="/signup" routerLinkActive="active">Inscription</a>

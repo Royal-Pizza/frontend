@@ -5,7 +5,7 @@
   background-color: #fff5e6;
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .invoices-table {
@@ -27,7 +27,8 @@
   color: #000;
 }
 
-.invoices-table tr:nth-child(even) { /* nth-child even permet de colorer les lignes paires */ 
+.invoices-table tr:nth-child(even) {
+  /* nth-child even permet de colorer les lignes paires */
   background-color: #fff8e1;
 }
 
@@ -50,7 +51,8 @@
 
 /* Responsive pour petits écrans */
 @media (max-width: 600px) {
-  .invoices-table th, .invoices-table td {
+  .invoices-table th,
+  .invoices-table td {
     padding: 8px;
     font-size: 0.9rem;
   }

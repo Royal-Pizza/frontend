@@ -3,6 +3,7 @@
 **[EN](#english-section) | [FR](#french-section)**
 
 <a id="english-section"></a>
+
 ## English
 
 ### Overview
@@ -34,11 +35,13 @@ Angular modern frontend for the Royal Pizza pizza ordering platform. Features a 
 The Java/Spring backend and PostgreSQL database must be running. You also need to clone the **backend** repository for local development.
 
 **Clone the backend repository:**
+
 ```bash
 git clone https://github.com/Royal-Pizza/backend.git
 ```
 
 **Quick setup with Docker Compose:**
+
 ```bash
 git clone https://github.com/Royal-Pizza/docker.git
 cd docker
@@ -46,10 +49,12 @@ docker compose -f docker-compose.yml up --build
 ```
 
 This automatically launches:
+
 - PostgreSQL (port 5432)
 - Backend Spring Boot (port 8081)
 
 **Full documentation:**
+
 - [Docker Setup](https://github.com/Royal-Pizza/docker)
 - [Backend API](https://github.com/Royal-Pizza/backend)
 
@@ -74,11 +79,11 @@ ng version
 The project requires **Angular 20** with **Angular Material 20.2.x**. These are included as dependencies in `package.json` and will be automatically installed when you run `npm install`.
 
 **Key Dependencies:**
+
 - `@angular/core` - Angular framework
 - `@angular/material` - Material Design components
 - `@angular/cdk` - Component Development Kit (required by Material)
 - `rxjs` - Reactive extensions
-
 
 ---
 
@@ -102,6 +107,7 @@ npm install
 ```
 
 For a clean installation, use:
+
 ```bash
 npm ci
 ```
@@ -113,7 +119,7 @@ By default, the frontend connects to `http://localhost:8081/api-backend`. If you
 ```typescript
 export const environment = {
   production: false,
-  backendBaseUrl: 'http://localhost:8081/api-backend'
+  backendBaseUrl: 'http://localhost:8081/api-backend',
 };
 ```
 
@@ -154,6 +160,7 @@ Output is generated in the `dist/` folder.
 The database includes **3 test accounts**:
 
 ### 1️⃣ **Jean Dupont** (Administrator)
+
 - **Email:** `jean.dupont@gmail.com`
 - **Password:** `Jd9!Fq7@L2xR#M`
 - **Role:** ADMIN ✅
@@ -162,6 +169,7 @@ The database includes **3 test accounts**:
 **Access:** All features + catalog management
 
 ### 2️⃣ **Pierre Martin** (Client)
+
 - **Email:** `pierre.martin@gmail.com`
 - **Password:** `Pm4$Z8!kWQe6@T`
 - **Role:** USER
@@ -170,6 +178,7 @@ The database includes **3 test accounts**:
 **Note:** To become inactive, unsubscribe. To become active again, re-subscribe.
 
 ### 3️⃣ **Nicolas Bernard** (Client)
+
 - **Email:** `nicolas.bernard@gmail.com`
 - **Password:** `Nb7@C!5RkX9$H2`
 - **Role:** USER
@@ -260,24 +269,29 @@ By default, the frontend connects to `http://localhost:8081/api-backend`. See [I
 <a id="troubleshooting"></a>
 
 ### "Cannot find module @angular/core"
+
 ```bash
 npm install
 ```
 
 ### "Backend not responding (CORS error)"
+
 - Ensure backend is running on `http://localhost:8081`
 - Verify `environment.ts` → `backendBaseUrl` is correct
 
 ### "Invalid token"
+
 - Token expired → Re-login
 - Verify backend and frontend use the same `jwt.expiration` setting
 
 ### "Port 4200 already in use"
+
 ```bash
 ng serve --port 4201
 ```
 
 <a id="french-section"></a>
+
 ## Français
 
 ### Vue d'ensemble
@@ -309,11 +323,13 @@ Frontend Angular moderne pour la plateforme de commande de pizzas Royal Pizza. P
 Le backend Java/Spring et la base de données PostgreSQL doivent être en cours d'exécution. Vous devez également cloner le repository **backend** pour le développement local.
 
 **Cloner le repository backend :**
+
 ```bash
 git clone https://github.com/Royal-Pizza/backend.git
 ```
 
 **Installation rapide avec Docker Compose :**
+
 ```bash
 git clone https://github.com/Royal-Pizza/docker.git
 cd docker
@@ -321,10 +337,12 @@ docker compose -f docker-compose.yml up --build
 ```
 
 Cela lance automatiquement :
+
 - PostgreSQL (port 5432)
 - Backend Spring Boot (port 8081)
 
 **Documentation complète :**
+
 - [Configuration Docker](https://github.com/Royal-Pizza/docker)
 - [API Backend](https://github.com/Royal-Pizza/backend)
 
@@ -349,6 +367,7 @@ ng version
 Le projet nécessite **Angular 20** avec **Angular Material 20.2.x**. Ceux-ci sont inclus comme dépendances dans `package.json` et seront automatiquement installés lorsque vous exécutez `npm install`.
 
 **Dépendances clés :**
+
 - `@angular/core` - Framework Angular
 - `@angular/material` - Composants Material Design
 - `@angular/cdk` - Component Development Kit (requis par Material)
@@ -376,6 +395,7 @@ npm install
 ```
 
 Pour une installation propre, utilisez :
+
 ```bash
 npm ci
 ```
@@ -387,7 +407,7 @@ Par défaut, le frontend se connecte à `http://localhost:8081/api-backend`. Si 
 ```typescript
 export const environment = {
   production: false,
-  backendBaseUrl: 'http://localhost:8081/api-backend'
+  backendBaseUrl: 'http://localhost:8081/api-backend',
 };
 ```
 
@@ -428,6 +448,7 @@ Le résultat est généré dans le dossier `dist/`.
 La base de données contient **3 comptes de test** :
 
 ### 1️⃣ **Jean Dupont** (Administrateur)
+
 - **Email :** `jean.dupont@gmail.com`
 - **Mot de passe :** `Jd9!Fq7@L2xR#M`
 - **Rôle :** ADMIN ✅
@@ -436,6 +457,7 @@ La base de données contient **3 comptes de test** :
 **Accès :** Toutes les fonctionnalités + gestion du catalogue
 
 ### 2️⃣ **Pierre Martin** (Client)
+
 - **Email :** `pierre.martin@gmail.com`
 - **Mot de passe :** `Pm4$Z8!kWQe6@T`
 - **Rôle :** USER
@@ -444,6 +466,7 @@ La base de données contient **3 comptes de test** :
 **Note :** Pour devenir inactif, se désinscrire. Pour redevenir actif, se réinscrire.
 
 ### 3️⃣ **Nicolas Bernard** (Client)
+
 - **Email :** `nicolas.bernard@gmail.com`
 - **Mot de passe :** `Nb7@C!5RkX9$H2`
 - **Rôle :** USER
@@ -534,21 +557,23 @@ La configuration par défaut se connecte à `http://localhost:8081/api-backend`.
 <a id="troubleshooting-fr"></a>
 
 ### "Cannot find module @angular/core"
+
 ```bash
 npm install
 ```
 
 ### "Backend not responding (CORS error)"
+
 - Vérifiez que le backend s'exécute sur `http://localhost:8081`
 - Vérifiez `environment.ts` → `backendBaseUrl` est correct
 
 ### "Invalid token"
+
 - Token expiré → Se reconnecter
 - Vérifiez que le backend et le frontend utilisent le même paramètre `jwt.expiration`
 
 ### "Port 4200 already in use"
+
 ```bash
 ng serve --port 4201
 ```
-
-

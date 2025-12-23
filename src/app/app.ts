@@ -9,6 +9,6 @@ import { HeaderComponent } from './shared/components/layout/header/header';
   selector: 'app-root',
   imports: [RouterModule, HeaderComponent, FooterComponent, LoaderComponent, PopupComponent],
   templateUrl: './app.html',
-  styleUrls: ['./app.css']
+  styleUrls: ['./app.css'],
 })
-export class App { }
+export class App {}
