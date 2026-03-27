@@ -1,0 +1,6 @@
+.site-footer {
+  text-align: center;              /* centre le texte du footer */
+  padding: 1rem;                   /* espace interne */
+  background-color: #333;          /* fond gris sombre */
+  color: #fff;                     /* texte blanc */
+}

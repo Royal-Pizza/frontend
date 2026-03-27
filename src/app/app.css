@@ -1,0 +1,3 @@
+main {
+  min-height: calc(90.6vh - 120px); /* occupe tout l'espace entre header et footer */
+}

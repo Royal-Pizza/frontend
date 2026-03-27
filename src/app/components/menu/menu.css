@@ -1,0 +1,17 @@
+/* Liste des pizzas */
+.pizza-list {
+  display: flex;       /* affichage en ligne des cartes */
+  flex-wrap: wrap;     /* passe à la ligne si trop de cartes */
+  justify-content: center; /* centre horizontalement les cartes */
+}
+
+/* Carte individuelle pour chaque pizza */
+.pizza-card {
+  border: 1px solid #000000; /* bordure noire */
+  border-radius: 12px;    /* coins arrondis */
+  padding: 15px;          /* espace interne */
+  margin: 10px;           /* espace externe entre cartes */
+  width: 220px;           /* largeur fixe */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1); /* légère ombre */
+  background-color: #a1a1a1; /* fond gris clair */
+}
