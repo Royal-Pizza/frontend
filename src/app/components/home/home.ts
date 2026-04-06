@@ -1,8 +1,25 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { Customer } from '../../models/customer.model';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.html',
-  styleUrls: ['./home.css']
+  styleUrls: ['./home.css'],
+  standalone: true,
+  imports: [CommonModule]
 })
-export class HomeComponent {}
+export class HomeComponent implements OnInit {
+
+  customer: Customer | null = null;
+
+  constructor(private router: Router) {}
+
+  ngOnInit() {
+    const customerData = localStorage.getItem('customer');
+    if (customerData) {
+      this.customer = JSON.parse(customerData); // convertir JSON en objet
+    }
+  }
+}

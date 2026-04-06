@@ -1,0 +1,32 @@
+.password-wrapper {
+  position: relative;
+  flex: 1;           /* prend tout l’espace restant, comme les autres inputs */
+}
+
+.password-wrapper input {
+  width: 100%;
+  padding-right: 30px; /* laisse de la place pour l’œil */
+}
+
+
+.toggle-eye {
+  position: absolute;
+  right: 10px; /* collé à droite de l’input */
+  top: 50%;
+  transform: translateY(-50%); 
+  cursor: pointer;
+  user-select: none;
+  font-size: 18px;
+}
+
+.password-criteria small.valid {
+  color: green;
+}
+.password-criteria small.invalid {
+  color: red;
+}
+
+.register-btn{
+  margin-top: 5px;
+}
+

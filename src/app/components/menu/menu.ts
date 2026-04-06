@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { ApiService } from '../../services/api';
+import { ApiService } from '../../services/api/api';
 import { Pizza } from '../../models/pizza.model';
 import { HeaderComponent } from '../header/header';
 import { FooterComponent } from '../footer/footer';
@@ -26,7 +26,11 @@ export class MenuComponent implements OnInit {
   loadPizzas(): void {
     this.apiService.getPizzas().subscribe({
       next: (data: Pizza[]) => this.pizzas = data,
-      error: (err) => console.error('Erreur chargement pizzas', err)
+      
+      error: (err) => {
+        console.error('Erreur chargement pizzas', err)
+        
+      }
     });
   }
 }
