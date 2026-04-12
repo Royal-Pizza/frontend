@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DetailledPizza } from '../../models/pizza.model';
+import { Pizza } from '../../models/pizza.model';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../services/api/api';
 import { CommonModule } from '@angular/common';
@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./pizza-detail.css']
 })
 export class PizzaDetailComponent implements OnInit {
-  pizza?: DetailledPizza;
+  pizza?: Pizza;
 
   constructor(private route: ActivatedRoute, private apiService: ApiService) {
 
