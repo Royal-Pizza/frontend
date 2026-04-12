@@ -1,0 +1,31 @@
+<div *ngIf="pizza" class="pizza-detail-container">
+  <!-- Image à gauche -->
+  <div class="pizza-image">
+    <img [src]="'data:image/png;base64,' + pizza.image" alt="{{ pizza.namePizza }}">
+  </div>
+
+  <!-- Détails à droite -->
+  <div class="pizza-info">
+    <h2 class="pizza-title">{{ pizza.namePizza }}</h2>
+
+    <!-- Section Prix -->
+    <div class="pizza-prices">
+      <h3>Tailles et prix :</h3>
+      <ul class="price-list">
+        <li *ngFor="let key of pizza.pricePizza | keyvalue">
+          Taille {{ key.key }} : {{ key.value | currency:'EUR' }}
+        </li>
+      </ul>
+    </div>
+
+    <!-- Section Ingrédients -->
+    <div class="pizza-ingredients">
+      <h3>Ingrédients :</h3>
+      <p>{{ pizza.ingredients.join(', ') }}</p> <!-- ingrédients séparés par des virgules -->
+    </div>
+  </div>
+</div>
+
+<div *ngIf="!pizza" class="loading">
+  <p>Chargement des informations de la pizza...</p>
+</div>

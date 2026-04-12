@@ -4,3 +4,11 @@ export interface Pizza {
   pricePizza: number;
   image: any;
 }
+
+export interface DetailledPizza {
+  idPizza: number;
+  namePizza: string;
+  pricePizza: Map<string, number>;
+  ingredients: string[];
+  image: any;
+}

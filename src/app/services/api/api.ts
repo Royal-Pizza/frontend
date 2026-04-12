@@ -3,7 +3,7 @@ import { map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Pizza } from '../../models/pizza.model';
+import { DetailledPizza, Pizza } from '../../models/pizza.model';
 import { Customer, NewCustomer, LoginDTO } from '../../models/customer.model';
 import { toTitleCase } from '../../tools/functions';
 import { AuthService } from '../auth/auth';
@@ -21,6 +21,11 @@ export class ApiService {
   getPizzas(): Observable<Pizza[]> {
     return this.http.get<Pizza[]>(`${environment.backendBaseUrl}/pizzas`);
   }
+
+  getPizzaById(idPizza: any): Observable<DetailledPizza> {
+    return this.http.get<DetailledPizza>(`${environment.backendBaseUrl}/pizzas/${idPizza}`);
+  }
+
   createCustomer(customer: NewCustomer): Observable<Customer> {
     customer.firstName = toTitleCase(customer.firstName.trim());
     customer.lastName = customer.lastName.trim().toUpperCase();
