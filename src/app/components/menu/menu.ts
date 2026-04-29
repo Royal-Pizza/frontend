@@ -17,12 +17,14 @@ import { Router, RouterModule } from '@angular/router';
 export class MenuComponent implements OnInit {
 
   pizzas: Pizza[] = [];
+  isConnected: boolean = false;
 
   constructor(private router: Router, private apiService: ApiService) {
 
   }
 
   ngOnInit(): void {
+    this.isConnected = !!localStorage.getItem('customer');
     this.loadPizzas();
   }
 

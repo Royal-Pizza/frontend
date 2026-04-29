@@ -1,0 +1,119 @@
+/* =========================================
+   Conteneur principal du panier
+   ========================================= */
+.order-container {
+  width: 90%;
+  max-width: 800px;
+  margin: 30px auto;
+  background-color: #fff3e0; /* un fond clair pour contraster avec l'orange du main */
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  font-family: var(--main-font);
+}
+
+/* =========================================
+   Titre de chaque pizza
+   ========================================= */
+.order-container h3 {
+  color: var(--main-red);
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--main-red);
+  padding-bottom: 5px;
+}
+
+/* =========================================
+   Liste des tailles et prix
+   ========================================= */
+.order-container ul {
+  list-style-type: none; /* supprime les puces */
+  padding: 0;
+  margin: 0 0 20px 0;
+}
+
+.order-container li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+/* =========================================
+   Détails de chaque ligne
+   ========================================= */
+.order-container .line-details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* Prix et total alignés à droite */
+.order-container .line-price {
+  font-weight: bold;
+  color: var(--main-orange);
+}
+
+/* Boutons ajouter / retirer */
+.order-container button {
+  padding: 5px 10px;
+  background-color: var(--main-red);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.order-container button:hover {
+  background-color: #ff4d4d;
+}
+
+/* Total général du panier */
+.order-total {
+  font-size: 1.3rem;
+  font-weight: bold;
+  text-align: right;
+  color: var(--main-red);
+  margin-top: 15px;
+}
+
+
+.line-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+.line-actions button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  background-color: var(--main-red);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.line-actions button[color="warn"] {
+  background-color: #b1000f; /* rouge foncé */
+  color: white; 
+}
+
+.line-actions button[color="primary"] {
+  background-color: #1976d2; /* bleu */
+  color: white;
+}
+
+.line-actions button:hover {
+  opacity: 0.85;
+}
+
+.line-actions button:hover {
+  background-color: grey;
+}
+
+.line-actions svg {
+  font-size: 20px; /* taille des icônes */
+}
