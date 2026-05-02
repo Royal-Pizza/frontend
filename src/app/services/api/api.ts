@@ -7,6 +7,7 @@ import { Pizza } from '../../models/pizza.model';
 import { Customer, NewCustomer, LoginDTO } from '../../models/customer.model';
 import { toTitleCase } from '../../tools/functions';
 import { AuthService } from '../auth/auth';
+import { OrderLine } from '../../models/orderLine.model';
 
 @Injectable({
   providedIn: 'root'
@@ -34,17 +35,15 @@ export class ApiService {
   }
 
   loginCustomer(email: string, password: string): Observable<string> {
-    return this.http.post('http://localhost:8081/api-backend/customers/login',
+    return this.http.post(`${environment.backendBaseUrl}/customers/login`,
       { email: email.trim().toLowerCase(), password },
-      { responseType: 'text' }); // <- important !
+      { responseType: 'text' });
   }
 
-
-
   loginCustomerWithInfo(email: string, password: string): Observable<Customer> {
-    return this.loginCustomer(email, password).pipe( 
-      map(token => {           // token est déjà une string
-        const payload = JSON.parse(atob(token.split('.')[1]));
+    return this.loginCustomer(email, password).pipe(
+      map(token => {
+        const payload = JSON.parse(atob(token.split('.')[1])); // atob = decode base64 et split('.')[1] permet d'obtenir le payload
 
         const customer: Customer = {
           idCustomer: payload.id,
@@ -58,6 +57,20 @@ export class ApiService {
         return customer;
       })
     );
+  }
+
+  purchasePizza(dico: { [key: string]: OrderLine[] }): Observable<string> {
+    const token = localStorage.getItem('authToken');
+
+    const headers = {
+      'Authorization': `Bearer ${token}`
+    };
+
+    // Indique à Angular de traiter la réponse comme du texte brut
+    return this.http.post(`${environment.backendBaseUrl}/purchases/buy`, dico, {
+      headers,
+      responseType: 'text'
+    });
   }
 
 }

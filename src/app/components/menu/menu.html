@@ -1,4 +1,4 @@
-<div class="menu">
+<div *ngIf="pizzas && pizzas.length > 0" class="menu">
   <h2>Notre menu de pizzas</h2>
   <div class="pizza-list">
     <div *ngFor="let pizza of pizzas" class="pizza-card">
@@ -10,4 +10,7 @@
       </button>
     </div>
   </div>
+</div>
+<div *ngIf="!pizzas || pizzas.length === 0">
+  <p>Aucune pizza disponible pour le moment. Veuillez revenir plus tard.</p>
 </div>

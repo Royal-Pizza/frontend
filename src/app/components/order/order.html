@@ -1,4 +1,4 @@
-<div class="order-container">
+<div *ngIf="!isEmptyBasket()" class="order-container">
   <div *ngFor="let pizza of orders | keyvalue">
     <h3>{{ pizza.key }}</h3>
     <ul>
@@ -8,7 +8,7 @@
           <em>Quantité : {{ line.quantity }} x {{ line.price }}€</em>
         </div>
         <div class="line-price">
-          {{ line.quantity * line.price }}€
+          {{ roundPrice(line.quantity * line.price) }}€
         </div>
         <div class="line-actions">
           <button mat-flat-button color="warn" (click)="removeFromBasket(pizza.key, line.sizeName)">
@@ -24,4 +24,17 @@
   <div class="order-total">
     Total : {{ calculateTotal() }}€
   </div>
+  <div class="button-section">
+    <button class="button" color="clear" (click)="clearBasket()">Vider le panier</button>
+    <button class="button" color="order" (click)="sendOrder()">Passer la commande</button>
+  </div>
 </div>
+<div *ngIf="isEmptyBasket()">
+  <p>Votre panier est vide.</p>
+</div>
+
+<app-popup
+  [message]="popupMessage"
+  [visible]="popupVisible"
+  (closed)="popupVisible = false">
+</app-popup>

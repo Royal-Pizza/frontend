@@ -47,24 +47,6 @@ export class LogingComponent {
       error: (err) => {
         console.error('Erreur login :', err);
 
-        // Si le backend renvoie un vrai objet JSON
-        if (err.error && typeof err.error === 'object') {
-          this.error = err.error.message;
-        }
-        // Si le backend renvoie une chaîne JSON (ex: '{"message":"Mot de passe incorrect"}')
-        else if (typeof err.error === 'string') {
-
-          try {
-            const parsed = JSON.parse(err.error);
-            this.error = parsed.message || err.error;
-          } catch {
-            this.error = err.error;
-          }
-        }
-        // autre cas (erreur réseau, etc.)
-        else {
-          this.error = 'Erreur lors de la connexion';
-        }
       }
     });
   }
