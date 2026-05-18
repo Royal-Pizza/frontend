@@ -6,6 +6,7 @@ import { Pizza } from '../../models/pizza.model';
 import { HeaderComponent } from '../header/header';
 import { FooterComponent } from '../footer/footer';
 import { Router, RouterModule } from '@angular/router';
+import { formatErrorMessage } from '../../tools/functions';
 
 @Component({
   selector: 'app-menu',
@@ -34,7 +35,7 @@ export class MenuComponent implements OnInit {
         this.pizzas = data;
         console.log('Pizzas reçues :', this.pizzas);
       },
-      error: (err) => console.error('Erreur chargement pizzas', err)
+      error: (err) => console.error('Erreur chargement pizzas', formatErrorMessage(err))
     });
 
   }

@@ -6,6 +6,7 @@ import { takeUntil } from 'rxjs/operators';
 import { ApiService } from '../../services/api/api';
 import { Customer, NewCustomer } from '../../models/customer.model';
 import { Router, RouterModule } from '@angular/router';
+import { formatErrorMessage } from '../../tools/functions';
 
 
 @Component({
@@ -108,7 +109,7 @@ export class SignupComponent implements OnDestroy {
       error: (msg) => {
         this.successRegister = false; // Inscription échouée
         console.error('Erreur lors de l\'inscription : ', msg);
-        this.error = msg.error?.message || 'Erreur lors de l\'inscription';
+        this.error = formatErrorMessage(msg) || 'Erreur lors de l\'inscription';
       }
     });
     

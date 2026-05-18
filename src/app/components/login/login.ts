@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { ApiService } from '../../services/api/api';
 import { Customer } from '../../models/customer.model';
+import { formatErrorMessage } from '../../tools/functions';
 
 @Component({
   selector: 'app-login',
@@ -45,8 +46,8 @@ export class LogingComponent {
         this.router.navigate(['/home']);
       },
       error: (err) => {
-        console.error('Erreur login :', err);
-
+        err = formatErrorMessage(err);
+        this.error = err || 'Erreur lors de la connexion';
       }
     });
   }
