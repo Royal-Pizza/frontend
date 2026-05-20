@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { OrderService } from '../../services/order/order-service';
-import { OrderLine } from '../../models/orderLine.model';
+import { AdaptedOrderLine } from '../../models/orderLine.model';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { ApiService } from '../../services/api/api';
@@ -18,7 +18,7 @@ import { AuthService } from '../../services/auth/auth';
 })
 export class OrderComponent implements OnInit {
 
-  orders: { [key: string]: OrderLine[] } = {};
+  orders: { [key: string]: AdaptedOrderLine[] } = {};
   popupMessage: string = '';
   popupVisible: boolean = false;
 
