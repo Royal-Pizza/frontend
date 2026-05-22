@@ -1,0 +1,62 @@
+.invoices-container {
+  width: 90%;
+  max-width: 900px;
+  margin: 20px auto;
+  background-color: #fff5e6;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.invoices-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.invoices-table th,
+.invoices-table td {
+  border: 1px solid #e0e0e0;
+  padding: 12px;
+  text-align: center;
+  font-family: var(--main-font);
+}
+
+.invoices-table th {
+  background-color: var(--main-yellow);
+  color: #000;
+}
+
+.invoices-table tr:nth-child(even) { /* nth-child even permet de colorer les lignes paires */ 
+  background-color: #fff8e1;
+}
+
+.invoices-table tr:hover {
+  background-color: #ffe699;
+}
+
+.download-btn {
+  background-color: var(--main-orange);
+  color: white;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.download-btn:hover {
+  background-color: var(--main-red);
+}
+
+/* Responsive pour petits écrans */
+@media (max-width: 600px) {
+  .invoices-table th, .invoices-table td {
+    padding: 8px;
+    font-size: 0.9rem;
+  }
+
+  .download-btn {
+    padding: 4px 8px;
+    font-size: 0.85rem;
+  }
+}

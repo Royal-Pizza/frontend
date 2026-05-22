@@ -1,0 +1,28 @@
+<div class="invoices-container flex-center">
+  <h2>Mes Factures</h2>
+  
+  <table class="invoices-table">
+    <thead>
+      <tr>
+        <th>Numéro de facture</th>
+        <th>Date de commande</th>
+        <th>Montant total (€)</th>
+        <th>PDF</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let invoice of invoices">
+        <td>{{ invoice.idInvoice }}</td>
+        <td>{{ invoice.date | date:'dd/MM/yyyy' }} à {{ invoice.date | date:'HH:mm' }}</td> 
+        <td>{{ invoice.totalAmount | number:'1.2-2' }}</td>
+        <td>
+          <button class="btn download-btn" (click)="downloadPDF(invoice)">
+            Télécharger
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p *ngIf="invoices.length === 0">Aucune facture disponible.</p>
+</div>

@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Customer } from '../../models/customer.model';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth/auth';
+import { LOGO_URL } from '../../tools/constantes';
 
 @Component({
   selector: 'app-home',
@@ -12,20 +13,17 @@ import { AuthService } from '../../services/auth/auth';
   imports: [CommonModule]
 })
 export class HomeComponent implements OnInit {
-
   customer: Customer | null = null;
-  private authService: AuthService;
+  logoUrl = LOGO_URL;
 
-  constructor(private router: Router, authService: AuthService) {
-    this.authService = authService;
-  }
+  constructor(private router: Router, private authService: AuthService) {}
 
   ngOnInit() {
     this.authService.isLoggedIn$.subscribe(isLoggedIn => {
       if (isLoggedIn) {
         const customerData = localStorage.getItem('customer');
         if (customerData) {
-          this.customer = JSON.parse(customerData); // convertir JSON en objet
+          this.customer = JSON.parse(customerData);
         }
       } else {
         this.customer = null;
@@ -33,4 +31,5 @@ export class HomeComponent implements OnInit {
     });
   }
 }
+
   
