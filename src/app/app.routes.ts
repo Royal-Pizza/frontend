@@ -2,10 +2,12 @@ import { Routes } from '@angular/router';
 import { HomeComponent } from './components/home/home';
 import { MenuComponent } from './components/menu/menu';
 import { LogingComponent } from './components/login/login';
-import { SignupComponent } from './components/signup/signup';
+import { SignupAndSettingComponent } from './components/signup-setting/signup-setting';
 import { PizzaDetailComponent } from './components/pizza-detail/pizza-detail';
 import { OrderComponent } from './components/order/order';
 import { InvoicesComponent } from './components/invoices/invoices';
+import { UpdatePasswordComponent } from './components/update-password/update-password';
+import { WalletRechargeComponent } from './components/wallet-recharge/wallet-recharge';
 
 export const routes: Routes = [
   //{ path: '', component: HomeComponent }, // page d'accueil
@@ -13,7 +15,10 @@ export const routes: Routes = [
   { path: 'home', component: HomeComponent }, // page d'accueil
   { path: 'menu', component: MenuComponent },
   { path: 'login', component: LogingComponent },
-  { path: 'signup', component: SignupComponent },
+  { path: 'signup', component: SignupAndSettingComponent },
+  { path: 'settings', component: SignupAndSettingComponent },
+  { path: 'settings/changePassword', component: UpdatePasswordComponent },
+  { path: 'settings/walletRecharge', component: WalletRechargeComponent },
   { path: 'menu/:namePizza', component: PizzaDetailComponent }, // 👈 route pour le détail
   { path: 'basket', component: OrderComponent },
   { path: 'invoices', component: InvoicesComponent },

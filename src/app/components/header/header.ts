@@ -52,6 +52,5 @@ export class HeaderComponent implements OnInit {
       },
     });
     console.log('Déconnecté !');
-    this.router.navigate(['/home']);
   }
 }
