@@ -4,17 +4,19 @@ import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth/auth';
 import { ApiService } from '../../services/api/api';
 import { OrderService } from '../../services/order/order-service';
+import { MatBadgeModule } from '@angular/material/badge';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, MatBadgeModule],
   templateUrl: './header.html',
   styleUrls: ['./header.css']
 })
 export class HeaderComponent implements OnInit {
   isLoggedIn: boolean = false;
   isAdmin: boolean = false;
+  countItems: number = 0;
   private authService: AuthService;
   private apiService: ApiService;
   private orderService: OrderService;
@@ -34,6 +36,9 @@ export class HeaderComponent implements OnInit {
         const customerObj = JSON.parse(customer);
         this.isAdmin = customerObj.isAdmin;
       }
+    });
+    this.orderService.countItem$.subscribe(count => {
+      this.countItems = count;
     });
   }
 

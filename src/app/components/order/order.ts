@@ -8,6 +8,8 @@ import { formatErrorMessage } from '../../tools/functions';
 import { PopupComponent } from '../popup/popup';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth/auth';
+import { LoaderService } from '../../services/loaderService/loader-service';
+import { delay, finalize, pipe } from 'rxjs';
 
 @Component({
   selector: 'app-order',
@@ -22,7 +24,7 @@ export class OrderComponent implements OnInit {
   popupMessage: string = '';
   popupVisible: boolean = false;
 
-  constructor(private orderService: OrderService, private apiService: ApiService, private authService: AuthService, private router: Router) { }
+  constructor(private orderService: OrderService, private apiService: ApiService, private authService: AuthService, private loaderService: LoaderService, private router: Router) { }
 
   ngOnInit(): void {
     this.orders = this.orderService.getBasket();
@@ -61,38 +63,27 @@ export class OrderComponent implements OnInit {
     return Math.round(price * 100) / 100;
   }
 
-  sendOrder(): void {
-    this.apiService.purchasePizza(this.orders).subscribe({
-      next: (response) => {
-        console.log('Commande réussie :', response);
-        this.popupMessage = response.message || 'Commande réussie !';
-        localStorage.setItem('authToken', response.token);
-        this.clearBasket();
-      },
-      error: (error) => {
-        this.popupMessage = formatErrorMessage(error);
-        console.error('Erreur lors de la commande :', error);
-        console.log('Popup message set to:', this.popupMessage);
-        this.popupVisible = true;
-        if (this.popupMessage?.includes('Le token a expiré') || this.popupMessage?.includes('Token invalide ou corrompu')) {
-          // attente de 5 secondes avant de rediriger
-          setTimeout(() => {
-            this.apiService.logoutCustomer().subscribe({
-              next: () => {
-                console.log('Basket saved.');
-              },
-              error: (err) => {
-                console.error('Erreur lors du logout :', err);
-              },
-            });
-            console.log('Déconnecté !');
-            this.router.navigate(['/home']);
-          }, 5000);
+sendOrder(): void {
+  this.loaderService.show();
+
+    this.apiService.purchasePizza(this.orders)
+      .pipe(
+        delay(5000), // simule 5 secondes minimum
+        finalize(() => this.loaderService.hide())
+      )
+      .subscribe({
+        next: (response) => {
+          this.popupMessage = response.message || 'Commande réussie !';
+          localStorage.setItem('authToken', response.token);
+          this.clearBasket();
+          this.popupVisible = true;
+        },
+        error: (error) => {
+          this.popupMessage = formatErrorMessage(error);
+          this.popupVisible = true;
         }
-      }
+      });
+}
 
-    });
-    this.popupVisible = true;
 
-  }
 }
