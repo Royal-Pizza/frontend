@@ -85,6 +85,9 @@ export class ApiService {
   
   updateCustomer(customer: Customer): Observable<any> {
     const headers = ApiService.getHeaderWithAuthToken();
+    customer.lastName = customer.lastName.trim().toUpperCase();
+    customer.firstName = toTitleCase(customer.firstName.trim());
+    customer.emailAddress = customer.emailAddress.trim().toLowerCase();
     return this.http.post(`${environment.backendBaseUrl}/customers/update`, customer, { headers, responseType: 'json' });
   }
   changeCustomerPassword(password: string): Observable<any> {
