@@ -4,7 +4,9 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractContro
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ApiService } from '../../services/api/api';
+import { LoaderService } from '../../services/loaderService/loader-service';
 import { formatErrorMessage } from '../../tools/functions';
+import { delay, finalize, pipe } from 'rxjs';
 
 @Component({
   selector: 'app-wallet-recharge',
@@ -21,7 +23,7 @@ export class WalletRechargeComponent implements OnDestroy {
   message = '';
   private destroy$ = new Subject<void>();
 
-  constructor(private fb: FormBuilder, private apiService: ApiService) {
+  constructor(private fb: FormBuilder, private apiService: ApiService, private loaderService: LoaderService) {
     this.rechargeForm = this.fb.group({
       amount: ['', [Validators.required, this.minAmountValidator(9.99), this.twoDecimalsValidator]]
     });
@@ -64,7 +66,13 @@ export class WalletRechargeComponent implements OnDestroy {
 
     const amount = parseFloat(this.f['amount'].value);
 
-    this.apiService.rechargeWallet(amount).subscribe({
+    this.loaderService.show();
+    this.apiService.rechargeWallet(amount)
+    .pipe(
+      delay(5000), // simule 5 secondes minimum
+      finalize(() => this.loaderService.hide())
+    )
+    .subscribe({
       next: () => {
         this.success = true;
         this.message = `🎉 Portefeuille rechargé avec succès de ${amount.toFixed(2)} € !`;

@@ -76,13 +76,13 @@ sendOrder(): void {
           this.popupMessage = response.message || 'Commande réussie !';
           localStorage.setItem('authToken', response.token);
           this.clearBasket();
-          this.popupVisible = true;
         },
         error: (error) => {
           this.popupMessage = formatErrorMessage(error);
-          this.popupVisible = true;
         }
       });
+      this.popupVisible = true;
+
 }
 
 

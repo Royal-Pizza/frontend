@@ -24,5 +24,6 @@
     </tbody>
   </table>
 
-  <p *ngIf="invoices.length === 0">Aucune facture disponible.</p>
+  <p *ngIf="invoices.length === 0 && !err">Aucune facture disponible.</p>
+  <p *ngIf="err" class="error-message">{{ err }}</p>
 </div>

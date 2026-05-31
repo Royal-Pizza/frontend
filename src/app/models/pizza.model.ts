@@ -4,4 +4,5 @@ export interface Pizza {
   pricePizza: { [key: string]: number };
   ingredients: string[];
   image: any;
+  available: boolean;
 }
