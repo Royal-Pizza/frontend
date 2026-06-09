@@ -1,11 +1,11 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControlOptions, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
-import { Subject } from 'rxjs';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
 import { ApiService } from '../../services/api/api';
+import { RouterModule, Router } from '@angular/router';
+import { BaseFormComponent } from '../../classes/baseForm.class';
 import { Customer, NewCustomer } from '../../models/customer.model';
-import { Router, RouterModule } from '@angular/router';
 import { formatErrorMessage } from '../../tools/functions';
 
 @Component({
@@ -15,11 +15,8 @@ import { formatErrorMessage } from '../../tools/functions';
   templateUrl: './signup-setting.html',
   styleUrls: ['./signup-setting.css']
 })
-export class SignupAndSettingComponent implements OnDestroy {
+export class SignupAndSettingComponent extends BaseFormComponent {
 
-  signupForm: FormGroup;
-  submitted = false;
-  error = '';
   showPassword = false;
   showConfirmPassword = false;
   successRegister: boolean | null = null;
@@ -31,17 +28,14 @@ export class SignupAndSettingComponent implements OnDestroy {
   passwordHasLower = false;
   passwordHasSpecial = false;
 
-  private destroy$ = new Subject<void>();
-
   constructor(private fb: FormBuilder, private apiService: ApiService, private route: Router) {
+    super();
 
     this.customer = JSON.parse(localStorage.getItem('customer') || 'null');
 
-    const formOptions: AbstractControlOptions = {
-      validators: this.passwordMatchValidator
-    };
+    const formOptions = { validators: this.passwordMatchValidator };
 
-    this.signupForm = this.fb.group({
+    this.form = this.fb.group({
       prenom: ['', [Validators.required, Validators.minLength(2)]],
       name: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
@@ -49,30 +43,25 @@ export class SignupAndSettingComponent implements OnDestroy {
       confirmPassword: ['', [Validators.required]]
     }, formOptions);
 
-    // --- MODE MODIFICATION ---
+    // Mode modification
     if (this.customer) {
-      this.signupForm.patchValue({
+      this.form.patchValue({
         prenom: this.customer.firstName,
         name: this.customer.lastName,
         email: this.customer.emailAddress
       });
 
-      // suppression des validators mot de passe
-      this.signupForm.get('password')?.clearValidators();
-      this.signupForm.get('confirmPassword')?.clearValidators();
-
-      // supprimer le validator global mismatch
-      this.signupForm.setValidators(null);
-
-      this.signupForm.updateValueAndValidity();
+      this.form.get('password')?.clearValidators();
+      this.form.get('confirmPassword')?.clearValidators();
+      this.form.setValidators(null);
+      this.form.updateValueAndValidity();
     }
 
-    // suivi dynamique des critères
-    this.signupForm.get('password')?.valueChanges
+    // suivi dynamique mot de passe
+    this.form.get('password')?.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(value => {
         value = value || '';
-
         this.passwordLength = value.length >= 8;
         this.passwordHasUpper = /[A-Z]/.test(value);
         this.passwordHasLower = /[a-z]/.test(value);
@@ -80,15 +69,9 @@ export class SignupAndSettingComponent implements OnDestroy {
       });
   }
 
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
-  // mot de passe fort
+  // Validators
   passwordStrengthValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
-    const value: string = control.value || '';
-
+    const value = control.value || '';
     const hasUpper = /[A-Z]/.test(value);
     const hasLower = /[a-z]/.test(value);
     const hasSpecial = /[!@#$%^&.*]/.test(value);
@@ -97,31 +80,26 @@ export class SignupAndSettingComponent implements OnDestroy {
     return hasUpper && hasLower && hasSpecial && hasMinLength ? null : { weakPassword: true };
   };
 
-  // confirmation du mot de passe
   passwordMatchValidator: ValidatorFn = (form: AbstractControl): ValidationErrors | null => {
     const password = form.get('password')?.value;
     const confirmPassword = form.get('confirmPassword')?.value;
-
     return password === confirmPassword ? null : { mismatch: true };
   };
 
-  get f() {
-    return this.signupForm.controls;
-  }
 
   onSubmit() {
     this.submitted = true;
     this.error = '';
 
-    if (this.signupForm.invalid) return;
+    if (!this.form || this.form.invalid) return;
 
-    // --- CREATION ---
+    // Création
     if (!this.customer) {
       const newCustomer: NewCustomer = {
-        firstName: this.f['prenom'].value,
-        lastName: this.f['name'].value,
-        emailAddress: this.f['email'].value,
-        password: this.f['password'].value
+        firstName: this.form.get('prenom')?.value ?? '', 
+        lastName: this.form.get('name')?.value ?? '',
+        emailAddress: this.form.get('email')?.value ?? '',
+        password: this.form.get('password')?.value ?? ''
       };
 
       this.apiService.createCustomer(newCustomer).subscribe({
@@ -138,12 +116,12 @@ export class SignupAndSettingComponent implements OnDestroy {
       return;
     }
 
-    // --- MODIFICATION ---
+    // Modification
     const updatedCustomer: Customer = {
       idCustomer: this.customer.idCustomer,
-      firstName: this.f['prenom'].value,
-      lastName: this.f['name'].value,
-      emailAddress: this.f['email'].value,
+      firstName: this.form.get('prenom')?.value ?? '',
+      lastName: this.form.get('name')?.value ?? '',
+      emailAddress: this.form.get('email')?.value ?? '',
       isAdmin: this.customer.isAdmin,
       wallet: this.customer.wallet
     };
@@ -165,14 +143,10 @@ export class SignupAndSettingComponent implements OnDestroy {
   deleteAccount() {
     this.apiService.deleteCustomer().subscribe({
       next: () => {
-        console.log("compte supprimé avec succès")
+        console.log("Compte supprimé avec succès");
         this.apiService.logoutCustomer().subscribe({
-          next: () => {
-            console.log('Déconnexion réussi');
-          },
-          error: (err) => {
-            console.error('Erreur lors du logout :', err);
-          },
+          next: () => console.log('Déconnexion réussie'),
+          error: (err) => console.error('Erreur lors du logout :', err)
         });
       },
       error: (msg) => {
