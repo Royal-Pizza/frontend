@@ -143,6 +143,11 @@ export class ApiService {
     return this.http.get<Ingredient[]>(`${environment.backendBaseUrl}/ingredients`, { headers });
   }
 
+  getIngredientByPartialName(partialName: string): Observable<Ingredient[]> {
+    const headers = ApiService.getHeaderWithAuthToken();
+    return this.http.get<Ingredient[]>(`${environment.backendBaseUrl}/ingredients/${partialName}`, { headers });
+  }
+
   createIngredient(ingredientName: string): Observable<any> {
     const headers = ApiService.getHeaderWithAuthToken();
     return this.http.post(`${environment.backendBaseUrl}/ingredients/add`, ingredientName, { headers, responseType: 'json' });

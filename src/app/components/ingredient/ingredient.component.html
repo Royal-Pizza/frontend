@@ -1,0 +1,37 @@
+<div class="ingredient-container">
+
+  <h2>Gestion des ingrédients</h2>
+
+  <!-- Recherche -->
+  <input type="text" placeholder="Rechercher un ingrédient" [(ngModel)]="searchValue" 
+    (input)="onSearchChange()"/>
+
+  <!-- Bouton ajout rapide si recherche ne retourne rien -->
+  <button
+    class="add-button"
+    *ngIf="ingredients.length === 0 && searchValue.length >= 1"
+    (click)="addIngredient(searchValue)">
+    ➕ Ajouter "{{ searchValue }}"
+  </button>
+
+  <!-- Liste des ingrédients -->
+  <ul>
+    <li *ngFor="let ingredient of ingredients">
+      <input [(ngModel)]="ingredient.nameIngredient" />
+      <button (click)="updateIngredient(ingredient)">💾</button>
+      <button (click)="deleteIngredient(ingredient.idIngredient)">🗑️</button>
+    </li>
+  </ul>
+
+  <hr />
+
+  <!-- Ajout manuel -->
+  <h3>Ajouter un nouvel ingrédient</h3>
+  <input
+    type="text"
+    placeholder="Nom de l'ingrédient"
+    [(ngModel)]="newIngredientName"
+  />
+  <button (click)="addIngredient()">Ajouter</button>
+
+</div>
