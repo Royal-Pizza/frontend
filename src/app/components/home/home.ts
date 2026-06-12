@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Customer } from '../../models/customer.model';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../../services/auth/auth';
 import { LOGO_URL } from '../../tools/constantes';
+import { ApiService } from '../../services/api/api';
 
 @Component({
   selector: 'app-home',
@@ -16,10 +16,10 @@ export class HomeComponent implements OnInit {
   customer: Customer | null = null;
   logoUrl = LOGO_URL;
 
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(private router: Router, private apiService: ApiService) {}
 
   ngOnInit() {
-    this.authService.isLoggedIn$.subscribe(isLoggedIn => {
+    this.apiService.isLoggedIn$.subscribe(isLoggedIn => {
       if (isLoggedIn) {
         const customerData = localStorage.getItem('customer');
         if (customerData) {

@@ -2,15 +2,13 @@ import { Injectable } from '@angular/core';
 import { finalize, map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { NewPizza, Pizza, UpdatedPizza } from '../../models/pizza.model';
 import { Ingredient } from '../../models/ingredient.model';
 
 import { Customer, NewCustomer, LoginDTO } from '../../models/customer.model';
 import { toTitleCase } from '../../tools/functions';
-import { AuthService } from '../auth/auth';
 import { AdaptedOrderLine } from '../../models/orderLine.model';
-import { OrderService } from '../order/order-service';
 import { Invoice } from '../../models/invoice.model';
 import { Router } from '@angular/router';
 
@@ -19,9 +17,10 @@ import { Router } from '@angular/router';
 })
 export class ApiService {
 
-  private authService: AuthService;
-  constructor(private http: HttpClient, authService: AuthService, private router: Router) {
-    this.authService = authService;
+  private loggedIn = new BehaviorSubject<boolean>(!!localStorage.getItem('authToken')); // BehaviorSubject pour émettre l'état initial
+  isLoggedIn$ = this.loggedIn.asObservable();
+
+  constructor(private http: HttpClient, private router: Router) {
   }
 
   getPizzasAvailable(): Observable<Pizza[]> {
@@ -44,12 +43,15 @@ export class ApiService {
     return this.http.post<Customer>(`${environment.backendBaseUrl}/customers/register`, customer);
   }
 
-  logoutCustomer(): void {
-    const token = localStorage.getItem('authToken');
-
+  checkToken(): Observable<any> {
     const headers = ApiService.getHeaderWithAuthToken();
+    return this.http.get(`${environment.backendBaseUrl}/customers/checkToken`, { headers, responseType: 'json' });
+  }
 
-    this.authService.logout();
+  logoutCustomer(): void {    
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('customer');
+    this.loggedIn.next(false);
     this.router.navigate(['/home']);
   }
 
@@ -73,7 +75,9 @@ export class ApiService {
           wallet: payload.wallet,
           isAdmin: payload.isAdmin
         };
-        this.authService.login(dico.token, customer, dico.basket);
+        localStorage.setItem('authToken', dico.token);
+        localStorage.setItem('customer', JSON.stringify(customer));
+        this.loggedIn.next(true);
         return customer;
       })
     );
