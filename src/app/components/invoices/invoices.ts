@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Invoice } from '../../models/invoice.model';
-import { ApiService } from '../../services/api/api';
-import { LoaderService } from '../../services/loaderService/loader-service';
-import { formatErrorMessage } from '../../tools/functions';
+import { LoaderService } from '../../services/tools/loader/loader-service';
+import { formatErrorMessage } from '../../utils/functions';
 import { CommonModule } from '@angular/common';
 import { PdfInvoiceService } from '../../services/PdfInvoice/pdf-invoice-service';
 import { delay, finalize } from 'rxjs/operators';
+import { PurchaseService } from '../../services/httpRequest/purchase/purchase-service';
 
 @Component({
   selector: 'app-invoices',
@@ -19,7 +19,7 @@ export class InvoicesComponent implements OnInit {
   invoices: Invoice[] = [];
 
   constructor(
-    private apiService: ApiService,
+    private purchaseService: PurchaseService,
     private pdfInvoiceService: PdfInvoiceService,
     private router: Router,
     private loaderService: LoaderService
@@ -32,7 +32,8 @@ export class InvoicesComponent implements OnInit {
   ngOnInit(): void {
     this.loaderService.show();
 
-    this.apiService.getAllInvoicesByCustomer()
+    const idCustomer = JSON.parse(localStorage.getItem('customer') || '{}').idCustomer;
+    this.purchaseService.getAllInvoicesByCustomer()
       .pipe(
         finalize(() => this.loaderService.hide())
       )

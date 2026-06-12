@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { ApiService } from '../../services/api/api';
 import { Pizza, UpdatedPizza } from '../../models/pizza.model';
 import { Router, RouterModule } from '@angular/router';
-import { formatErrorMessage } from '../../tools/functions';
-import { LoaderService } from '../../services/loaderService/loader-service';
+import { formatErrorMessage } from '../../utils/functions';
+import { LoaderService } from '../../services/tools/loader/loader-service';
 import { pipe, finalize } from 'rxjs';
-import { PopupService } from '../../services/popup/popup';
+import { PopupService } from '../../services/tools/popup/popup';
 import { OrderService } from '../../services/order/order-service';
+import { PizzaService } from '../../services/httpRequest/pizza/pizza-service';
 
 @Component({
   selector: 'app-menu',
@@ -23,7 +23,7 @@ export class MenuComponent implements OnInit {
   isConnected: boolean = false;
   isAdmin: boolean = false;
 
-  constructor(private router: Router, private apiService: ApiService,
+  constructor(private router: Router, private pizzaService: PizzaService,
     private loaderService: LoaderService, private popupService: PopupService,
     private orderService: OrderService) {
 
@@ -47,7 +47,7 @@ export class MenuComponent implements OnInit {
   loadPizzas(): void {
     this.loaderService.show();
     if (this.isAdmin) {
-      this.apiService.getAllPizzas()
+      this.pizzaService.getAll()
         .pipe(
           finalize(() => this.loaderService.hide())
         )
@@ -65,7 +65,7 @@ export class MenuComponent implements OnInit {
         });
     }
     else {
-      this.apiService.getPizzasAvailable()
+      this.pizzaService.getAvailable()
         .pipe(
           finalize(() => this.loaderService.hide())
         )
@@ -104,7 +104,7 @@ export class MenuComponent implements OnInit {
       image: pizza.image,
       available: !pizza.available
     };
-    this.apiService.updatePizza(updatedPizza).subscribe({
+    this.pizzaService.update(updatedPizza).subscribe({
       next: () => {
         this.loadPizzas(); // Recharger la liste des pizzas après la mise à jour
         this.orderService.refreshBasketFromServer(); // Met à jour le panier

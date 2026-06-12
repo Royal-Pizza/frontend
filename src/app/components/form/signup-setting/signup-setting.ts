@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
-import { ApiService } from '../../services/api/api';
 import { RouterModule, Router } from '@angular/router';
-import { BaseFormComponent } from '../../classes/baseForm.class';
-import { Customer, NewCustomer } from '../../models/customer.model';
-import { formatErrorMessage } from '../../tools/functions';
+import { BaseFormComponent } from '../baseForm.class';
+import { Customer, NewCustomer } from '../../../models/customer.model';
+import { formatErrorMessage } from '../../../utils/functions';
+import { AuthService } from '../../../services/httpRequest/auth/auth-service';
+import { CustomerService } from '../../../services/httpRequest/customer/customer-service';
 
 @Component({
   selector: 'app-signup',
@@ -28,7 +29,9 @@ export class SignupAndSettingComponent extends BaseFormComponent {
   passwordHasLower = false;
   passwordHasSpecial = false;
 
-  constructor(private fb: FormBuilder, private apiService: ApiService, private route: Router) {
+  constructor(private fb: FormBuilder,
+    private authService: AuthService, private customerService: CustomerService,
+    private route: Router) {
     super();
 
     this.customer = JSON.parse(localStorage.getItem('customer') || 'null');
@@ -102,7 +105,7 @@ export class SignupAndSettingComponent extends BaseFormComponent {
         password: this.form.get('password')?.value ?? ''
       };
 
-      this.apiService.createCustomer(newCustomer).subscribe({
+      this.customerService.register(newCustomer).subscribe({
         next: (data: Customer) => {
           this.successRegister = true;
           console.log('Inscription réussie', data);
@@ -126,7 +129,7 @@ export class SignupAndSettingComponent extends BaseFormComponent {
       wallet: this.customer.wallet
     };
 
-    this.apiService.updateCustomer(updatedCustomer).subscribe({
+    this.customerService.update(updatedCustomer).subscribe({
       next: (response) => {
         this.successRegister = true;
         localStorage.setItem('authToken', response.token);
@@ -141,10 +144,10 @@ export class SignupAndSettingComponent extends BaseFormComponent {
   }
 
   deleteAccount() {
-    this.apiService.deleteCustomer().subscribe({
+    this.customerService.delete().subscribe({
       next: () => {
         console.log("Compte supprimé avec succès");
-        this.apiService.logoutCustomer();
+        this.authService.logout();
       },
       error: (msg) => {
         this.successRegister = false;

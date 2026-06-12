@@ -2,13 +2,13 @@ import { Routes } from '@angular/router';
 import { HomeComponent } from './components/home/home';
 import { MenuComponent } from './components/menu/menu';
 import { LogingComponent } from './components/login/login';
-import { SignupAndSettingComponent } from './components/signup-setting/signup-setting';
+import { SignupAndSettingComponent } from './components/form/signup-setting/signup-setting';
 import { PizzaDetailComponent } from './components/pizza-detail/pizza-detail';
 import { OrderComponent } from './components/order/order';
 import { InvoicesComponent } from './components/invoices/invoices';
-import { UpdatePasswordComponent } from './components/update-password/update-password';
-import { WalletRechargeComponent } from './components/wallet-recharge/wallet-recharge';
-import { PizzaFormComponent } from './components/pizza-form/pizza-form';
+import { UpdatePasswordComponent } from './components/form/update-password/update-password';
+import { WalletRechargeComponent } from './components/form/wallet-recharge/wallet-recharge';
+import { PizzaFormComponent } from './components/form/pizza-form/pizza-form';
 import { IngredientComponent } from './components/ingredient/ingredient.component';
 
 export const routes: Routes = [
