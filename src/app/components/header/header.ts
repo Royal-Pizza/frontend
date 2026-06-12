@@ -43,14 +43,7 @@ export class HeaderComponent implements OnInit {
   }
 
   logout() {
-    this.apiService.logoutCustomer().subscribe({
-      next: () => {
-        console.log('Basket saved.');
-      },
-      error: (err) => {
-        console.error('Erreur lors du logout :', err);
-      },
-    });
+    this.apiService.logoutCustomer();
     console.log('Déconnecté !');
   }
 }

@@ -10,6 +10,7 @@ import { LoaderService } from '../../services/loaderService/loader-service';
 import { finalize } from 'rxjs';
 import { toTitleCase, formatErrorMessage } from '../../tools/functions';
 import { PopupService } from '../../services/popup/popup';
+import { OrderService } from '../../services/order/order-service';
 
 @Component({
   selector: 'app-pizza-form',
@@ -33,6 +34,7 @@ export class PizzaFormComponent extends BaseFormComponent implements OnInit {
     private apiService: ApiService,
     private loader: LoaderService,
     private popupService: PopupService,
+    private orderService: OrderService,
     private router: Router
   ) {
     super();
@@ -215,6 +217,7 @@ export class PizzaFormComponent extends BaseFormComponent implements OnInit {
         next: (response) => {
           console.log('Pizza updated successfully', response);
           this.router.navigate(['/menu']);
+          this.orderService.refreshBasketFromServer(); // Met à jour le panier
         },
         error: (error) => {
           this.popupService.showMessage('Erreur !\n' + formatErrorMessage(error));

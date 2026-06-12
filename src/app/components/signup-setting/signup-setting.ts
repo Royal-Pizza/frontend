@@ -144,14 +144,11 @@ export class SignupAndSettingComponent extends BaseFormComponent {
     this.apiService.deleteCustomer().subscribe({
       next: () => {
         console.log("Compte supprimé avec succès");
-        this.apiService.logoutCustomer().subscribe({
-          next: () => console.log('Déconnexion réussie'),
-          error: (err) => console.error('Erreur lors du logout :', err)
-        });
+        this.apiService.logoutCustomer();
       },
       error: (msg) => {
         this.successRegister = false;
-        console.error('Erreur lors de la mise à jour : ', msg);
+        console.error('Erreur lors de la suppression : ', msg);
         this.error = formatErrorMessage(msg);
       }
     });
