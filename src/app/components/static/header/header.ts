@@ -23,19 +23,26 @@ export class HeaderComponent implements OnInit {
   }
 
   ngOnInit() {
-    // Vérifie l'état de connexion au chargement
     this.authService.isLoggedIn$.subscribe(isLoggedIn => {
       this.isLoggedIn = isLoggedIn;
-      const customer = localStorage.getItem('customer');
-      if (customer) {
-        const customerObj = JSON.parse(customer);
-        this.isAdmin = customerObj.isAdmin;
+
+      if (isLoggedIn) {
+        // nouvel utilisateur → recharger panier
+        this.orderService.refreshBasketFromServer();
+      } else {
+        // déconnexion → vider panier
+        this.orderService.clearBasket();
       }
+
+      const customer = localStorage.getItem('customer');
+      this.isAdmin = customer ? JSON.parse(customer).isAdmin : false;
     });
+
     this.orderService.countItem$.subscribe(count => {
       this.countItems = count;
     });
   }
+
 
   logout() {
     this.authService.logout();
