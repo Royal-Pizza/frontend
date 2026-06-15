@@ -130,41 +130,6 @@ ng build --configuration production
 
 Output is generated in the `dist/` folder.
 
-### Run Tests
-
-```bash
-ng test
-```
-
-Tests run in watch mode by default using Karma and Jasmine.
-
----
-
-## 🧪 Testing
-
-The project includes unit tests for components and services. Test files use the `.spec.ts` convention.
-
-**Running tests:**
-- All tests: `ng test`
-- Specific test file: `ng test --include='**/menu.spec.ts'`
-- Coverage report: `ng test --code-coverage`
-
-Test files are located alongside their source files:
-```
-src/
-├── app/
-│   ├── components/
-│   │   ├── menu/
-│   │   │   ├── menu.ts
-│   │   │   └── menu.spec.ts
-│   │   ├── login/
-│   │   │   ├── login.ts
-│   │   │   └── login.spec.ts
-│   │   └── ...
-│   └── services/
-│       └── ...
-```
-
 ---
 
 ## 👤 Test Users
@@ -440,41 +405,6 @@ ng build --configuration production
 ```
 
 Le résultat est généré dans le dossier `dist/`.
-
-### Lancer les Tests
-
-```bash
-ng test
-```
-
-Les tests s'exécutent en mode surveillance par défaut en utilisant Karma et Jasmine.
-
----
-
-## 🧪 Tests
-
-Le projet contient des tests unitaires pour les composants et les services. Les fichiers de test utilisent la convention `.spec.ts`.
-
-**Lancer les tests :**
-- Tous les tests : `ng test`
-- Un fichier de test spécifique : `ng test --include='**/menu.spec.ts'`
-- Rapport de couverture : `ng test --code-coverage`
-
-Les fichiers de test sont situés à côté de leurs fichiers source :
-```
-src/
-├── app/
-│   ├── components/
-│   │   ├── menu/
-│   │   │   ├── menu.ts
-│   │   │   └── menu.spec.ts
-│   │   ├── login/
-│   │   │   ├── login.ts
-│   │   │   └── login.spec.ts
-│   │   └── ...
-│   └── services/
-│       └── ...
-```
 
 ---
 
