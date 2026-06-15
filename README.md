@@ -33,6 +33,11 @@ Angular modern frontend for the Royal Pizza pizza ordering platform. Features a 
 
 The Java/Spring backend and PostgreSQL database must be running. You also need to clone the **backend** repository for local development.
 
+**Clone the backend repository:**
+```bash
+git clone https://github.com/Royal-Pizza/backend.git
+```
+
 **Quick setup with Docker Compose:**
 ```bash
 git clone https://github.com/Royal-Pizza/docker.git
@@ -304,6 +309,11 @@ Frontend Angular moderne pour la plateforme de commande de pizzas Royal Pizza. P
 ### Backend & Base de Données
 
 Le backend Java/Spring et la base de données PostgreSQL doivent être en cours d'exécution. Vous devez également cloner le repository **backend** pour le développement local.
+
+**Cloner le repository backend :**
+```bash
+git clone https://github.com/Royal-Pizza/backend.git
+```
 
 **Installation rapide avec Docker Compose :**
 ```bash
