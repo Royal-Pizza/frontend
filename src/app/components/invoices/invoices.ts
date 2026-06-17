@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Invoice } from '../../models/invoice.model';
 import { LoaderService } from '../../services/tools/loader/loader-service';
@@ -18,11 +18,11 @@ export class InvoicesComponent implements OnInit {
   err: string = '';
   invoices: Invoice[] = [];
 
+    private purchaseService = inject(PurchaseService);
+    private pdfInvoiceService = inject(PdfInvoiceService);
+    private router = inject(Router);
+    private loaderService = inject(LoaderService);
   constructor(
-    private purchaseService: PurchaseService,
-    private pdfInvoiceService: PdfInvoiceService,
-    private router: Router,
-    private loaderService: LoaderService
   ) {
     if (!localStorage.getItem('customer')) {
       this.router.navigate(['/home']);

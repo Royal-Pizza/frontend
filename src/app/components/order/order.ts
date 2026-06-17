@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
@@ -15,7 +15,6 @@ import { PurchaseService } from '../../services/httpRequest/purchase/purchase-se
 
 @Component({
   selector: 'app-order',
-  standalone: true,
   imports: [CommonModule, MatIconModule],
   templateUrl: './order.html',
   styleUrls: ['./order.css']
@@ -27,14 +26,12 @@ export class OrderComponent implements OnInit, OnDestroy {
 
   private basketSub?: Subscription;
 
-  constructor(
-    private orderService: OrderService,
-    private authService: AuthService,
-    private purchaseService: PurchaseService,
-    private loaderService: LoaderService,
-    private popupService: PopupService,
-    private router: Router
-  ) {}
+  private orderService = inject(OrderService);
+  private authService = inject(AuthService);
+  private purchaseService = inject(PurchaseService);
+  private loaderService = inject(LoaderService);
+  private popupService = inject(PopupService);
+  private router = inject(Router);
 
   ngOnInit(): void {
     const customerRaw = localStorage.getItem('customer');
@@ -57,13 +54,13 @@ export class OrderComponent implements OnInit, OnDestroy {
           //
         })
       )
-    .subscribe({
-      error: (err) => {
-        this.popupService.showMessage(formatErrorMessage(err));
-        this.authService.logout();
-        this.router.navigate(['/login']);
-      }
-    });
+      .subscribe({
+        error: (err) => {
+          this.popupService.showMessage(formatErrorMessage(err));
+          this.authService.logout();
+          this.router.navigate(['/login']);
+        }
+      });
     this.customer = JSON.parse(customerRaw);
 
     this.basketSub = this.orderService.basket$.subscribe(basket => {

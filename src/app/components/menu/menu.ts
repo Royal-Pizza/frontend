@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { Pizza, UpdatedPizza } from '../../models/pizza.model';
@@ -12,7 +12,6 @@ import { PizzaService } from '../../services/httpRequest/pizza/pizza-service';
 
 @Component({
   selector: 'app-menu',
-  standalone: true,
   imports: [CommonModule, RouterModule, HttpClientModule],
   templateUrl: './menu.html',
   styleUrls: ['./menu.css']
@@ -23,12 +22,12 @@ export class MenuComponent implements OnInit {
   isConnected: boolean = false;
   isAdmin: boolean = false;
 
-  constructor(private router: Router, private pizzaService: PizzaService,
-    private loaderService: LoaderService, private popupService: PopupService,
-    private orderService: OrderService) {
-
-  }
-
+  private router = inject(Router);
+  private pizzaService = inject(PizzaService);
+  private loaderService = inject(LoaderService);
+  private popupService = inject(PopupService);
+  private orderService = inject(OrderService);
+  
   ngOnInit(): void {
     const customerJson = localStorage.getItem('customer');
 

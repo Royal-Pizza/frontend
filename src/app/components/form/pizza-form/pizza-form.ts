@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -15,7 +15,6 @@ import { PizzaService } from '../../../services/httpRequest/pizza/pizza-service'
 
 @Component({
   selector: 'app-pizza-form',
-  standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './pizza-form.html',
   styleUrls: ['./pizza-form.css']
@@ -29,16 +28,16 @@ export class PizzaFormComponent extends BaseFormComponent implements OnInit {
   ingredientsDisplay = 'Cliquer pour sélectionner les ingrédients';
   dropdownOpen = false;
 
-  constructor(
-    private route: ActivatedRoute,
-    private fb: FormBuilder,
-    private pizzaService: PizzaService,
-    private ingredientService: IngredientService,
-    private loader: LoaderService,
-    private popupService: PopupService,
-    private orderService: OrderService,
-    private router: Router
-  ) {
+  private route = inject(ActivatedRoute);
+  private fb = inject(FormBuilder);
+  private pizzaService = inject(PizzaService);
+  private ingredientService = inject(IngredientService);
+  private loader = inject(LoaderService);
+  private popupService = inject(PopupService);
+  private orderService = inject(OrderService);
+  private router = inject(Router);
+
+  constructor() {
     super();
 
     this.form = this.fb.group({

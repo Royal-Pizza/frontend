@@ -1,5 +1,5 @@
 // src/app/components/wallet-recharge/wallet-recharge.ts
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
@@ -11,7 +11,6 @@ import { CustomerService } from '../../../services/httpRequest/customer/customer
 
 @Component({
   selector: 'app-wallet-recharge',
-  standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './wallet-recharge.html',
   styleUrls: ['./wallet-recharge.css']
@@ -19,8 +18,12 @@ import { CustomerService } from '../../../services/httpRequest/customer/customer
 export class WalletRechargeComponent extends BaseFormComponent {
   message = '';
 
-  constructor(private fb: FormBuilder, private customerService: CustomerService, 
-    private router: Router, private loaderService: LoaderService) {
+  private fb = inject(FormBuilder);
+  private customerService = inject(CustomerService);
+  private router = inject(Router);
+  private loaderService = inject(LoaderService);
+
+  constructor() {
     super();
     if (!localStorage.getItem('customer')) {
       this.router.navigate(['/login']);

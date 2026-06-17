@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, EventEmitter, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { PopupService } from '../../../services/tools/popup/popup';
@@ -6,7 +6,6 @@ import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-popup',
-  standalone: true,
   imports: [CommonModule, MatIconModule],
   templateUrl: './popup.html',
   styleUrls: ['./popup.css']
@@ -17,7 +16,7 @@ export class PopupComponent implements OnInit, OnDestroy {
   closed = new EventEmitter<void>();
   private destroy$ = new Subject<void>();
 
-  constructor(private popupService: PopupService) {}
+  private popupService = inject(PopupService);
 
   ngOnInit(): void {
     this.popupService.msgSubject$

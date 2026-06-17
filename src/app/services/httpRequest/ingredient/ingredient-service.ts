@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { Ingredient } from '../../../models/ingredient.model';
@@ -9,7 +9,8 @@ import { getHeaders } from '../../../utils/functions';
   providedIn: 'root'
 })
 export class IngredientService {
-  constructor(private http: HttpClient) {}
+  
+  private http = inject(HttpClient);
 
   getAll(): Observable<Ingredient[]> {
     return this.http.get<Ingredient[]>(`${environment.backendBaseUrl}/ingredients`, 
