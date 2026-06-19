@@ -5,7 +5,7 @@ import { environment } from '../../../environments/environment';
 import { AdaptedOrderLine } from '../../models/orderLine.model';
 import { Invoice } from '../../models/invoice.model';
 import { getHeaders } from '../../utils/functions';
-import { AuthService } from '../auth/auth-service'; // Importe ton nouveau AuthService
+import { AuthService } from './auth-service'; // Importe ton nouveau AuthService
 
 @Injectable({
   providedIn: 'root'

@@ -6,8 +6,8 @@ import { of } from 'rxjs';
 
 import { BaseFormComponent } from '../baseForm.class';
 import { CustomerService } from '../../../services/httpRequest/customer-service';
-import { AuthService } from '../../../services/httpRequest/auth-service';
 import { formatErrorMessage } from '../../../utils/functions';
+import { AuthService } from '../../../services/httpRequest/auth-service';
 
 @Component({
   selector: 'app-update-password',
