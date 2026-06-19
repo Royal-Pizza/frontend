@@ -2,9 +2,9 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal, computed, WritableSignal, Signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { map, Observable, tap } from 'rxjs';
-import { Customer } from '../../../models/customer.model';
-import { environment } from '../../../../environments/environment';
-import { getHeaders } from '../../../utils/functions';
+import { Customer } from '../../models/customer.model';
+import { environment } from '../../../environments/environment';
+import { getHeaders } from '../../utils/functions';
 
 @Injectable({
   providedIn: 'root'

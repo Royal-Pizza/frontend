@@ -5,8 +5,8 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { of } from 'rxjs';
 
 import { BaseFormComponent } from '../baseForm.class';
-import { CustomerService } from '../../../services/httpRequest/customer/customer-service';
-import { AuthService } from '../../../services/httpRequest/auth/auth-service';
+import { CustomerService } from '../../../services/httpRequest/customer-service';
+import { AuthService } from '../../../services/httpRequest/auth-service';
 import { formatErrorMessage } from '../../../utils/functions';
 
 @Component({

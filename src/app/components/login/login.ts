@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { Customer } from '../../models/customer.model';
 import { formatErrorMessage } from '../../utils/functions';
-import { AuthService } from '../../services/httpRequest/auth/auth-service';
+import { AuthService } from '../../services/httpRequest/auth-service';
 
 @Component({
   selector: 'app-login',
@@ -24,7 +24,7 @@ export class LoginComponent {
 
   constructor() {
     // Redirection si déjà connecté
-    if(this.authService.isLoggedIn()) {
+    if (this.authService.isLoggedIn()) {
       this.router.navigate(['/home']);
     }
   }

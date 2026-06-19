@@ -4,10 +4,10 @@ import { Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 
 import { Invoice } from '../../models/invoice.model';
-import { LoaderService } from '../../services/tools/loader/loader-service';
-import { PurchaseService } from '../../services/httpRequest/purchase/purchase-service';
-import { PdfInvoiceService } from '../../services/PdfInvoice/pdf-invoice-service';
-import { AuthService } from '../../services/httpRequest/auth/auth-service';
+import { LoaderService } from '../../services/tools/loader-service';
+import { PurchaseService } from '../../services/httpRequest/purchase-service';
+import { PdfInvoiceService } from '../../services/httpRequest/pdf-invoice-service';
+import { AuthService } from '../../services/httpRequest/auth-service';
 import { formatErrorMessage } from '../../utils/functions';
 
 @Component({
@@ -39,7 +39,7 @@ export class InvoicesComponent implements OnInit {
 
   private loadInvoices(): void {
     this.loaderService.show();
-    
+
     this.purchaseService.getAllInvoicesByCustomer()
       .pipe(
         finalize(() => this.loaderService.hide())
