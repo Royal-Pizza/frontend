@@ -1,36 +1,23 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, Signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { Customer } from '../../models/customer.model';
-import { CommonModule } from '@angular/common';
 import { LOGO_URL } from '../../utils/constantes';
 import { AuthService } from '../../services/httpRequest/auth/auth-service';
+import { Customer } from '../../models/customer.model';
 
 @Component({
   selector: 'app-home',
+  standalone: true,
   templateUrl: './home.html',
   styleUrls: ['./home.css'],
-  imports: [CommonModule]
+  imports: [] // Angular 20 : Plus besoin de CommonModule pour @if
 })
-export class HomeComponent implements OnInit {
-  customer: Customer | null = null;
-  logoUrl = LOGO_URL;
+export class HomeComponent {
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
 
-  private router = inject(Router);
-  private authService = inject(AuthService);
-  constructor() {}
+  // Signaux en lecture seule provenant du service
+  public readonly customer: Signal<Customer | null> = this.authService.currentUser;
+  public readonly isLoggedIn: Signal<boolean> = this.authService.isLoggedIn;
 
-  ngOnInit() {
-    this.authService.isLoggedIn$.subscribe(isLoggedIn => {
-      if (isLoggedIn) {
-        const customerData = localStorage.getItem('customer');
-        if (customerData) {
-          this.customer = JSON.parse(customerData);
-        }
-      } else {
-        this.customer = null;
-      }
-    });
-  }
+  public readonly logoUrl: string = LOGO_URL;
 }
-
-  

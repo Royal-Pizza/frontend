@@ -5,7 +5,7 @@
   width: 90%; /* largeur adaptative */
   max-width: 800px; /* largeur maximale pour les grands écrans */
   margin: 30px auto; /* 30px de marge en haut et en bas, centré horizontalement */
-  background-color: #fff3e0; /* un fond clair pour contraster avec l'orange du main */
+  background-color: #fff3e0; /* fond clair crème */
   padding: 20px;
   border-radius: 15px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
@@ -35,119 +35,119 @@
   display: flex;  /* utilise flexbox pour aligner les éléments */
   justify-content: space-between;
   align-items: center;
-  padding: 8px 0;
+  padding: 12px 0; /* un peu plus d'espace vertical pour respirer */
   border-bottom: 1px solid #f0f0f0;
 }
 
 /* =========================================
-   Détails de chaque ligne
+   Détails de chaque ligne (Taille / Quantité)
    ========================================= */
 .order-container .line-details {
-  display: flex;  /* utilise flexbox pour aligner les éléments */
-  flex-direction: column; /* empile les éléments verticalement */
-  align-items: flex-start; /* aligne à gauche */
+  display: flex;
+  flex-direction: column; 
+  align-items: flex-start;
 }
 
-/* Prix et total alignés à droite */
+/* Prix et total alignés à droite avec ESPACE avant les boutons */
 .order-container .line-price {
   font-weight: bold;
   color: var(--main-orange);
+  margin-left: auto;   /* Pousse le prix vers la droite */
+  margin-right: 20px;  /* CORRECTION : Espace entre le prix et le bouton [-] */
 }
 
-/* Boutons ajouter / retirer */
-.order-container button {
-  padding: 5px 10px;
-  background-color: var(--main-red);
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.order-container button:hover {
-  background-color: #ff4d4d;
-}
-
-.order-container .button-section {
-  display: flex;
-  flex-direction: row;
-  margin-top: 15px;
-}
-
-
-
-.order-container .button-section .button {
-  flex: 1; /*1 partage égal de l'espace*/
-  margin-top: 10px;
-  margin-right: 10px;
-  padding: 5px;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 0.9rem;
-}
-
-.order-container .button-section .button[color="clear"] {
-  background-color: var(--main-yellow);
-}
-.order-container .button-section .button[color="order"] {
-  background-color: var(--main-red);
-}
-
-/* Total général du panier */
-.order-total {
-  font-size: 1.3rem;
-  font-weight: bold;
-  text-align: right;
-  color: var(--main-red);
-  margin-top: 15px;
-}
-
-
+/* =========================================
+   Zone des boutons d'action (+ / -)
+   ========================================= */
 .line-actions {
   display: flex;
-  gap: 10px;
-  margin-top: 5px;
+  gap: 12px; /* Espace entre le bouton - et le bouton + */
+  align-items: center;
 }
 
 .line-actions button {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 35px;  /* Taille fixe pour un bouton bien carré/rond */
+  height: 35px;
   padding: 5px;
-  background-color: var(--main-red);
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  transition: opacity 0.2s, background-color 0.2s;
 }
 
 .line-actions button[color="warn"] {
-  background-color: var(--main-red); /* rouge foncé */
-  color: white; 
+  background-color: var(--main-red); /* Rouge d'origine */
 }
 
 .line-actions button[color="primary"] {
-  background-color: #1976d2; /* bleu */
-  color: white;
+  background-color: #1976d2; /* Bleu d'origine */
 }
 
 .line-actions button:hover {
   opacity: 0.85;
 }
 
-.line-actions button:hover {
-  background-color: grey;
+/* =========================================
+   Total général du panier
+   ========================================= */
+.order-total {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: right;
+  color: var(--main-red);
+  margin-top: 15px;
 }
 
-.line-actions svg {
-  font-size: 20px; /* taille des icônes */
+/* =========================================
+   Section des boutons du bas (Vider / Passer)
+   ========================================= */
+.order-container .button-section {
+  display: flex;
+  flex-direction: row;
+  gap: 15px; /* Espace entre les deux gros boutons */
+  margin-top: 25px;
 }
 
+.order-container .button-section .button {
+  flex: 1; /* Partage égal de l'espace */
+  padding: 12px;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.order-container .button-section .button[color="clear"] {
+  background-color: var(--main-yellow);
+}
+
+.order-container .button-section .button[color="order"] {
+  background-color: var(--main-red);
+}
+
+.order-container .button-section .button:hover {
+  filter: brightness(1.1);
+}
+
+/* Budget Client */
 .customer-budget {
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   font-weight: bold;
   color: var(--main-orange);
-  margin-bottom: 15px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Message Panier Vide */
+.empty-basket-message {
+  text-align: center;
+  padding: 50px;
+  font-size: 1.2rem;
+  color: #888;
 }

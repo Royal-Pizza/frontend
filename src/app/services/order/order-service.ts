@@ -1,44 +1,41 @@
-import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject, finalize } from 'rxjs';
-import { AdaptedOrderLine } from '../../models/orderLine.model';
+import { inject, Injectable, signal, computed, Signal, WritableSignal } from '@angular/core';
+import { finalize } from 'rxjs';
 import { LoaderService } from '../tools/loader/loader-service';
 import { BasketService } from '../httpRequest/basket/basket-service';
+import { BasketData } from '../../models/basket.model';
+
 @Injectable({
   providedIn: 'root'
 })
 export class OrderService {
+  private readonly basketService = inject(BasketService);
+  private readonly loaderService = inject(LoaderService);
 
-  /* State réactif du panier */
-  private basketSubject = new BehaviorSubject<{ [key: string]: AdaptedOrderLine[] }>(
-    this.getBasket()
-  );
-  basket$ = this.basketSubject.asObservable();
+  private _basket: WritableSignal<BasketData> = signal(this.getBasketFromStorage());
+  public readonly basket: Signal<BasketData> = this._basket.asReadonly();
 
-  /* Nombre total d’items */
-  private countItemSubject = new BehaviorSubject<number>(this.getTotalItemCount());
-  countItem$ = this.countItemSubject.asObservable();
-
-  private basketService = inject(BasketService);
-  private loaderService = inject(LoaderService);
-
-  /* ---------- Utils ---------- */
-
-  private getTotalItemCount(): number {
-    const basket = this.getBasket();
+  public readonly countItem: Signal<number> = computed(() => {
+    const currentBasket = this._basket();
     let total = 0;
-
-    for (const pizzaName in basket) {
-      total += basket[pizzaName].reduce(
-        (sum, line) => sum + line.quantity,
-        0
-      );
+    for (const pizzaName in currentBasket) {
+      total += currentBasket[pizzaName].reduce((sum, line) => sum + line.quantity, 0);
     }
-
     return total;
-  }
+  });
 
-  /* Récupère le panier depuis le localStorage */
-  getBasket(): { [key: string]: AdaptedOrderLine[] } {
+  // Prix total (calculé automatiquement)
+  public readonly totalPrice: Signal<number> = computed(() => {
+    const currentBasket = this._basket();
+    let total = 0;
+    for (const pizzaName in currentBasket) {
+      total += currentBasket[pizzaName].reduce((sum, line) => sum + (line.quantity * line.price), 0);
+    }
+    return Math.round(total * 100) / 100;
+  });
+
+  /* ---------- GESTION LOCALE ---------- */
+
+  private getBasketFromStorage(): BasketData {
     try {
       const saved = localStorage.getItem('basket');
       return saved ? JSON.parse(saved) : {};
@@ -47,112 +44,81 @@ export class OrderService {
     }
   }
 
-  /* Sauvegarde locale + émission du state */
-  private updateLocalBasket(basket: { [key: string]: AdaptedOrderLine[] }): void {
-    localStorage.setItem('basket', JSON.stringify(basket));
-    this.basketSubject.next(basket);
-    this.countItemSubject.next(this.getTotalItemCount());
+
+  private updateState(newBasket: BasketData): void {
+    localStorage.setItem('basket', JSON.stringify(newBasket));
+    this._basket.set(newBasket);
   }
 
-  /* ---------- Sync serveur ---------- */
-
-  public saveBasket(basket: { [key: string]: AdaptedOrderLine[] }): void {
-    /* Mise à jour immédiate UI */
-    this.updateLocalBasket(basket);
-
+  public saveBasketToServer(): void {
+    const currentBasket = this._basket();
     this.loaderService.show();
-    this.basketService.saveBasket(basket)
-      .pipe(
-        finalize(() => this.loaderService.hide())
-      )
+    
+    this.basketService.saveBasket(currentBasket)
+      .pipe(finalize(() => this.loaderService.hide()))
       .subscribe({
-        error: err => {
-          console.error('Error saving basket to server:', err);
-        }
+        next: () => console.log('Panier synchronisé sur le serveur'),
+        error: err => console.error('Erreur sync serveur:', err)
       });
   }
 
   public refreshBasketFromServer(): void {
     this.loaderService.show();
-
     this.basketService.getBasket()
-      .pipe(
-        finalize(() => this.loaderService.hide())
-      )
+      .pipe(finalize(() => this.loaderService.hide()))
       .subscribe({
-        next: basket => {
-          this.updateLocalBasket(basket);
-        },
-        error: err => {
-          console.error('Error retrieving basket from server:', err);
-        }
+        next: basket => this.updateState(basket),
+        error: err => console.error('Erreur récupération serveur:', err)
       });
   }
 
-  /* ---------- Mutations ---------- */
+  /* ---------- MUTATIONS (LOGIQUE MÉTIER) ---------- */
 
   public addToBasket(pizzaName: string, sizeName: string, price: number): void {
-    const basket = this.getBasket();
-    const allSizeForPizza = basket[pizzaName];
-
-    if (allSizeForPizza) {
-      const orderLine = allSizeForPizza.find(
-        line => line.nameSize === sizeName
-      );
-
-      if (orderLine) {
-        orderLine.quantity += 1;
-      } else {
-        allSizeForPizza.push({
-          nameSize: sizeName,
-          quantity: 1,
-          price
-        });
-      }
-    } else {
-      basket[pizzaName] = [{
-        nameSize: sizeName,
-        quantity: 1,
-        price
-      }];
+    // 1. On crée une copie profonde pour respecter l'immutabilité des signaux
+    const current: BasketData = JSON.parse(JSON.stringify(this._basket()));
+    
+    if (!current[pizzaName]) {
+      current[pizzaName] = [];
     }
 
-    this.saveBasket(basket);
+    const orderLine = current[pizzaName].find(line => line.nameSize === sizeName);
+
+    if (orderLine) {
+      orderLine.quantity += 1;
+    } else {
+      current[pizzaName].push({ nameSize: sizeName, quantity: 1, price });
+    }
+
+    // 2. On met à jour l'UI immédiatement sans attendre le serveur
+    this.updateState(current);
+    this.saveBasketToServer();  
   }
 
   public removeFromBasket(pizzaName: string, sizeName: string): void {
-    const basket = this.getBasket();
-    const allSizeForPizza = basket[pizzaName];
+    const current: BasketData = JSON.parse(JSON.stringify(this._basket()));
+    const allSizes = current[pizzaName];
 
-    if (!allSizeForPizza) {
-      return;
+    if (!allSizes) return;
+
+    const index = allSizes.findIndex(line => line.nameSize === sizeName);
+    if (index === -1) return;
+
+    allSizes[index].quantity -= 1;
+
+    if (allSizes[index].quantity <= 0) {
+      allSizes.splice(index, 1);
+      if (allSizes.length === 0) delete current[pizzaName];
     }
 
-    const orderLine = allSizeForPizza.find(
-      line => line.nameSize === sizeName
-    );
-
-    if (!orderLine) {
-      return;
-    }
-
-    orderLine.quantity -= 1;
-
-    if (orderLine.quantity <= 0) {
-      allSizeForPizza.splice(
-        allSizeForPizza.indexOf(orderLine),
-        1
-      );
-
-      if (allSizeForPizza.length === 0) {
-        delete basket[pizzaName];
-      }
-    }
-
-    this.saveBasket(basket);
+    // 2. On met à jour l'UI immédiatement
+    this.updateState(current);
+    this.saveBasketToServer();
   }
 
   public clearBasket(): void {
-    this.saveBasket({});
+    this.updateState({});
+    // Ici on peut décider de synchroniser le vide sur le serveur tout de suite
+    this.saveBasketToServer();
   }
 }

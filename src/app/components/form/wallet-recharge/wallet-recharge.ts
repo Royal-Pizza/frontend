@@ -1,67 +1,34 @@
-// src/app/components/wallet-recharge/wallet-recharge.ts
-import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
-import { takeUntil } from 'rxjs/operators';
-import { LoaderService } from '../../../services/tools/loader/loader-service';
+import { Component, inject, signal } from '@angular/core';
+import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { BaseFormComponent } from '../baseForm.class';
-import { delay, finalize } from 'rxjs';
-import { Router } from '@angular/router';
+import { LoaderService } from '../../../services/tools/loader/loader-service';
 import { CustomerService } from '../../../services/httpRequest/customer/customer-service';
+import { delay, finalize } from 'rxjs';
+import { Customer } from '../../../models/customer.model';
+import { AuthService } from '../../../services/httpRequest/auth/auth-service';
 
 @Component({
   selector: 'app-wallet-recharge',
-  imports: [CommonModule, ReactiveFormsModule],
+  standalone: true,
+  imports: [ReactiveFormsModule, RouterModule],
   templateUrl: './wallet-recharge.html',
   styleUrls: ['./wallet-recharge.css']
 })
 export class WalletRechargeComponent extends BaseFormComponent {
-  message = '';
+  private readonly fb = inject(FormBuilder);
+  private readonly loaderService = inject(LoaderService);
+  private readonly customerService = inject(CustomerService);
+  private readonly authService = inject(AuthService);
 
-  private fb = inject(FormBuilder);
-  private customerService = inject(CustomerService);
-  private router = inject(Router);
-  private loaderService = inject(LoaderService);
-
-  constructor() {
-    super();
-    if (!localStorage.getItem('customer')) {
-      this.router.navigate(['/login']);
-    }
-    this.form = this.fb.group({
-      amount: ['', [Validators.required, this.minAmountValidator(9.99), this.twoDecimalsValidator]]
-    });
-
-    this.form.get('amount')?.valueChanges
-      .pipe(takeUntil(this.destroy$)) //ici  
-      .subscribe(() => {
-        this.success = null;
-        this.message = '';
-      });
-  }
-
-
-  minAmountValidator(min: number) {
-    return (control: AbstractControl) => {
-      const value = parseFloat(control.value);
-      return !isNaN(value) && value > min ? null : { minAmount: { requiredMin: min } };
-    };
-  }
-
-  twoDecimalsValidator(control: AbstractControl) {
-    const value = control.value;
-    if (!value) return null;
-    const regex = /^\d+(\.\d{1,2})?$/;
-    return regex.test(value) ? null : { twoDecimals: true };
-  }
+  public override form = this.fb.group({
+    amount: [null, [Validators.required, Validators.min(1)]]
+  });
 
   onSubmit() {
-    this.submitted = true;
-    this.message = '';
-    this.success = null;
-
+    this.submitted.set(true);
+    this.success.set(null);
     if (!this.form || this.form.invalid) return;
-
     const amount = parseFloat(this.form.get('amount')?.value ?? '0');
 
     this.loaderService.show();
@@ -71,18 +38,18 @@ export class WalletRechargeComponent extends BaseFormComponent {
         finalize(() => this.loaderService.hide())
       )
       .subscribe({
-        next: () => {
-          this.success = true;
-          this.message = `🎉 Portefeuille rechargé avec succès de ${amount.toFixed(2)} € !`;
-
+        next: (dico) => {
+          this.authService.updateLocalCusomerDataFromToken(dico.token);
+          this.success.set(true);
           setTimeout(() => {
             this.form?.reset();
           }, 2000);
         },
         error: (msg) => {
-          this.success = false;
-          this.message = `❌ Échec de la recharge : ${msg}`;
+          this.success.set(false);
+          this.error.set(`❌ Échec de la recharge : ${msg}`);
         }
       });
+
   }
 }

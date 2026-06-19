@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './components/home/home';
 import { MenuComponent } from './components/menu/menu';
-import { LogingComponent } from './components/login/login';
+import { LoginComponent } from './components/login/login';
 import { SignupAndSettingComponent } from './components/form/signup-setting/signup-setting';
 import { PizzaDetailComponent } from './components/pizza-detail/pizza-detail';
 import { OrderComponent } from './components/order/order';
@@ -20,7 +20,7 @@ export const routes: Routes = [
   { path: 'menu/:namePizza', component: PizzaDetailComponent },
   { path: 'menu/:namePizza/edit', component: PizzaFormComponent },
   { path: 'ingredients', component: IngredientComponent },
-  { path: 'login', component: LogingComponent },
+  { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupAndSettingComponent },
   { path: 'settings', component: SignupAndSettingComponent },
   { path: 'settings/changePassword', component: UpdatePasswordComponent },

@@ -1,36 +1,32 @@
 <header class="site-header">
   <div class="logo">
-    <h1>Royal Pizza 🍕</h1>
+    <h1 routerLink="/">Royal Pizza 🍕</h1>
   </div>
 
   <nav class="main-nav">
-    <a routerLink="/">Accueil</a>
-    <a routerLink="/menu">Menu</a>
+    <a routerLink="/" routerLinkActive="active">Accueil</a>
+    <a routerLink="/menu" routerLinkActive="active">Menu</a>
 
-    <!-- Si connecté et Admin -->
-    <ng-container *ngIf="isLoggedIn && isAdmin">
-      <a routerLink="/ingredients">Ingrédients</a>
-    </ng-container>
+    @if (isLoggedIn()) {
+      @if (isAdmin()) {
+        <a routerLink="/ingredients" routerLinkActive="active">Ingrédients</a>
+      }
 
-    <!-- Si connecté -->
-    <ng-container *ngIf="isLoggedIn">
-      <a routerLink="/invoices">Mes Factures</a>
+      <a routerLink="/invoices" routerLinkActive="active">Mes Factures</a>
       
-    <!-- Ajout du lien Panier avec badge si le panier n'est pas vide-->
-    <ng-container *ngIf="countItems > 0">
-      <a routerLink="/basket" [matBadge]="countItems">Panier</a>
-    </ng-container>
-    <ng-container *ngIf="countItems === 0">
-      <a routerLink="/basket">Panier</a>
-    </ng-container>
-      <a routerLink="/settings">Paramètres</a>
-      <a (click)="logout()">Déconnexion</a>
-    </ng-container>
+      <a routerLink="/basket" 
+         routerLinkActive="active"
+         [matBadge]="countItems() > 0 ? countItems() : null" 
+         matBadgeColor="warn">
+         Panier
+      </a>
 
-    <!-- Si non connecté -->
-    <ng-container *ngIf="!isLoggedIn">
-      <a routerLink="/login">Connexion</a>
-      <a routerLink="/signup">Inscription</a>
-    </ng-container>
+      <a routerLink="/settings" routerLinkActive="active">Paramètres</a>
+      <a (click)="logout()" class="logout-link">Déconnexion</a>
+
+    } @else {
+      <a routerLink="/login" routerLinkActive="active">Connexion</a>
+      <a routerLink="/signup" routerLinkActive="active">Inscription</a>
+    }
   </nav>
 </header>

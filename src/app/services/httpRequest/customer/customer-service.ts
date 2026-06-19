@@ -1,48 +1,62 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { Customer, NewCustomer } from '../../../models/customer.model';
-import { Observable } from 'rxjs';
 import { getHeaders, toTitleCase } from '../../../utils/functions';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CustomerService {
-  
   private http = inject(HttpClient);
+  private readonly baseUrl = `${environment.backendBaseUrl}/customers`;
 
+  /**
+   * Inscription d'un nouveau client
+   */
   register(customer: NewCustomer): Observable<Customer> {
-    customer.firstName = toTitleCase(customer.firstName.trim());
-    customer.lastName = customer.lastName.trim().toUpperCase();
-    customer.emailAddress = customer.emailAddress.trim().toLowerCase();
-    return this.http.post<Customer>(`${environment.backendBaseUrl}/customers/register`, customer);
+    const formatted = this.formatCustomerData(customer);
+    return this.http.post<Customer>(`${this.baseUrl}/register`, formatted);
   }
 
+  /**
+   * Mise à jour des informations profil
+   */
   update(customer: Customer): Observable<any> {
-    customer.firstName = toTitleCase(customer.firstName.trim());
-    customer.lastName = customer.lastName.trim().toUpperCase();
-    customer.emailAddress = customer.emailAddress.trim().toLowerCase();
-    return this.http.post(`${environment.backendBaseUrl}/customers/update`, customer, 
-      { headers: getHeaders() }
-    );
+    const formatted = this.formatCustomerData(customer);
+    return this.http.post(`${this.baseUrl}/update`, formatted, {
+      headers: getHeaders()
+    });
   }
 
   changePassword(password: string): Observable<any> {
-    return this.http.post(`${environment.backendBaseUrl}/customers/updatePassword`, password, 
-      { headers: getHeaders() }
-    );
+    return this.http.post(`${this.baseUrl}/updatePassword`, password, {
+      headers: getHeaders()
+    });
   }
 
   rechargeWallet(amount: number): Observable<any> {
-    return this.http.post(`${environment.backendBaseUrl}/customers/walletRecharge`, amount, 
-      { headers: getHeaders() }
-    );
+    return this.http.post(`${this.baseUrl}/walletRecharge`, amount, {
+      headers: getHeaders()
+    });
   }
 
   delete(): Observable<any> {
-    return this.http.post(`${environment.backendBaseUrl}/customers/deleteAccount`, 
-      { headers: getHeaders() }
-    );
+    return this.http.post(`${this.baseUrl}/deleteAccount`, {}, {
+      headers: getHeaders()
+    });
+  }
+
+  /**
+   * Méthode privée pour centraliser le formatage
+   */
+  private formatCustomerData<T extends NewCustomer | Customer>(data: T): T {
+    return {
+      ...data,
+      firstName: toTitleCase(data.firstName.trim()),
+      lastName: data.lastName.trim().toUpperCase(),
+      emailAddress: data.emailAddress.trim().toLowerCase()
+    };
   }
 }

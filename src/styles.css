@@ -82,6 +82,7 @@ img {
   text-align: center;
   font-family: var(--main-font);
   background-color: var(--main-orange);
+  margin-bottom: 15px;
 }
 
 /* Styles communs aux inputs */

@@ -1,8 +1,10 @@
-<div class="popup-overlay" *ngIf="visible">
-  <div class="popup-content">
-    <button class="close-btn" (click)="closePopup()">
-      <mat-icon>close</mat-icon>
-    </button>
-    <p>{{ message }}</p>
+@if (isVisible()) {
+  <div class="popup-overlay">
+    <div class="popup-content">
+      <button class="close-btn" (click)="closePopup()" aria-label="Fermer">
+        <mat-icon>close</mat-icon>
+      </button>
+      <p>{{ message() }}</p>
+    </div>
   </div>
-</div>
+}

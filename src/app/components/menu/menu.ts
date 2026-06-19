@@ -1,116 +1,90 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
-import { Pizza, UpdatedPizza } from '../../models/pizza.model';
+import { Component, inject, OnInit, signal, Signal } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
+import { CurrencyPipe } from '@angular/common';
+import { finalize } from 'rxjs';
+
+import { Pizza, UpdatedPizza } from '../../models/pizza.model';
 import { formatErrorMessage } from '../../utils/functions';
 import { LoaderService } from '../../services/tools/loader/loader-service';
-import { pipe, finalize } from 'rxjs';
 import { PopupService } from '../../services/tools/popup/popup';
 import { OrderService } from '../../services/order/order-service';
 import { PizzaService } from '../../services/httpRequest/pizza/pizza-service';
+import { AuthService } from '../../services/httpRequest/auth/auth-service';
 
 @Component({
   selector: 'app-menu',
-  imports: [CommonModule, RouterModule, HttpClientModule],
+  standalone: true,
+  imports: [RouterModule, CurrencyPipe],
   templateUrl: './menu.html',
   styleUrls: ['./menu.css']
 })
 export class MenuComponent implements OnInit {
+  // --- SERVICES ---
+  private readonly authService = inject(AuthService);
+  private readonly pizzaService = inject(PizzaService);
+  private readonly loaderService = inject(LoaderService);
+  private readonly popupService = inject(PopupService);
+  private readonly orderService = inject(OrderService);
+  private readonly router = inject(Router);
 
-  pizzas: Pizza[] = [];
-  isConnected: boolean = false;
-  isAdmin: boolean = false;
+  // --- SIGNALS ---
+  public readonly pizzas = signal<Pizza[]>([]);
+  public readonly isConnected = this.authService.isLoggedIn;
+  public readonly isAdmin = this.authService.isAdmin;
 
-  private router = inject(Router);
-  private pizzaService = inject(PizzaService);
-  private loaderService = inject(LoaderService);
-  private popupService = inject(PopupService);
-  private orderService = inject(OrderService);
-  
   ngOnInit(): void {
-    const customerJson = localStorage.getItem('customer');
-
-    if (customerJson) {
-      const customer = JSON.parse(customerJson);
-      this.isConnected = true;
-      this.isAdmin = customer.isAdmin === true;
-    } else {
-      this.isConnected = false;
-      this.isAdmin = false;
-    }
-
     this.loadPizzas();
   }
 
   loadPizzas(): void {
     this.loaderService.show();
-    if (this.isAdmin) {
-      this.pizzaService.getAll()
-        .pipe(
-          finalize(() => this.loaderService.hide())
-        )
-        .subscribe({
-          next: (data: any[]) => {
-            this.pizzas = data;
-            console.log('Pizzas reçues :', this.pizzas);
-          },
-          error: (err) => {
-            const formattedError = formatErrorMessage(err);
-            const str = 'Erreur chargement pizzas ' + (formattedError ?? '');
+    
+    const request$ = this.isAdmin() 
+      ? this.pizzaService.getAll() 
+      : this.pizzaService.getAvailable();
 
-            this.popupService.showMessage(str);
-          }
-        });
-    }
-    else {
-      this.pizzaService.getAvailable()
-        .pipe(
-          finalize(() => this.loaderService.hide())
-        )
-        .subscribe({
-          next: (data: any[]) => {
-            this.pizzas = data;
-            console.log('Pizzas reçues :', this.pizzas);
-          },
-          error: (err) => {
-            const str = 'Erreur chargement pizzas ' + formatErrorMessage(err)
-            this.popupService.showMessage(str);
-          }
-        });
-    }
+    request$
+      .pipe(finalize(() => this.loaderService.hide()))
+      .subscribe({
+        next: (data) => this.pizzas.set(data),
+        error: (err) => {
+          this.popupService.showMessage('Erreur chargement pizzas: ' + formatErrorMessage(err));
+        }
+      });
+  }
 
+  toggleAvailability(pizza: Pizza): void {
+    const updatedPizza: UpdatedPizza = {
+      ...pizza, // On spread l'objet pour plus de simplicité
+      pricePizza: pizza.pricePizza['normale'], // On adapte au format attendu par ton API Update
+      available: !pizza.available
+    };
+
+    this.pizzaService.update(updatedPizza).subscribe({
+      next: () => {
+        // MISE À JOUR LOCALE (Optimistic UI)
+        // On évite un appel réseau getAll() complet en modifiant juste l'item dans le signal
+        this.pizzas.update(list => 
+          list.map(p => p.idPizza === pizza.idPizza ? { ...p, available: !p.available } : p)
+        );
+        
+        // On rafraîchit le panier pour s'assurer que si la pizza est devenue indisponible, 
+        // elle est gérée côté panier serveur/client.
+        this.orderService.refreshBasketFromServer();
+      },
+      error: (err) => this.popupService.showMessage(formatErrorMessage(err))
+    });
   }
 
   goToPizza(namePizza: string): void {
-    this.router.navigate(['/menu', namePizza]); // ✅ correspond à la route définie
+    this.router.navigate(['/menu', namePizza]);
   }
 
   goToEditPizza(namePizza: string): void {
     this.router.navigate(['/menu', namePizza, 'edit']);
   }
 
-  goToNewPizza() {
+  goToNewPizza(): void {
     this.router.navigate(['/menu', 'new']);
   }
-
-  toggleAvailability(pizza: Pizza): void {
-    const updatedPizza: UpdatedPizza = {
-      idPizza: pizza.idPizza,
-      namePizza: pizza.namePizza,
-      pricePizza: pizza.pricePizza['normale'],
-      ingredients: pizza.ingredients,
-      image: pizza.image,
-      available: !pizza.available
-    };
-    this.pizzaService.update(updatedPizza).subscribe({
-      next: () => {
-        this.loadPizzas(); // Recharger la liste des pizzas après la mise à jour
-        this.orderService.refreshBasketFromServer(); // Met à jour le panier
-        console.log("panier : ", this.orderService.getBasket())
-      },
-      error: (err) => console.error('Erreur mise à jour pizza', formatErrorMessage(err))
-    });
-  }
-
 }
