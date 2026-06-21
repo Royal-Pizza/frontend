@@ -8,7 +8,7 @@ import { getHeaders } from '../../shared/utils/functions';
 import { AuthService } from '../auth/auth-service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PurchaseService {
   private http = inject(HttpClient);
@@ -21,7 +21,7 @@ export class PurchaseService {
    */
   purchasePizza(dico: { [key: string]: AdaptedOrderLine[] }): Observable<any> {
     return this.http.post(`${this.baseUrl}/buy`, dico, {
-      headers: getHeaders()
+      headers: getHeaders(),
     });
   }
 
@@ -34,11 +34,11 @@ export class PurchaseService {
 
     if (!customerId) {
       // Si pas de client, on retourne une erreur ou un tableau vide
-      console.error("Tentative de récupérer des factures sans être connecté");
+      console.error('Tentative de récupérer des factures sans être connecté');
     }
 
     return this.http.get<Invoice[]>(`${this.baseUrl}/invoices/customer/${customerId}`, {
-      headers: getHeaders()
+      headers: getHeaders(),
     });
   }
 }

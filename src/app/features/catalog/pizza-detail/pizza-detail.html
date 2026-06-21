@@ -2,7 +2,7 @@
   <div class="pizza-detail-container">
     <div class="pizza-image">
       @if (p.image) {
-        <img [src]="'data:image/png;base64,' + p.image" [alt]="p.namePizza">
+        <img [src]="'data:image/png;base64,' + p.image" [alt]="p.namePizza" />
       }
     </div>
 
@@ -14,10 +14,13 @@
         <ul class="price-list">
           @for (dico of p.pricePizza | keyvalue; track dico.key) {
             <li>
-              Taille {{ dico.key }} : {{ dico.value | currency:'EUR' }}
-              
+              Taille {{ dico.key }} : {{ dico.value | currency: 'EUR' }}
+
               @if (isConnected()) {
-                <button class="add-to-cart-btn" (click)="addToBasket(p.namePizza, dico.key, dico.value)">
+                <button
+                  class="add-to-cart-btn"
+                  (click)="addToBasket(p.namePizza, dico.key, dico.value)"
+                >
                   Ajouter au panier
                 </button>
               }

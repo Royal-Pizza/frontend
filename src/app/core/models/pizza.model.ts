@@ -10,7 +10,7 @@ export interface Pizza {
 export interface UpdatedPizza {
   idPizza: number;
   namePizza: string;
-  pricePizza: number ;
+  pricePizza: number;
   ingredients: string[];
   image: any;
   available: boolean;
@@ -18,7 +18,7 @@ export interface UpdatedPizza {
 
 export interface NewPizza {
   namePizza: string;
-  pricePizza: number
+  pricePizza: number;
   ingredients: string[];
   image: any;
 }

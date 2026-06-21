@@ -16,7 +16,7 @@ import { AuthService } from '../../../core/auth/auth-service';
   standalone: true,
   imports: [MatIconModule, DecimalPipe, KeyValuePipe],
   templateUrl: './order.html',
-  styleUrls: ['./order.css']
+  styleUrls: ['./order.css'],
 })
 export class OrderComponent implements OnInit {
   private readonly orderService = inject(OrderService);
@@ -51,7 +51,8 @@ export class OrderComponent implements OnInit {
     if (!user) return;
 
     this.loaderService.show();
-    this.purchaseService.purchasePizza(this.orders())
+    this.purchaseService
+      .purchasePizza(this.orders())
       .pipe(finalize(() => this.loaderService.hide()))
       .subscribe({
         next: (response) => {
@@ -59,7 +60,7 @@ export class OrderComponent implements OnInit {
           this.authService.updateLocalCusomerDataFromToken(response.token);
           this.clearBasket();
         },
-        error: (error) => this.popupService.showMessage(formatErrorMessage(error))
+        error: (error) => this.popupService.showMessage(formatErrorMessage(error)),
       });
   }
 }

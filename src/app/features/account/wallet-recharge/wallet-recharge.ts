@@ -12,7 +12,7 @@ import { AuthService } from '../../../core/auth/auth-service';
   standalone: true,
   imports: [ReactiveFormsModule, RouterModule],
   templateUrl: './wallet-recharge.html',
-  styleUrls: ['./wallet-recharge.css']
+  styleUrls: ['./wallet-recharge.css'],
 })
 export class WalletRechargeComponent extends BaseFormComponent {
   private readonly fb = inject(FormBuilder);
@@ -21,7 +21,7 @@ export class WalletRechargeComponent extends BaseFormComponent {
   private readonly authService = inject(AuthService);
 
   public override form = this.fb.group({
-    amount: [null, [Validators.required, Validators.min(1)]]
+    amount: [null, [Validators.required, Validators.min(1)]],
   });
 
   onSubmit() {
@@ -31,10 +31,11 @@ export class WalletRechargeComponent extends BaseFormComponent {
     const amount = parseFloat(this.form.get('amount')?.value ?? '0');
 
     this.loaderService.show();
-    this.customerService.rechargeWallet(amount)
+    this.customerService
+      .rechargeWallet(amount)
       .pipe(
         delay(5000), // simule 5 secondes minimum
-        finalize(() => this.loaderService.hide())
+        finalize(() => this.loaderService.hide()),
       )
       .subscribe({
         next: (dico) => {
@@ -47,8 +48,7 @@ export class WalletRechargeComponent extends BaseFormComponent {
         error: (msg) => {
           this.success.set(false);
           this.error.set(`❌ Échec de la recharge : ${msg}`);
-        }
+        },
       });
-
   }
 }

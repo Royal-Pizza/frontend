@@ -11,7 +11,7 @@ import { AuthService } from '../../../core/auth/auth-service';
   standalone: true,
   imports: [CurrencyPipe, KeyValuePipe], // Plus besoin de CommonModule avec @if et @for
   templateUrl: './pizza-detail.html',
-  styleUrls: ['./pizza-detail.css']
+  styleUrls: ['./pizza-detail.css'],
 })
 export class PizzaDetailComponent implements OnInit {
   public readonly pizza: WritableSignal<Pizza | null> = signal(null);
@@ -29,7 +29,7 @@ export class PizzaDetailComponent implements OnInit {
     if (namePizza) {
       this.pizzaService.getById(namePizza).subscribe({
         next: (data) => this.pizza.set(data),
-        error: (err) => console.error('Erreur chargement pizza', err)
+        error: (err) => console.error('Erreur chargement pizza', err),
       });
     }
   }

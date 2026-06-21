@@ -1,5 +1,12 @@
 import { Component, OnInit, HostListener, inject, signal, computed } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, Validators, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
+import {
+  ReactiveFormsModule,
+  FormBuilder,
+  Validators,
+  ValidatorFn,
+  AbstractControl,
+  ValidationErrors,
+} from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { finalize, startWith } from 'rxjs';
@@ -27,10 +34,9 @@ import { PizzaService } from '../../catalog/pizza-service';
   standalone: true,
   imports: [ReactiveFormsModule, RouterModule],
   templateUrl: './pizza-form.html',
-  styleUrls: ['./pizza-form.css']
+  styleUrls: ['./pizza-form.css'],
 })
 export class PizzaFormComponent extends BaseFormComponent implements OnInit {
-
   private readonly route = inject(ActivatedRoute);
   private readonly fb = inject(FormBuilder);
   private readonly pizzaService = inject(PizzaService);
@@ -51,7 +57,7 @@ export class PizzaFormComponent extends BaseFormComponent implements OnInit {
     namePizza: ['', [Validators.required, Validators.minLength(2)]],
     pricePizza: ['', [Validators.required, this.positiveNumberValidator]],
     ingredients: [[] as string[], [Validators.required]],
-    imagePreview: this.fb.control<string | null>(null, [Validators.required])
+    imagePreview: this.fb.control<string | null>(null, [Validators.required]),
   });
 
   public readonly pizza = signal<Pizza | null>(null);
@@ -62,10 +68,10 @@ export class PizzaFormComponent extends BaseFormComponent implements OnInit {
   private readonly _imageRawValue = signal<string | null>(null);
 
   private readonly _ingredientsValue = toSignal(
-    this.form.get('ingredients')!.valueChanges.pipe(
-      startWith(this.form.get('ingredients')?.value || [])
-    ),
-    { initialValue: [] as string[] }
+    this.form
+      .get('ingredients')!
+      .valueChanges.pipe(startWith(this.form.get('ingredients')?.value || [])),
+    { initialValue: [] as string[] },
   );
 
   public readonly ingredientsDisplay = computed(() => {
@@ -100,17 +106,19 @@ export class PizzaFormComponent extends BaseFormComponent implements OnInit {
 
   loadAllIngredients() {
     this.loaderService.show();
-    this.ingredientService.getAll()
+    this.ingredientService
+      .getAll()
       .pipe(finalize(() => this.loaderService.hide()))
       .subscribe({
         next: (data) => this.allIngredients.set(data),
-        error: (err) => console.error('Erreur chargement ingrédients', err)
+        error: (err) => console.error('Erreur chargement ingrédients', err),
       });
   }
 
   loadPizza(namePizza: string) {
     this.loaderService.show();
-    this.pizzaService.getById(namePizza)
+    this.pizzaService
+      .getById(namePizza)
       .pipe(finalize(() => this.loaderService.hide()))
       .subscribe({
         next: (data: Pizza) => {
@@ -121,18 +129,18 @@ export class PizzaFormComponent extends BaseFormComponent implements OnInit {
               namePizza: data.namePizza,
               pricePizza: priceVal !== undefined ? priceVal.toFixed(2) : '0.00',
               ingredients: data.ingredients,
-              imagePreview: data.image
+              imagePreview: data.image,
             });
             this._imageRawValue.set(data.image);
             this.loadAllIngredients();
           }
         },
-        error: () => this.router.navigate(['/menu'])
+        error: () => this.router.navigate(['/menu']),
       });
   }
 
   toggleDropdown() {
-    this.dropdownOpen.update(v => !v);
+    this.dropdownOpen.update((v) => !v);
   }
 
   toggleIngredient(ingredient: Ingredient) {
@@ -190,14 +198,15 @@ export class PizzaFormComponent extends BaseFormComponent implements OnInit {
         namePizza: toTitleCase(namePizza),
         pricePizza: numericPrice,
         ingredients: ingredients,
-        image: image
+        image: image,
       };
 
-      this.pizzaService.add(newPizza)
+      this.pizzaService
+        .add(newPizza)
         .pipe(finalize(() => this.loaderService.hide()))
         .subscribe({
           next: () => this.router.navigate(['/menu']),
-          error: (err) => this.error.set(formatErrorMessage(err))
+          error: (err) => this.error.set(formatErrorMessage(err)),
         });
     } else {
       const currentPizza = this.pizza();
@@ -209,17 +218,18 @@ export class PizzaFormComponent extends BaseFormComponent implements OnInit {
         pricePizza: numericPrice,
         ingredients: ingredients,
         image: image,
-        available: currentPizza.available
+        available: currentPizza.available,
       };
 
-      this.pizzaService.update(updatePizza)
+      this.pizzaService
+        .update(updatePizza)
         .pipe(finalize(() => this.loaderService.hide()))
         .subscribe({
           next: () => {
             this.orderService.refreshBasketFromServer();
             this.router.navigate(['/menu']);
           },
-          error: (err) => this.popupService.showMessage(formatErrorMessage(err))
+          error: (err) => this.popupService.showMessage(formatErrorMessage(err)),
         });
     }
   }

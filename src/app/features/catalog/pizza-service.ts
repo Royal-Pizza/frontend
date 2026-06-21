@@ -6,7 +6,7 @@ import { Pizza, NewPizza, UpdatedPizza } from '../../core/models/pizza.model';
 import { getHeaders } from '../../shared/utils/functions';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PizzaService {
   private http = inject(HttpClient);
@@ -24,7 +24,7 @@ export class PizzaService {
    */
   getAll(): Observable<Pizza[]> {
     return this.http.get<Pizza[]>(`${this.baseUrl}/all`, {
-      headers: getHeaders()
+      headers: getHeaders(),
     });
   }
 
@@ -40,7 +40,7 @@ export class PizzaService {
    */
   add(newPizza: NewPizza): Observable<any> {
     return this.http.post(`${this.baseUrl}/add`, newPizza, {
-      headers: getHeaders()
+      headers: getHeaders(),
     });
   }
 
@@ -49,7 +49,7 @@ export class PizzaService {
    */
   update(pizza: UpdatedPizza): Observable<any> {
     return this.http.post(`${this.baseUrl}/update`, pizza, {
-      headers: getHeaders()
+      headers: getHeaders(),
     });
   }
 }

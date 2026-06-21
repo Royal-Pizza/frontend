@@ -10,7 +10,7 @@ export abstract class BaseFormComponent {
   submitted: WritableSignal<boolean> = signal(false);
   success: WritableSignal<boolean | null> = signal(null);
   error: WritableSignal<string> = signal('');
-  
+
   get f() {
     return this.form.controls;
   }

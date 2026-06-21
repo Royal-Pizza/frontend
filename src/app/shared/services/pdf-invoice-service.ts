@@ -6,11 +6,10 @@ import { LOGO_URL } from '../utils/constantes';
 import { AdaptedOrderLine } from '../../core/models/orderLine.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PdfInvoiceService {
-
-  constructor() { }
+  constructor() {}
 
   async generatePDF(invoice: Invoice) {
     const pdf = new jsPDF();
@@ -21,7 +20,7 @@ export class PdfInvoiceService {
     const pageWidth = pdf.internal.pageSize.getWidth();
 
     logo.src = LOGO_URL;
-    await new Promise(res => logo.onload = res);
+    await new Promise((res) => (logo.onload = res));
     pdf.addImage(logo, 'PNG', 150, 10, 40, 40); // carré
 
     // === Facture n° en haut à gauche ===
@@ -33,16 +32,15 @@ export class PdfInvoiceService {
     pdf.text(
       `Date : ${new Date(invoice.date).toLocaleDateString('fr-FR')} à ${new Date(invoice.date).toLocaleTimeString('fr-FR')}`,
       10,
-      35
+      35,
     );
 
     // === Détails de la commande (centrés horizontalement) ===
     const orders: { [key: string]: AdaptedOrderLine[] } = adaptFormatInvoice(invoice);
     let y = 75;
 
-
     pdf.setFontSize(16);
-    const title = "Détails de la commande :";
+    const title = 'Détails de la commande :';
     let textWidth = pdf.getTextWidth(title);
     pdf.text(title, (pageWidth - textWidth) / 2, y);
     y += 10;

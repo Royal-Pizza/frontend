@@ -6,7 +6,7 @@ import { Ingredient } from '../../core/models/ingredient.model';
 import { getHeaders } from '../../shared/utils/functions';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class IngredientService {
   private http = inject(HttpClient);
@@ -17,7 +17,7 @@ export class IngredientService {
    */
   getAll(): Observable<Ingredient[]> {
     return this.http.get<Ingredient[]>(this.baseUrl, {
-      headers: getHeaders()
+      headers: getHeaders(),
     });
   }
 
@@ -26,7 +26,7 @@ export class IngredientService {
    */
   search(partialName: string): Observable<Ingredient[]> {
     return this.http.get<Ingredient[]>(`${this.baseUrl}/${partialName}`, {
-      headers: getHeaders()
+      headers: getHeaders(),
     });
   }
 
@@ -36,7 +36,7 @@ export class IngredientService {
    */
   add(name: string): Observable<any> {
     return this.http.post(`${this.baseUrl}/add`, name, {
-      headers: getHeaders()
+      headers: getHeaders(),
     });
   }
 
@@ -45,7 +45,7 @@ export class IngredientService {
    */
   update(ingredient: Ingredient): Observable<any> {
     return this.http.post(`${this.baseUrl}/update`, ingredient, {
-      headers: getHeaders()
+      headers: getHeaders(),
     });
   }
 
@@ -54,7 +54,7 @@ export class IngredientService {
    */
   delete(id: number): Observable<any> {
     return this.http.post(`${this.baseUrl}/delete`, id, {
-      headers: getHeaders()
+      headers: getHeaders(),
     });
   }
 }

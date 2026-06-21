@@ -15,7 +15,7 @@ import { formatErrorMessage } from '../../../shared/utils/functions';
   standalone: true,
   imports: [RouterModule, CurrencyPipe],
   templateUrl: './menu.html',
-  styleUrls: ['./menu.css']
+  styleUrls: ['./menu.css'],
 })
 export class MenuComponent implements OnInit {
   // --- SERVICES ---
@@ -38,37 +38,33 @@ export class MenuComponent implements OnInit {
   loadPizzas(): void {
     this.loaderService.show();
 
-    const request$ = this.isAdmin()
-      ? this.pizzaService.getAll()
-      : this.pizzaService.getAvailable();
+    const request$ = this.isAdmin() ? this.pizzaService.getAll() : this.pizzaService.getAvailable();
 
-    request$
-      .pipe(finalize(() => this.loaderService.hide()))
-      .subscribe({
-        next: (data) => this.pizzas.set(data),
-        error: (err) => {
-          this.popupService.showMessage('Erreur chargement pizzas: ' + formatErrorMessage(err));
-        }
-      });
+    request$.pipe(finalize(() => this.loaderService.hide())).subscribe({
+      next: (data) => this.pizzas.set(data),
+      error: (err) => {
+        this.popupService.showMessage('Erreur chargement pizzas: ' + formatErrorMessage(err));
+      },
+    });
   }
 
   toggleAvailability(pizza: Pizza): void {
     const updatedPizza: UpdatedPizza = {
       ...pizza, // On spread l'objet pour plus de simplicité
       pricePizza: pizza.pricePizza['normale'], // On adapte au format attendu par ton API Update
-      available: !pizza.available
+      available: !pizza.available,
     };
 
     this.pizzaService.update(updatedPizza).subscribe({
       next: () => {
         // MISE À JOUR LOCALE (Optimistic UI)
         // On évite un appel réseau getAll() complet en modifiant juste l'item dans le signal
-        this.pizzas.update(list =>
-          list.map(p => p.idPizza === pizza.idPizza ? { ...p, available: !p.available } : p)
+        this.pizzas.update((list) =>
+          list.map((p) => (p.idPizza === pizza.idPizza ? { ...p, available: !p.available } : p)),
         );
         this.orderService.refreshBasketFromServer();
       },
-      error: (err) => this.popupService.showMessage(formatErrorMessage(err))
+      error: (err) => this.popupService.showMessage(formatErrorMessage(err)),
     });
   }
 
