@@ -1,0 +1,8 @@
+.home-container {
+  padding: 50px 20px;  /* espace supplémentaire pour home */
+}
+
+.home-container img {
+  width: 200px;    /* taille spécifique à l’image sur la home */
+  margin-top: 20px; /* espace au-dessus de l’image */
+}

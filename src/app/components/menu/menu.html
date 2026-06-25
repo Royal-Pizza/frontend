@@ -1,0 +1,10 @@
+<div class="menu">
+  <h2>Notre menu de pizzas</h2>
+  <div class="pizza-list">
+    <div *ngFor="let pizza of pizzas" class="pizza-card">
+      <h3>{{ pizza.namePizza }}</h3>
+      <p>Prix : {{ pizza.pricePizza | currency:'EUR' }}</p>
+      <img *ngIf="pizza.image" [src]="'data:image/jpeg;base64,' + pizza.image" alt="{{ pizza.namePizza }}">
+    </div>
+  </div>
+</div>
