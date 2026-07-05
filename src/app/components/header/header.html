@@ -2,9 +2,20 @@
   <div class="logo">
     <h1>Royal Pizza 🍕</h1>
   </div>
+
   <nav class="main-nav">
     <a routerLink="/">Accueil</a>
     <a routerLink="/menu">Menu</a>
-    <a routerLink="/contact">Connexion</a>
+
+    <!-- Si connecté -->
+    <ng-container *ngIf="isLoggedIn; else notConnected">
+      <a (click)="logout()">Déconnexion</a>
+    </ng-container>
+
+    <!-- Si non connecté -->
+    <ng-template #notConnected>
+      <a routerLink="/login">Connexion</a>
+      <a routerLink="/signup">Inscription</a>
+    </ng-template>
   </nav>
 </header>

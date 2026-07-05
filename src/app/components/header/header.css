@@ -3,12 +3,12 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  background-color: #f1c40f;
+  background-color: var(--main-yellow);
 }
 
 .site-header .logo h1 {
   margin: 0;
-  color: --main-red;
+  color: var(--main-red);
 }
 
 .main-nav a {
