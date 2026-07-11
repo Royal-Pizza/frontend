@@ -5,11 +5,12 @@ import { ApiService } from '../../services/api/api';
 import { Pizza } from '../../models/pizza.model';
 import { HeaderComponent } from '../header/header';
 import { FooterComponent } from '../footer/footer';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-menu',
   standalone: true,
-  imports: [CommonModule, HttpClientModule],
+  imports: [CommonModule, RouterModule, HttpClientModule],
   templateUrl: './menu.html',
   styleUrls: ['./menu.css']
 })
@@ -17,7 +18,9 @@ export class MenuComponent implements OnInit {
 
   pizzas: Pizza[] = [];
 
-  constructor(private apiService: ApiService) { }
+  constructor(private router: Router, private apiService: ApiService) { 
+
+  }
 
   ngOnInit(): void {
     this.loadPizzas();
@@ -33,4 +36,9 @@ export class MenuComponent implements OnInit {
       }
     });
   }
+
+  goToPizza(namePizza: string): void {
+  this.router.navigate(['/menu', namePizza]); // ✅ correspond à la route définie
+}
+
 }
