@@ -3,7 +3,7 @@ import { map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { DetailledPizza, Pizza } from '../../models/pizza.model';
+import { Pizza } from '../../models/pizza.model';
 import { Customer, NewCustomer, LoginDTO } from '../../models/customer.model';
 import { toTitleCase } from '../../tools/functions';
 import { AuthService } from '../auth/auth';
@@ -22,8 +22,8 @@ export class ApiService {
     return this.http.get<Pizza[]>(`${environment.backendBaseUrl}/pizzas`);
   }
 
-  getPizzaById(idPizza: any): Observable<DetailledPizza> {
-    return this.http.get<DetailledPizza>(`${environment.backendBaseUrl}/pizzas/${idPizza}`);
+  getPizzaById(idPizza: any): Observable<Pizza> {
+    return this.http.get<Pizza>(`${environment.backendBaseUrl}/pizzas/${idPizza}`);
   }
 
   createCustomer(customer: NewCustomer): Observable<Customer> {

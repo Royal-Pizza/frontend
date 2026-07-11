@@ -18,7 +18,7 @@ export class MenuComponent implements OnInit {
 
   pizzas: Pizza[] = [];
 
-  constructor(private router: Router, private apiService: ApiService) { 
+  constructor(private router: Router, private apiService: ApiService) {
 
   }
 
@@ -28,17 +28,17 @@ export class MenuComponent implements OnInit {
 
   loadPizzas(): void {
     this.apiService.getPizzas().subscribe({
-      next: (data: Pizza[]) => this.pizzas = data,
-      
-      error: (err) => {
-        console.error('Erreur chargement pizzas', err)
-        
-      }
+      next: (data: any[]) => {
+        this.pizzas = data;
+        console.log('Pizzas reçues :', this.pizzas);
+      },
+      error: (err) => console.error('Erreur chargement pizzas', err)
     });
+
   }
 
   goToPizza(namePizza: string): void {
-  this.router.navigate(['/menu', namePizza]); // ✅ correspond à la route définie
-}
+    this.router.navigate(['/menu', namePizza]); // ✅ correspond à la route définie
+  }
 
 }
