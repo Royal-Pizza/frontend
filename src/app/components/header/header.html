@@ -7,15 +7,24 @@
     <a routerLink="/">Accueil</a>
     <a routerLink="/menu">Menu</a>
 
+    <!-- Si connecté et Admin -->
+    <ng-container *ngIf="isLoggedIn && isAdmin">
+      <a routerLink="/customers">Clients</a>
+      <a routerLink="/ingredients">Ingrédients</a>
+    </ng-container>
+
     <!-- Si connecté -->
-    <ng-container *ngIf="isLoggedIn; else notConnected">
+    <ng-container *ngIf="isLoggedIn">
+      <a routerLink="/invoices">Mes Factures</a>
+      <a routerLink="/basket">Panier</a>
+      <a routerLink="/settings">Paramètres</a>
       <a (click)="logout()">Déconnexion</a>
     </ng-container>
 
     <!-- Si non connecté -->
-    <ng-template #notConnected>
+    <ng-container *ngIf="!isLoggedIn">
       <a routerLink="/login">Connexion</a>
       <a routerLink="/signup">Inscription</a>
-    </ng-template>
+    </ng-container>
   </nav>
 </header>
