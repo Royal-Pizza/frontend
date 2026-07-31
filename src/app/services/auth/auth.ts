@@ -19,6 +19,7 @@ export class AuthService {
   logout() {
     localStorage.removeItem('authToken');
     localStorage.removeItem('customer');
+    localStorage.removeItem('basket');
     this.loggedIn.next(false);
   }
 
