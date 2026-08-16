@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth/auth';
+import { ApiService } from '../../services/api/api';
+import { OrderService } from '../../services/order/order-service';
 
 @Component({
   selector: 'app-header',
@@ -14,9 +16,13 @@ export class HeaderComponent implements OnInit {
   isLoggedIn: boolean = false;
   isAdmin: boolean = false;
   private authService: AuthService;
+  private apiService: ApiService;
+  private orderService: OrderService;
 
-  constructor(private router: Router, authService: AuthService) {
+  constructor(private router: Router, authService: AuthService, apiService: ApiService, orderService: OrderService) {
     this.authService = authService;
+    this.apiService = apiService;
+    this.orderService = orderService;
   }
 
   ngOnInit() {
@@ -32,7 +38,15 @@ export class HeaderComponent implements OnInit {
   }
 
   logout() {
-    this.authService.logout();
+    this.apiService.logoutCustomer().subscribe({
+      next: () => {
+        console.log('Basket saved.');
+      },
+      error: (err) => {
+        console.error('Erreur lors du logout :', err);
+      },
+    });
+    console.log('Déconnecté !');
     this.router.navigate(['/home']);
   }
 }
