@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, findIndex } from 'rxjs';
-import { OrderLine } from '../../models/orderLine.model';
+import { AdaptedOrderLine } from '../../models/orderLine.model';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +20,7 @@ export class OrderService {
   }
 
   /** Récupère le panier depuis le localStorage */
-  getBasket(): { [key: string]: OrderLine[] } {
+  getBasket(): { [key: string]: AdaptedOrderLine[] } {
     try {
       const saved = localStorage.getItem('basket');
       return saved ? JSON.parse(saved) : {};
@@ -30,7 +30,7 @@ export class OrderService {
   }
 
   /** Sauvegarde le panier dans le localStorage */
-  public saveBasket(basket: { [key: string]: OrderLine[] }): void {
+  public saveBasket(basket: { [key: string]: AdaptedOrderLine[] }): void {
     localStorage.setItem('basket', JSON.stringify(basket));
     this.countItemSubject.next(this.getTotalItemCount());
   }
@@ -49,7 +49,7 @@ export class OrderService {
       }
     }
     else {
-      const newOrderLine: OrderLine = { sizeName, quantity: 1, price };
+      const newOrderLine: AdaptedOrderLine = { sizeName, quantity: 1, price };
       basket[pizzaName] = [newOrderLine];
     }
     console.log('basket :', basket);

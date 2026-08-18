@@ -7,8 +7,9 @@ import { Pizza } from '../../models/pizza.model';
 import { Customer, NewCustomer, LoginDTO } from '../../models/customer.model';
 import { toTitleCase } from '../../tools/functions';
 import { AuthService } from '../auth/auth';
-import { OrderLine } from '../../models/orderLine.model';
+import { AdaptedOrderLine } from '../../models/orderLine.model';
 import { OrderService } from '../order/order-service';
+import { Invoice } from '../../models/invoice.model';
 
 @Injectable({
   providedIn: 'root'
@@ -41,7 +42,7 @@ export class ApiService {
     const basket = this.orderService.getBasket();
     const token = localStorage.getItem('authToken');
 
-    const headers = this.getHeaderWithAuthToken();
+    const headers = ApiService.getHeaderWithAuthToken();
 
     return this.http.post(`${environment.backendBaseUrl}/customers/logout`, basket, { headers })
       .pipe(
@@ -80,8 +81,8 @@ export class ApiService {
     );
   }
 
-  purchasePizza(dico: { [key: string]: OrderLine[] }): Observable<any> {
-    const headers = this.getHeaderWithAuthToken();
+  purchasePizza(dico: { [key: string]: AdaptedOrderLine[] }): Observable<any> {
+    const headers = ApiService.getHeaderWithAuthToken();
 
     // Indique à Angular de traiter la réponse comme du texte brut
     return this.http.post(`${environment.backendBaseUrl}/purchases/buy`, dico, {
@@ -90,7 +91,13 @@ export class ApiService {
     });
   }
 
-  private getHeaderWithAuthToken(): { [header: string]: string } {
+  getAllInvoicesByCustomer(): Observable<Invoice[]> {
+    const idCustomer = JSON.parse(localStorage.getItem('customer') || '{}').idCustomer;
+    const headers = ApiService.getHeaderWithAuthToken();
+    return this.http.get<Invoice[]>(`${environment.backendBaseUrl}/purchases/invoices/customer/${idCustomer}`, { headers });
+  }
+
+  private static getHeaderWithAuthToken(): { [header: string]: string } {
     const token = localStorage.getItem('authToken') || '';
     return { 'Authorization': `Bearer ${token}` };
   }
