@@ -1,5 +1,5 @@
 import { Customer } from "./customer.model";
-import { orderLine } from "./orderLine.model";
+import { OrderLine } from "./orderLine.model";
 
 export interface Invoice {
     // private Long idInvoice;
@@ -10,5 +10,5 @@ export interface Invoice {
     idInvoice: number;
     date: string;
     totalAmount: number;
-    orderLineDTOs: orderLine[];
+    orderLineDTOs: OrderLine[];
 }

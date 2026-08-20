@@ -1,12 +1,12 @@
 export interface AdaptedOrderLine {
-  sizeName: string;
+  nameSize: string;
   quantity: number;
   price: number;
 }
 
-export interface orderLine {
-  pizzaName: string;
-  sizeName: string;
+export interface OrderLine {
+  namePizza: string;
+  nameSize: string;
   quantity: number;
   price: number;
 }

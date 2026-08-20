@@ -41,15 +41,15 @@ export class OrderService {
     const basket = this.getBasket();
     const allSizeForPizza = basket[pizzaName];
     if (allSizeForPizza) {
-      const orderLine = allSizeForPizza.find(line => line.sizeName === sizeName);
+      const orderLine = allSizeForPizza.find(line => line.nameSize === sizeName);
       if (orderLine) {
         orderLine.quantity += 1;
       } else {
-        allSizeForPizza.push({ sizeName, quantity: 1, price });
+        allSizeForPizza.push({ nameSize: sizeName, quantity: 1, price });
       }
     }
     else {
-      const newOrderLine: AdaptedOrderLine = { sizeName, quantity: 1, price };
+      const newOrderLine: AdaptedOrderLine = { nameSize: sizeName, quantity: 1, price };
       basket[pizzaName] = [newOrderLine];
     }
     console.log('basket :', basket);
@@ -62,7 +62,7 @@ export class OrderService {
     const basket = this.getBasket();
     const allSizeForPizza = basket[pizzaName];
     if (allSizeForPizza) {
-      const orderLine = allSizeForPizza.find(line => line.sizeName === sizeName);
+      const orderLine = allSizeForPizza.find(line => line.nameSize === sizeName);
       if (orderLine) {
         orderLine.quantity -= 1;
         if (orderLine.quantity <= 0) {

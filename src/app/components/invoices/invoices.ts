@@ -3,16 +3,18 @@ import { Router } from '@angular/router';
 import { Invoice } from '../../models/invoice.model';
 import { ApiService } from '../../services/api/api';
 import { formatErrorMessage } from '../../tools/functions';
+import { CommonModule } from '@angular/common';
+import { PdfInvoiceService } from '../../services/PdfInvoice/pdf-invoice-service';
 
 @Component({
   selector: 'app-invoices',
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './invoices.html',
   styleUrls: ['./invoices.css']
 })
 export class InvoicesComponent implements OnInit {
   invoices: Invoice[] = [];
-  constructor(private apiService: ApiService, private router: Router) {
+  constructor(private apiService: ApiService, private pdfInvoiceService: PdfInvoiceService, private router: Router) {
       if (!localStorage.getItem('customer')) {
       this.router.navigate(['/home']);
     }
@@ -30,4 +32,8 @@ export class InvoicesComponent implements OnInit {
     });
   }
 
+  downloadPDF(invoice: Invoice) {
+  this.pdfInvoiceService.generatePDF(invoice);
 }
+}
+
