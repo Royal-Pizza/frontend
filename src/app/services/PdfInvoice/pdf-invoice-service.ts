@@ -17,6 +17,9 @@ export class PdfInvoiceService {
 
     // === Logo en haut à droite ===
     const logo = new Image();
+
+    const pageWidth = pdf.internal.pageSize.getWidth();
+
     logo.src = LOGO_URL;
     await new Promise(res => logo.onload = res);
     pdf.addImage(logo, 'PNG', 150, 10, 40, 40); // carré
@@ -33,32 +36,43 @@ export class PdfInvoiceService {
       35
     );
 
-    // === Détails de la commande ===
-    const orders : { [key: string]: AdaptedOrderLine[] } = adaptFormatInvoice(invoice);
-    let y = 55;
-    pdf.setFontSize(16);
-    pdf.text("Détails de la commande :", 10, y);
-    y += 10;
-    pdf.setFontSize(12);
+    // === Détails de la commande (centrés horizontalement) ===
+    const orders: { [key: string]: AdaptedOrderLine[] } = adaptFormatInvoice(invoice);
+    let y = 75;
 
+
+    pdf.setFontSize(16);
+    const title = "Détails de la commande :";
+    let textWidth = pdf.getTextWidth(title);
+    pdf.text(title, (pageWidth - textWidth) / 2, y);
+    y += 10;
+
+    pdf.setFont('helvetica', 'italic');
+    pdf.setFontSize(12);
     for (const pizzaName in orders) {
       pdf.setFontSize(14);
-      pdf.text(pizzaName, 10, y);
+      textWidth = pdf.getTextWidth(pizzaName);
+      pdf.text(pizzaName, (pageWidth - textWidth) / 2, y);
       y += 8;
       pdf.setFontSize(12);
 
       for (const line of orders[pizzaName]) {
         const total = line.price * line.quantity;
-        pdf.text(`- ${line.nameSize} : ${line.quantity} x ${line.price}€ = ${total.toFixed(2)}€`, 15, y);
+        const lineText = `- ${line.nameSize} : ${line.quantity} x ${line.price}€ = ${total.toFixed(2)}€`;
+        textWidth = pdf.getTextWidth(lineText);
+        pdf.text(lineText, (pageWidth - textWidth) / 2, y);
         y += 7;
       }
-
       y += 5;
     }
 
-    // === Montant total ===
+    // === Montant total (centré) ===
+    // on enlève l'italique
+    pdf.setFont('helvetica', 'normal');
     pdf.setFontSize(16);
-    pdf.text(`Montant total : ${invoice.totalAmount.toFixed(2)} €`, 10, y + 10);
+    const totalText = `Montant total : ${invoice.totalAmount.toFixed(2)} €`;
+    textWidth = pdf.getTextWidth(totalText);
+    pdf.text(totalText, (pageWidth - textWidth) / 2, y + 10);
 
     // === Sauvegarde PDF ===
     pdf.save(`facture_${invoice.idInvoice}.pdf`);
