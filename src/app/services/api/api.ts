@@ -10,6 +10,7 @@ import { AuthService } from '../auth/auth';
 import { AdaptedOrderLine } from '../../models/orderLine.model';
 import { OrderService } from '../order/order-service';
 import { Invoice } from '../../models/invoice.model';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,7 @@ export class ApiService {
 
   private authService: AuthService;
   private orderService: OrderService;
-  constructor(private http: HttpClient, authService: AuthService, orderService: OrderService) {
+  constructor(private http: HttpClient, authService: AuthService, orderService: OrderService, private router: Router) {
     this.authService = authService;
     this.orderService = orderService;
   }
@@ -50,6 +51,7 @@ export class ApiService {
           // Toujours exécuté : succès ou erreur
           this.authService.logout();
           this.orderService.clearBasket();
+          this.router.navigate(['/home']);
         })
       );
   }
@@ -80,6 +82,25 @@ export class ApiService {
       })
     );
   }
+  
+  updateCustomer(customer: Customer): Observable<any> {
+    const headers = ApiService.getHeaderWithAuthToken();
+    return this.http.post(`${environment.backendBaseUrl}/customers/update`, customer, { headers, responseType: 'json' });
+  }
+  changeCustomerPassword(password: string): Observable<any> {
+    const headers = ApiService.getHeaderWithAuthToken();
+    return this.http.post(`${environment.backendBaseUrl}/customers/updatePassword`, password, { headers, responseType: 'json' });
+  }
+
+  rechargeWallet(amount: number): Observable<any> {
+    const headers = ApiService.getHeaderWithAuthToken();
+    return this.http.post(`${environment.backendBaseUrl}/customers/walletRecharge`, amount, { headers, responseType: 'json' });
+  }
+
+  deleteCustomer(): Observable<any> {
+    const headers = ApiService.getHeaderWithAuthToken();
+    return this.http.post(`${environment.backendBaseUrl}/customers/deleteAccount`, {}, { headers, responseType: 'json' });
+  }
 
   purchasePizza(dico: { [key: string]: AdaptedOrderLine[] }): Observable<any> {
     const headers = ApiService.getHeaderWithAuthToken();
@@ -97,7 +118,7 @@ export class ApiService {
     return this.http.get<Invoice[]>(`${environment.backendBaseUrl}/purchases/invoices/customer/${idCustomer}`, { headers });
   }
 
-  private static getHeaderWithAuthToken(): { [header: string]: string } {
+  private static getHeaderWithAuthToken(): { [header: string]: string } { // { [header: string]: string } veut dire un objet avec des clés de type string et des valeurs de type string
     const token = localStorage.getItem('authToken') || '';
     return { 'Authorization': `Bearer ${token}` };
   }

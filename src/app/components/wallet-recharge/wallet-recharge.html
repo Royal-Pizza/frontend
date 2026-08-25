@@ -1,0 +1,29 @@
+<div class="form-container">
+  <h2>Recharger le portefeuille</h2>
+
+  <form [formGroup]="rechargeForm" (ngSubmit)="onSubmit()">
+
+    <div class="form-group">
+      <label>Montant (€)</label>
+      <input type="number" formControlName="amount" min="0" step="0.01" />
+    </div>
+
+    <div *ngIf="submitted && f['amount'].errors" class="error">
+      <small *ngIf="f['amount'].errors['required']">Le montant est requis.</small>
+      <small *ngIf="f['amount'].errors['minAmount']">Le montant doit être strictement supérieur à 10 €.</small>
+      <small *ngIf="f['amount'].errors['twoDecimals']">Le montant ne peut avoir que 2 chiffres après la virgule.</small>
+    </div>
+
+    <button type="submit">Recharger</button>
+  </form>
+</div>
+
+<!-- Message dynamique après soumission -->
+<div *ngIf="message" class="submission-message">
+  <div *ngIf="success === true" class="success-message">
+    {{ message }}
+  </div>
+  <div *ngIf="success === false" class="error-message">
+    {{ message }}
+  </div>
+</div>
