@@ -4,17 +4,17 @@
     <ul>
       <li *ngFor="let line of pizza.value" class="line-item">
         <div class="line-details">
-          Taille : {{ line.sizeName }}<br>
+          Taille : {{ line.nameSize }}<br>
           <em>Quantité : {{ line.quantity }} x {{ line.price }}€</em>
         </div>
         <div class="line-price">
           {{ roundPrice(line.quantity * line.price) }}€
         </div>
         <div class="line-actions">
-          <button mat-flat-button color="warn" (click)="removeFromBasket(pizza.key, line.sizeName)">
+          <button mat-flat-button color="warn" (click)="removeFromBasket(pizza.key, line.nameSize)">
             <mat-icon>remove</mat-icon>
           </button>
-          <button mat-icon-button color="primary" (click)="addToBasket(pizza.key, line.sizeName, line.price)">
+          <button mat-icon-button color="primary" (click)="addToBasket(pizza.key, line.nameSize, line.price)">
             <mat-icon>add</mat-icon>
           </button>
         </div>
