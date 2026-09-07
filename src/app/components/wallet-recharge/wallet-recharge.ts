@@ -1,12 +1,13 @@
-import { Component, OnDestroy } from '@angular/core';
+// src/app/components/wallet-recharge/wallet-recharge.ts
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl } from '@angular/forms';
-import { Subject } from 'rxjs';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
 import { ApiService } from '../../services/api/api';
 import { LoaderService } from '../../services/loaderService/loader-service';
-import { formatErrorMessage } from '../../tools/functions';
-import { delay, finalize, pipe } from 'rxjs';
+import { BaseFormComponent } from '../../classes/baseForm.class';
+import { delay, finalize } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-wallet-recharge',
@@ -15,33 +16,26 @@ import { delay, finalize, pipe } from 'rxjs';
   templateUrl: './wallet-recharge.html',
   styleUrls: ['./wallet-recharge.css']
 })
-export class WalletRechargeComponent implements OnDestroy {
-
-  rechargeForm: FormGroup;
-  submitted = false;
-  success: boolean | null = null;
+export class WalletRechargeComponent extends BaseFormComponent {
   message = '';
-  private destroy$ = new Subject<void>();
 
-  constructor(private fb: FormBuilder, private apiService: ApiService, private loaderService: LoaderService) {
-    this.rechargeForm = this.fb.group({
+  constructor(private fb: FormBuilder, private apiService: ApiService, private router: Router, private loaderService: LoaderService) {
+    super();
+    if (!localStorage.getItem('customer')) {
+      this.router.navigate(['/login']);
+    }
+    this.form = this.fb.group({
       amount: ['', [Validators.required, this.minAmountValidator(9.99), this.twoDecimalsValidator]]
     });
 
-    this.rechargeForm.get('amount')?.valueChanges
-      .pipe(takeUntil(this.destroy$))
+    this.form.get('amount')?.valueChanges
+      .pipe(takeUntil(this.destroy$)) //ici  
       .subscribe(() => {
         this.success = null;
         this.message = '';
       });
   }
 
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
-  get f() { return this.rechargeForm.controls; }
 
   minAmountValidator(min: number) {
     return (control: AbstractControl) => {
@@ -62,31 +56,29 @@ export class WalletRechargeComponent implements OnDestroy {
     this.message = '';
     this.success = null;
 
-    if (this.rechargeForm.invalid) return;
+    if (!this.form || this.form.invalid) return;
 
-    const amount = parseFloat(this.f['amount'].value);
+    const amount = parseFloat(this.form.get('amount')?.value ?? '0');
 
     this.loaderService.show();
     this.apiService.rechargeWallet(amount)
-    .pipe(
-      delay(5000), // simule 5 secondes minimum
-      finalize(() => this.loaderService.hide())
-    )
-    .subscribe({
-      next: () => {
-        this.success = true;
-        this.message = `🎉 Portefeuille rechargé avec succès de ${amount.toFixed(2)} € !`;
+      .pipe(
+        delay(5000), // simule 5 secondes minimum
+        finalize(() => this.loaderService.hide())
+      )
+      .subscribe({
+        next: () => {
+          this.success = true;
+          this.message = `🎉 Portefeuille rechargé avec succès de ${amount.toFixed(2)} € !`;
 
-        // NE PAS reset submitted pour garder le message visible
-        // Réinitialiser le champ amount après un délai pour que l'utilisateur voie le message
-        setTimeout(() => {
-          this.rechargeForm.reset();
-        }, 2000);
-      },
-      error: (msg) => {
-        this.success = false;
-        this.message = `❌ Échec de la recharge : ${formatErrorMessage(msg)}`;
-      }
-    });
+          setTimeout(() => {
+            this.form?.reset();
+          }, 2000);
+        },
+        error: (msg) => {
+          this.success = false;
+          this.message = `❌ Échec de la recharge : ${msg}`;
+        }
+      });
   }
 }

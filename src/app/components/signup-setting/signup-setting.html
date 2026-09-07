@@ -1,15 +1,15 @@
 <div class="form-container signup-container">
   <h2>Inscription</h2>
-  <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
     <!-- Nom -->
     <div class="form-group">
       <label>Nom</label>
       <input type="text" formControlName="name">
     </div>
-    <div *ngIf="submitted && f['name'].errors" class="error">
-      <small *ngIf="f['name'].errors['required']">Le nom est requis.</small>
-      <small *ngIf="f['name'].errors['minlength']">Le nom doit avoir au moins 2 caractères.</small>
+    <div *ngIf="submitted && form.get('name')?.errors" class="error">
+      <small *ngIf="form.get('name')?.errors?.['required']">Le nom est requis.</small>
+      <small *ngIf="form.get('name')?.errors?.['minlength']">Le nom doit avoir au moins 2 caractères.</small>
     </div>
 
     <!-- Prénom -->
@@ -17,9 +17,9 @@
       <label>Prénom</label>
       <input type="text" formControlName="prenom">
     </div>
-    <div *ngIf="submitted && f['prenom'].errors" class="error">
-      <small *ngIf="f['prenom'].errors['required']">Le prénom est requis.</small>
-      <small *ngIf="f['prenom'].errors['minlength']">Le prénom doit avoir au moins 2 caractères.</small>
+    <div *ngIf="submitted && form.get('prenom')?.errors" class="error">
+      <small *ngIf="form.get('prenom')?.errors?.['required']">Le prénom est requis.</small>
+      <small *ngIf="form.get('prenom')?.errors?.['minlength']">Le prénom doit avoir au moins 2 caractères.</small>
     </div>
 
     <!-- Email -->
@@ -27,13 +27,14 @@
       <label>Email</label>
       <input type="email" formControlName="email">
     </div>
-    <div *ngIf="submitted && f['email'].errors" class="error">
-      <small *ngIf="f['email'].errors['required']">L'email est requis.</small>
-      <small *ngIf="f['email'].errors['email']">Format d'email invalide.</small>
+    <div *ngIf="submitted && form.get('email')?.errors" class="error">
+      <small *ngIf="form.get('email')?.errors?.['required']">L'email est requis.</small>
+      <small *ngIf="form.get('email')?.errors?.['email']">Format d'email invalide.</small>
     </div>
 
     <!-- Formulaire pour les nouveaux utilisateurs -->
     <div *ngIf="!customer">
+
       <!-- Mot de passe -->
       <div class="form-group">
         <label>Mot de passe</label>
@@ -49,13 +50,15 @@
         <small [class.valid]="passwordLength" [class.invalid]="!passwordLength">Minimum 8 caractères</small>
         <small [class.valid]="passwordHasUpper" [class.invalid]="!passwordHasUpper">Contient une majuscule</small>
         <small [class.valid]="passwordHasLower" [class.invalid]="!passwordHasLower">Contient une minuscule</small>
-        <small [class.valid]="passwordHasSpecial" [class.invalid]="!passwordHasSpecial">Contient un caractère spécial
-          (!@#$%^&.*)</small>
+        <small [class.valid]="passwordHasSpecial" [class.invalid]="!passwordHasSpecial">
+          Contient un caractère spécial (!@#$%^&.*)
+        </small>
       </div>
 
-      <div *ngIf="submitted && f['password'].errors" class="error">
-        <small *ngIf="f['password'].errors['required']">Le mot de passe est requis.</small>
-        <small *ngIf="f['password'].errors['minlength']">Minimum 8 caractères.</small>
+      <div *ngIf="submitted && form.get('password')?.errors" class="error">
+        <small *ngIf="form.get('password')?.errors?.['required']">Le mot de passe est requis.</small>
+        <small *ngIf="form.get('password')?.errors?.['minlength']">Minimum 8 caractères.</small>
+        <small *ngIf="form.get('password')?.errors?.['weakPassword']">Mot de passe trop faible.</small>
       </div>
 
       <!-- Confirmer mot de passe -->
@@ -68,10 +71,12 @@
           </span>
         </div>
       </div>
-      <div *ngIf="submitted && f['confirmPassword'].errors" class="error">
-        <small *ngIf="f['confirmPassword'].errors['required']">Confirmation requise.</small>
+
+      <div *ngIf="submitted && form.get('confirmPassword')?.errors" class="error">
+        <small *ngIf="form.get('confirmPassword')?.errors?.['required']">Confirmation requise.</small>
       </div>
-      <div *ngIf="submitted && signupForm.errors?.['mismatch']" class="error">
+
+      <div *ngIf="submitted && form.errors?.['mismatch']" class="error">
         <small>Les mots de passe ne correspondent pas.</small>
       </div>
 
@@ -80,12 +85,12 @@
 
     <!-- Actions pour les utilisateurs connectés -->
     <div *ngIf="customer" class="connected-actions">
-      <div *ngIf="customer" class="connected-actions">
-        <a routerLink="/settings/changePassword" class="change-password">Changer le mot de passe</a>
-        <a routerLink="/settings/walletRecharge" class="wallet-recharge">Ajouter des fonds</a>
-        <button type="submit" class="update-settings">Mettre à jour les paramètres</button>
-        <button type="button" class="delete-account" (click)="deleteAccount()">Supprimer le compte</button>
-      </div>
+
+      <a routerLink="/settings/changePassword" class="change-password">Changer le mot de passe</a>
+      <a routerLink="/settings/walletRecharge" class="wallet-recharge">Ajouter des fonds</a>
+
+      <button type="submit" class="update-settings">Mettre à jour les paramètres</button>
+      <button type="button" class="delete-account" (click)="deleteAccount()">Supprimer le compte</button>
 
     </div>
 

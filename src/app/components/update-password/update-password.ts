@@ -1,10 +1,11 @@
-import { Component, OnDestroy } from '@angular/core';
+// src/app/components/update-password/update-password.ts
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
-import { Subject } from 'rxjs';
+import { ReactiveFormsModule, FormBuilder, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
 import { ApiService } from '../../services/api/api';
-import { formatErrorMessage } from '../../tools/functions';
+import { BaseFormComponent } from '../../classes/baseForm.class';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-update-password',
@@ -13,28 +14,23 @@ import { formatErrorMessage } from '../../tools/functions';
   templateUrl: './update-password.html',
   styleUrls: ['./update-password.css']
 })
-export class UpdatePasswordComponent implements OnDestroy {
-
-  updatePasswordForm: FormGroup;
-  submitted = false;
-  success: boolean | null = null;
-  error = '';
-
-  // show / hide
+export class UpdatePasswordComponent extends BaseFormComponent {
   showNewPassword = false;
   showConfirmPassword = false;
 
-  // critères mot de passe
   passwordLength = false;
   passwordHasUpper = false;
   passwordHasLower = false;
   passwordHasSpecial = false;
 
-  private destroy$ = new Subject<void>();
+  constructor(private fb: FormBuilder, private apiService: ApiService, private router: Router) {
+    super();
 
-  constructor(private fb: FormBuilder, private apiService: ApiService) {
+    if (!localStorage.getItem('customer')) {
+      this.router.navigate(['/login']);
+    }
 
-    this.updatePasswordForm = this.fb.group(
+    this.form = this.fb.group(
       {
         newPassword: ['', [Validators.required, this.passwordStrengthValidator]],
         confirmPassword: ['', [Validators.required]]
@@ -42,8 +38,7 @@ export class UpdatePasswordComponent implements OnDestroy {
       { validators: this.passwordMatchValidator }
     );
 
-    // suivi dynamique des critères
-    this.updatePasswordForm.get('newPassword')?.valueChanges
+    this.form.get('newPassword')?.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(value => {
         value = value || '';
@@ -54,40 +49,30 @@ export class UpdatePasswordComponent implements OnDestroy {
       });
   }
 
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
-  // mot de passe fort
+  // Mot de passe fort
   passwordStrengthValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
     const value = control.value || '';
     const hasUpper = /[A-Z]/.test(value);
     const hasLower = /[a-z]/.test(value);
     const hasSpecial = /[!@#$%^&.*]/.test(value);
     const hasMinLength = value.length >= 8;
-
     return hasUpper && hasLower && hasSpecial && hasMinLength ? null : { weakPassword: true };
   };
 
-  // mots de passe identiques
+  // Mots de passe identiques
   passwordMatchValidator: ValidatorFn = (form: AbstractControl): ValidationErrors | null => {
     const p1 = form.get('newPassword')?.value;
     const p2 = form.get('confirmPassword')?.value;
     return p1 === p2 ? null : { mismatch: true };
   };
 
-  get f() {
-    return this.updatePasswordForm.controls;
-  }
-
   onSubmit() {
     this.submitted = true;
     this.error = '';
 
-    if (this.updatePasswordForm.invalid) return;
+    if (!this.form || this.form.invalid) return;
 
-    const newPassword = this.f['newPassword'].value;
+    const newPassword = this.form.get('newPassword')?.value;
 
     this.apiService.changeCustomerPassword(newPassword).subscribe({
       next: () => {
@@ -95,7 +80,7 @@ export class UpdatePasswordComponent implements OnDestroy {
       },
       error: (msg) => {
         this.success = false;
-        this.error = formatErrorMessage(msg);
+        this.error = msg; // ou formatErrorMessage(msg) si tu utilises la fonction
       }
     });
   }

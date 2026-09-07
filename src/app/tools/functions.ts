@@ -11,7 +11,9 @@ export function toTitleCase(str: string): string {
         .map(sub => sub.charAt(0).toUpperCase() + sub.slice(1)) // capitalise chaque sous-mot
         .join('-') // on remet les sous-mots ensemble avec le tiret
     )
-    .join(' '); // on remet les mots ensemble avec un espace
+    .join(' ') // on remet les mots ensemble avec un espace
+    .trim(); // on enlève les espaces superflus au début et à la fin
+
 }
 
 export function formatErrorMessage(err: any): string | any {

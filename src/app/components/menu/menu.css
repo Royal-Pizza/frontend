@@ -1,27 +1,17 @@
-.menu {
-  width: 90%;
-  max-width: 1000px;
-  margin: 20px auto;
-  padding: 20px;
-}
-
-.pizza-list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 20px;
-}
-
+/* ========== Carte pizza ========== */
 .pizza-card {
-  background-color: #fff5e6; /* couleur claire et chaleureuse */
+  background-color: #fff5e6;
   border-radius: 12px;
-  padding: 15px;
-  width: 220px;
+  padding: 20px 15px 15px 15px;
+  padding-top: 55px; /* espace réservé pour le toggle */
+  width: 380px;
+  min-height: 360px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   display: flex;
   flex-direction: column;
   align-items: center;
   transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
 }
 
 .pizza-card:hover {
@@ -29,46 +19,160 @@
   box-shadow: 0 6px 15px rgba(0,0,0,0.15);
 }
 
-/* Image */
-.pizza-card img {
-  width: 180px;
-  height: auto;
-  border-radius: 8px;
-  margin: 10px 0;
-  object-fit: cover;
+/* Carte et contenu en mode indisponible */
+.pizza-card.unavailable {
+  opacity: 0.4;
+  pointer-events: none; /* la carte ne clique plus sauf le switch */
 }
 
-/* Bouton détails */
-.details-btn {
-  background-color: #ff9800; /* orange vif */
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 8px 12px;
+/* On réactive le switch même si la carte est désactivée */
+.pizza-card.unavailable .switch {
+  pointer-events: auto;
+  opacity: 1;
+}
+
+
+/* ========== Toggle en haut à droite (complètement indépendant) ========== */
+.toggle-container {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 5;
+}
+
+/* Switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 48px;
+  height: 26px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  inset: 0;
   cursor: pointer;
+  background-color: #ccc;
+  transition: 0.25s;
+  border-radius: 999px;
+}
+
+.slider:before {
+  content: "";
+  position: absolute;
+  height: 20px;
+  width: 20px;
+  left: 3px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #fff;
+  border-radius: 50%;
+  transition: 0.25s;
+}
+
+input:checked + .slider {
+  background-color: #4caf50;
+}
+
+input:checked + .slider:before {
+  transform: translateY(-50%) translateX(22px);
+}
+
+/* ========== Titre CENTRÉ ========== */
+.pizza-name {
+  font-size: 1.3rem;
   font-weight: bold;
-  transition: background-color 0.2s;
-}
-
-.details-btn:hover {
-  background-color: #f57c00; /* orange plus foncé au hover */
-}
-
-/* Titres */
-h2 {
+  margin-top: 5px;
+  margin-bottom: 10px;
+  width: 100%;
   text-align: center;
-  margin-bottom: 20px;
-  color: #d32f2f; /* rouge chaleureux */
+  color: #d32f2f;
 }
 
-/* Responsive pour petits écrans */
-@media (max-width: 600px) {
-  .pizza-card {
-    width: 90%;
-  }
+/* ========== Prix ========== */
+.pizza-price {
+  margin: 8px 0;
+  color: #333;
+  text-align: center;
+}
 
-  .details-btn {
-    padding: 6px 10px;
-    font-size: 0.9rem;
-  }
+/* ========== Image ========== */
+
+.pizza-image-wrapper {
+  width: 220px;      /* largeur du carré */
+  height: 220px;     /* hauteur du carré */
+  overflow: hidden;  /* cache ce qui dépasse */
+  border-radius: 12px;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f8f8f8; /* optionnel */
+}
+
+.pizza-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* ajuste sans déformer */
+}
+
+
+/* ========== Boutons ========== */
+.btn-group {
+  display: flex;
+  width: 100%;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.details-btn,
+.edit-btn {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+}
+
+.details-btn { background-color: #ff9800; }
+.details-btn:hover { background-color: #f57c00; }
+
+.edit-btn { background-color: #1976d2; }
+.edit-btn:hover { background-color: #0d47a1; }
+
+/* ========== Carte "Nouvelle pizza" ========== */
+.add-card {
+  background-color: transparent;
+  border: 2px dashed #aaa;
+  cursor: pointer;
+}
+
+.add-card:hover {
+  border-color: #777;
+  background-color: rgba(255,255,255,0.3);
+}
+
+.add-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.plus {
+  font-size: 3.5rem;
+  font-weight: bold;
+  color: #1976d2;
+}
+
+/* ========== Titre principal ========== */
+h2 {
+  color: #d32f2f;
 }
