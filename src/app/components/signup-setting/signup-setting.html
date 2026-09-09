@@ -1,5 +1,10 @@
 <div class="form-container signup-container">
-  <h2>Inscription</h2>
+  <div *ngIf="!customer">
+    <h2>Inscription</h2>
+  </div>
+  <div *ngIf="customer">
+    <h2>Paramètres du compte</h2>
+  </div>
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
     <!-- Nom -->

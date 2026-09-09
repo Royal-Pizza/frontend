@@ -9,6 +9,7 @@ import { InvoicesComponent } from './components/invoices/invoices';
 import { UpdatePasswordComponent } from './components/update-password/update-password';
 import { WalletRechargeComponent } from './components/wallet-recharge/wallet-recharge';
 import { PizzaFormComponent } from './components/pizza-form/pizza-form';
+import { IngredientComponent } from './components/ingredient/ingredient.component';
 
 export const routes: Routes = [
   //{ path: '', component: HomeComponent }, // page d'accueil
@@ -18,6 +19,7 @@ export const routes: Routes = [
   { path: 'menu/new', component: PizzaFormComponent },
   { path: 'menu/:namePizza', component: PizzaDetailComponent },
   { path: 'menu/:namePizza/edit', component: PizzaFormComponent },
+  { path: 'ingredients', component: IngredientComponent },
   { path: 'login', component: LogingComponent },
   { path: 'signup', component: SignupAndSettingComponent },
   { path: 'settings', component: SignupAndSettingComponent },
