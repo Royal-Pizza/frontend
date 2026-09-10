@@ -145,3 +145,9 @@
   font-size: 20px; /* taille des icônes */
 }
 
+.customer-budget {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--main-orange);
+  margin-bottom: 15px;
+}
