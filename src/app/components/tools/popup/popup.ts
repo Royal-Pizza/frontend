@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
-import { PopupService } from '../../services/popup/popup';
+import { PopupService } from '../../../services/tools/popup/popup';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({

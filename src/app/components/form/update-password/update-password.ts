@@ -3,9 +3,9 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
-import { ApiService } from '../../services/api/api';
-import { BaseFormComponent } from '../../classes/baseForm.class';
+import { BaseFormComponent } from '../baseForm.class';
 import { Router } from '@angular/router';
+import { CustomerService } from '../../../services/httpRequest/customer/customer-service';
 
 @Component({
   selector: 'app-update-password',
@@ -23,7 +23,7 @@ export class UpdatePasswordComponent extends BaseFormComponent {
   passwordHasLower = false;
   passwordHasSpecial = false;
 
-  constructor(private fb: FormBuilder, private apiService: ApiService, private router: Router) {
+  constructor(private fb: FormBuilder, private customerService: CustomerService, private router: Router) {
     super();
 
     if (!localStorage.getItem('customer')) {
@@ -74,7 +74,7 @@ export class UpdatePasswordComponent extends BaseFormComponent {
 
     const newPassword = this.form.get('newPassword')?.value;
 
-    this.apiService.changeCustomerPassword(newPassword).subscribe({
+    this.customerService.changePassword(newPassword).subscribe({
       next: () => {
         this.success = true;
       },

@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { ApiService } from '../../services/api/api';
-import { OrderService } from '../../services/order/order-service';
+import { OrderService } from '../../../services/order/order-service';
 import { MatBadgeModule } from '@angular/material/badge';
+import { AuthService } from '../../../services/httpRequest/auth/auth-service';
 
 @Component({
   selector: 'app-header',
@@ -16,17 +16,15 @@ export class HeaderComponent implements OnInit {
   isLoggedIn: boolean = false;
   isAdmin: boolean = false;
   countItems: number = 0;
-  private apiService: ApiService;
   private orderService: OrderService;
 
-  constructor(private router: Router, apiService: ApiService, orderService: OrderService) {
-    this.apiService = apiService;
+  constructor(private router: Router, private authService: AuthService, orderService: OrderService) {
     this.orderService = orderService;
   }
 
   ngOnInit() {
     // Vérifie l'état de connexion au chargement
-    this.apiService.isLoggedIn$.subscribe(isLoggedIn => {
+    this.authService.isLoggedIn$.subscribe(isLoggedIn => {
       this.isLoggedIn = isLoggedIn;
       const customer = localStorage.getItem('customer');
       if (customer) {
@@ -40,7 +38,7 @@ export class HeaderComponent implements OnInit {
   }
 
   logout() {
-    this.apiService.logoutCustomer();
+    this.authService.logout();
     console.log('Déconnecté !');
   }
 }

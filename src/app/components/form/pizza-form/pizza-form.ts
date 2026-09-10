@@ -2,15 +2,16 @@ import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { BaseFormComponent } from '../../classes/baseForm.class';
-import { ApiService } from '../../services/api/api';
-import { Ingredient } from '../../models/ingredient.model';
-import { NewPizza, Pizza, UpdatedPizza } from '../../models/pizza.model';
-import { LoaderService } from '../../services/loaderService/loader-service';
+import { BaseFormComponent } from '../baseForm.class';
+import { Ingredient } from '../../../models/ingredient.model';
+import { NewPizza, Pizza, UpdatedPizza } from '../../../models/pizza.model';
+import { LoaderService } from '../../../services/tools/loader/loader-service';
 import { finalize } from 'rxjs';
-import { toTitleCase, formatErrorMessage } from '../../tools/functions';
-import { PopupService } from '../../services/popup/popup';
-import { OrderService } from '../../services/order/order-service';
+import { toTitleCase, formatErrorMessage } from '../../../utils/functions';
+import { PopupService } from '../../../services/tools/popup/popup';
+import { OrderService } from '../../../services/order/order-service';
+import { IngredientService } from '../../../services/httpRequest/ingredient/ingredient-service';
+import { PizzaService } from '../../../services/httpRequest/pizza/pizza-service';
 
 @Component({
   selector: 'app-pizza-form',
@@ -31,7 +32,8 @@ export class PizzaFormComponent extends BaseFormComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private fb: FormBuilder,
-    private apiService: ApiService,
+    private pizzaService: PizzaService,
+    private ingredientService: IngredientService,
     private loader: LoaderService,
     private popupService: PopupService,
     private orderService: OrderService,
@@ -72,7 +74,7 @@ export class PizzaFormComponent extends BaseFormComponent implements OnInit {
 
   loadAllIngredients() {
     this.loader.show();
-    this.apiService.getAllIngredients()
+    this.ingredientService.getAll()
       .pipe(finalize(() => this.loader.hide()))
       .subscribe({
         next: (data) => this.allIngredients = data,
@@ -80,9 +82,9 @@ export class PizzaFormComponent extends BaseFormComponent implements OnInit {
       });
   }
 
-  loadPizza(namePizza: string | null) {
+  loadPizza(namePizza: string) {
     this.loader.show();
-    this.apiService.getPizzaById(namePizza)
+    this.pizzaService.getById(namePizza)
       .pipe(finalize(() => this.loader.hide()))
       .subscribe({
         next: (data) => {
@@ -194,7 +196,7 @@ export class PizzaFormComponent extends BaseFormComponent implements OnInit {
         ingredients: formValue.ingredients,
         image: imageBase64Only
       };
-      this.apiService.addPizza(newPizza).subscribe({
+      this.pizzaService.add(newPizza).subscribe({
         next: () => {
           console.log('Pizza added successfully');
           this.router.navigate(['/menu']);
@@ -213,7 +215,7 @@ export class PizzaFormComponent extends BaseFormComponent implements OnInit {
         image: formValue.imagePreview,
         available: this.pizza.available
       };
-      this.apiService.updatePizza(updatePizza).subscribe({
+      this.pizzaService.update(updatePizza).subscribe({
         next: (response) => {
           console.log('Pizza updated successfully', response);
           this.router.navigate(['/menu']);

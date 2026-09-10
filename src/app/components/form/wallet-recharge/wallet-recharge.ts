@@ -3,11 +3,11 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
-import { ApiService } from '../../services/api/api';
-import { LoaderService } from '../../services/loaderService/loader-service';
-import { BaseFormComponent } from '../../classes/baseForm.class';
+import { LoaderService } from '../../../services/tools/loader/loader-service';
+import { BaseFormComponent } from '../baseForm.class';
 import { delay, finalize } from 'rxjs';
 import { Router } from '@angular/router';
+import { CustomerService } from '../../../services/httpRequest/customer/customer-service';
 
 @Component({
   selector: 'app-wallet-recharge',
@@ -19,7 +19,8 @@ import { Router } from '@angular/router';
 export class WalletRechargeComponent extends BaseFormComponent {
   message = '';
 
-  constructor(private fb: FormBuilder, private apiService: ApiService, private router: Router, private loaderService: LoaderService) {
+  constructor(private fb: FormBuilder, private customerService: CustomerService, 
+    private router: Router, private loaderService: LoaderService) {
     super();
     if (!localStorage.getItem('customer')) {
       this.router.navigate(['/login']);
@@ -61,7 +62,7 @@ export class WalletRechargeComponent extends BaseFormComponent {
     const amount = parseFloat(this.form.get('amount')?.value ?? '0');
 
     this.loaderService.show();
-    this.apiService.rechargeWallet(amount)
+    this.customerService.rechargeWallet(amount)
       .pipe(
         delay(5000), // simule 5 secondes minimum
         finalize(() => this.loaderService.hide())

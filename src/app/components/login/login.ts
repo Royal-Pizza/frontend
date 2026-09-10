@@ -2,9 +2,9 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { ApiService } from '../../services/api/api';
 import { Customer } from '../../models/customer.model';
-import { formatErrorMessage } from '../../tools/functions';
+import { formatErrorMessage } from '../../utils/functions';
+import { AuthService } from '../../services/httpRequest/auth/auth-service';
 
 @Component({
   selector: 'app-login',
@@ -18,10 +18,8 @@ export class LogingComponent {
   password: string = '';
   submitted: boolean = false;
   error: string = '';
-  apiService: ApiService;
 
-  constructor(apiService: ApiService, private router: Router) {
-    this.apiService = apiService;
+  constructor(private authService: AuthService, private router: Router) {
 
     // Redirection si déjà connecté
     if (localStorage.getItem('authToken')) {
@@ -38,7 +36,7 @@ export class LogingComponent {
       return;
     }
 
-    this.apiService.loginCustomerWithInfo(this.email, this.password).subscribe({
+    this.authService.login(this.email, this.password).subscribe({
       next: (customer: Customer) => {
         console.log('Connecté !', customer);
 

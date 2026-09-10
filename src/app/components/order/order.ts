@@ -6,11 +6,12 @@ import { delay, finalize, Subscription } from 'rxjs';
 
 import { OrderService } from '../../services/order/order-service';
 import { AdaptedOrderLine } from '../../models/orderLine.model';
-import { ApiService } from '../../services/api/api';
-import { LoaderService } from '../../services/loaderService/loader-service';
-import { PopupService } from '../../services/popup/popup';
-import { formatErrorMessage } from '../../tools/functions';
+import { LoaderService } from '../../services/tools/loader/loader-service';
+import { PopupService } from '../../services/tools/popup/popup';
+import { formatErrorMessage } from '../../utils/functions';
 import { Customer } from '../../models/customer.model';
+import { AuthService } from '../../services/httpRequest/auth/auth-service';
+import { PurchaseService } from '../../services/httpRequest/purchase/purchase-service';
 
 @Component({
   selector: 'app-order',
@@ -28,7 +29,8 @@ export class OrderComponent implements OnInit, OnDestroy {
 
   constructor(
     private orderService: OrderService,
-    private apiService: ApiService,
+    private authService: AuthService,
+    private purchaseService: PurchaseService,
     private loaderService: LoaderService,
     private popupService: PopupService,
     private router: Router
@@ -47,7 +49,7 @@ export class OrderComponent implements OnInit, OnDestroy {
       return;
     }
     this.loaderService.show();
-    this.apiService.checkToken()
+    this.authService.checkToken()
       .pipe(
         delay(5000),
         finalize(() => {
@@ -58,7 +60,7 @@ export class OrderComponent implements OnInit, OnDestroy {
     .subscribe({
       error: (err) => {
         this.popupService.showMessage(formatErrorMessage(err));
-        this.apiService.logoutCustomer();
+        this.authService.logout();
         this.router.navigate(['/login']);
       }
     });
@@ -118,7 +120,7 @@ export class OrderComponent implements OnInit, OnDestroy {
 
     this.loaderService.show();
 
-    this.apiService.purchasePizza(this.orders)
+    this.purchaseService.purchasePizza(this.orders)
       .pipe(
         finalize(() => this.loaderService.hide())
       )

@@ -2,14 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
-
-import { ApiService } from '../../services/api/api';
 import { Ingredient } from '../../models/ingredient.model';
-import { LoaderService } from '../../services/loaderService/loader-service';
-import { PopupService } from '../../services/popup/popup';
-import { formatErrorMessage, toTitleCase } from '../../tools/functions';
+import { LoaderService } from '../../services/tools/loader/loader-service';
+import { PopupService } from '../../services/tools/popup/popup';
+import { formatErrorMessage, toTitleCase } from '../../utils/functions';
 import { Router } from '@angular/router';
 import { Customer } from '../../models/customer.model';
+import { IngredientService } from '../../services/httpRequest/ingredient/ingredient-service';
 
 @Component({
   selector: 'app-ingredient',
@@ -24,7 +23,7 @@ export class IngredientComponent implements OnInit {
   newIngredientName = '';
 
   constructor(
-    private apiService: ApiService,
+    private ingredientService: IngredientService,
     private loaderService: LoaderService,
     private popupService: PopupService,
     private router: Router
@@ -42,7 +41,7 @@ export class IngredientComponent implements OnInit {
   loadAllIngredients(): void {
     this.loaderService.show();
 
-    this.apiService.getAllIngredients()
+    this.ingredientService.getAll()
       .pipe(finalize(() => this.loaderService.hide()))
       .subscribe({
         next: data => {
@@ -64,7 +63,7 @@ export class IngredientComponent implements OnInit {
     else if (this.searchValue.length > 0) {
       this.loaderService.show();
 
-      this.apiService.getIngredientByPartialName(this.searchValue)
+      this.ingredientService.search(this.searchValue)
         .pipe(finalize(() => this.loaderService.hide()))
         .subscribe({
           next: data => {
@@ -89,7 +88,7 @@ export class IngredientComponent implements OnInit {
     ingredient.nameIngredient = toTitleCase(ingredient.nameIngredient);
     this.loaderService.show();
 
-    this.apiService.updateIngredient(ingredient)
+    this.ingredientService.update(ingredient)
       .pipe(finalize(() => this.loaderService.hide()))
       .subscribe({
         next: () => {
@@ -107,7 +106,7 @@ export class IngredientComponent implements OnInit {
   deleteIngredient(id: number): void {
     this.loaderService.show();
 
-    this.apiService.deleteIngredient(id)
+    this.ingredientService.delete(id)
       .pipe(finalize(() => this.loaderService.hide()))
       .subscribe({
         next: () => {
@@ -128,7 +127,7 @@ export class IngredientComponent implements OnInit {
 
     this.loaderService.show();
 
-    this.apiService.createIngredient(ingredientName)
+    this.ingredientService.add(ingredientName)
       .pipe(finalize(() => this.loaderService.hide()))
       .subscribe({
         next: () => {
