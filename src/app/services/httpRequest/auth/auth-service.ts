@@ -5,6 +5,7 @@ import { BehaviorSubject, map, Observable } from 'rxjs';
 import { Customer } from '../../../models/customer.model';
 import { environment } from '../../../../environments/environment';
 import { getHeaders } from '../../../utils/functions';
+import { OrderService } from '../../order/order-service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,7 @@ export class AuthService {
 
   isLoggedIn$ = this.loggedIn$.asObservable();
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router, private orderService: OrderService) {}
 
   login(email: string, password: string): Observable<Customer> {
     return this.http.post<any>(`${environment.backendBaseUrl}/customers/login`, {
