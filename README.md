@@ -167,7 +167,7 @@ The database includes **3 test accounts**:
 - **Role:** USER
 - **Status:** Active ✅ (`available = true`)
 
-**Note:** To become inactive, must unsubscribe and re-subscribe.
+**Note:** To become inactive, unsubscribe. To become active again, re-subscribe.
 
 ### 3️⃣ **Nicolas Bernard** (Client)
 - **Email:** `nicolas.bernard@gmail.com`
@@ -175,7 +175,7 @@ The database includes **3 test accounts**:
 - **Role:** USER
 - **Status:** Active ✅ (`available = true`)
 
-**Note:** To become inactive, must unsubscribe and re-subscribe.
+**Note:** To become inactive, unsubscribe. To become active again, re-subscribe.
 
 ---
 
@@ -441,7 +441,7 @@ La base de données contient **3 comptes de test** :
 - **Rôle :** USER
 - **Statut :** Actif ✅ (`available = true`)
 
-**Note :** Pour devenir inactif, doit se désinscrire et se réinscrire.
+**Note :** Pour devenir inactif, se désinscrire. Pour redevenir actif, se réinscrire.
 
 ### 3️⃣ **Nicolas Bernard** (Client)
 - **Email :** `nicolas.bernard@gmail.com`
@@ -449,7 +449,7 @@ La base de données contient **3 comptes de test** :
 - **Rôle :** USER
 - **Statut :** Actif ✅ (`available = true`)
 
-**Note :** Pour devenir inactif, doit se désinscrire et se réinscrire.
+**Note :** Pour devenir inactif, se désinscrire. Pour redevenir actif, se réinscrire.
 
 ---
 
