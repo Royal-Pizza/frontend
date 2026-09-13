@@ -31,7 +31,7 @@ Angular modern frontend for the Royal Pizza pizza ordering platform. Features a 
 
 ### Backend & Database
 
-The Java/Spring backend and PostgreSQL database must be running.
+The Java/Spring backend and PostgreSQL database must be running. You also need to clone the **backend** repository for local development.
 
 **Quick setup with Docker Compose:**
 ```bash
@@ -185,13 +185,8 @@ The database includes **3 test accounts**:
 - ✅ **Catalog Management:**
   - Add/edit/delete pizzas
   - Manage ingredients
-  - Manage available sizes
 - ✅ **Pricing Management:**
   - Set prices by pizza and size
-  - Price history
-- ✅ **User Management:**
-  - List all customers
-  - Manage roles and statuses
 
 ---
 
@@ -308,7 +303,7 @@ Frontend Angular moderne pour la plateforme de commande de pizzas Royal Pizza. P
 
 ### Backend & Base de Données
 
-Le backend Java/Spring et la base de données PostgreSQL doivent être en cours d'exécution.
+Le backend Java/Spring et la base de données PostgreSQL doivent être en cours d'exécution. Vous devez également cloner le repository **backend** pour le développement local.
 
 **Installation rapide avec Docker Compose :**
 ```bash
@@ -461,13 +456,8 @@ La base de données contient **3 comptes de test** :
 - ✅ **Gestion du Catalogue :**
   - Ajouter/modifier/supprimer des pizzas
   - Gérer les ingrédients
-  - Gérer les tailles disponibles
 - ✅ **Gestion des Tarifs :**
   - Définir les prix par pizza et taille
-  - Historique des prix
-- ✅ **Gestion des Utilisateurs :**
-  - Lister tous les clients
-  - Gérer les rôles et statuts
 
 ---
 
