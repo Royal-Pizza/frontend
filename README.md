@@ -69,6 +69,16 @@ npm install -g @angular/cli@20.3.3
 ng version
 ```
 
+### Angular & Angular Material
+
+The project requires **Angular 20** with **Angular Material 20.2.x**. These are included as dependencies in `package.json` and will be automatically installed when you run `npm install`.
+
+**Key Dependencies:**
+- `@angular/core` - Angular framework
+- `@angular/material` - Material Design components
+- `@angular/cdk` - Component Development Kit (required by Material)
+- `rxjs` - Reactive extensions
+
 
 ---
 
@@ -267,18 +277,6 @@ npm install
 ng serve --port 4201
 ```
 
----
-
-## 📄 License
-
-**Proprietary - Royal Pizza 2024**
-
-This project and all its contents are the exclusive property of Royal Pizza. Unauthorized copying, distribution, or use is strictly prohibited.
-
-For licensing inquiries, contact the Royal Pizza development team.
-
----
-
 <a id="french-section"></a>
 ## Français
 
@@ -345,6 +343,16 @@ Bien que non obligatoire, c'est utile pour le développement :
 npm install -g @angular/cli@20.3.3
 ng version
 ```
+
+### Angular & Angular Material
+
+Le projet nécessite **Angular 20** avec **Angular Material 20.2.x**. Ceux-ci sont inclus comme dépendances dans `package.json` et seront automatiquement installés lorsque vous exécutez `npm install`.
+
+**Dépendances clés :**
+- `@angular/core` - Framework Angular
+- `@angular/material` - Composants Material Design
+- `@angular/cdk` - Component Development Kit (requis par Material)
+- `rxjs` - Extensions réactives
 
 ---
 
@@ -543,12 +551,4 @@ npm install
 ng serve --port 4201
 ```
 
----
 
-## 📄 Licence
-
-**Propriétaire - Royal Pizza 2024**
-
-Ce projet et tous ses contenus sont la propriété exclusive de Royal Pizza. Toute copie, distribution ou utilisation non autorisée est strictement interdite.
-
-Pour les demandes de licence, contactez l'équipe de développement de Royal Pizza.
