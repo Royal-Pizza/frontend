@@ -11,7 +11,6 @@ Angular modern frontend for the Royal Pizza pizza ordering platform. Features a 
 
 ---
 
-<<<<<<< HEAD
 ## 📋 Table of Contents
 
 1. [Prerequisites](#prerequisites)
@@ -27,9 +26,6 @@ Angular modern frontend for the Royal Pizza pizza ordering platform. Features a 
 ---
 
 ## ✅ Prerequisites
-=======
-## ⚙️ Prérequis
->>>>>>> 076d16edc61889220576f85d851fd828bb45505a
 
 <a id="prerequisites"></a>
 
@@ -437,7 +433,6 @@ ng serve
 
 L'application s'exécute sur **http://localhost:4200**
 
-<<<<<<< HEAD
 ### Build Production
 
 ```bash
@@ -481,8 +476,6 @@ src/
 │       └── ...
 ```
 
-=======
->>>>>>> 076d16edc61889220576f85d851fd828bb45505a
 ---
 
 ## 👤 Utilisateurs de Test
@@ -503,19 +496,14 @@ La base de données contient **3 comptes de test** :
 - **Email :** `pierre.martin@gmail.com`
 - **Mot de passe :** `Pm4$Z8!kWQe6@T`
 - **Rôle :** USER
-<<<<<<< HEAD
 - **Statut :** Actif ✅ (`available = true`)
 
 **Note :** Pour devenir inactif, doit se désinscrire et se réinscrire.
-=======
-- **Statut :** Compte actif ✅
->>>>>>> 076d16edc61889220576f85d851fd828bb45505a
 
 ### 3️⃣ **Nicolas Bernard** (Client)
 - **Email :** `nicolas.bernard@gmail.com`
 - **Mot de passe :** `Nb7@C!5RkX9$H2`
 - **Rôle :** USER
-<<<<<<< HEAD
 - **Statut :** Actif ✅ (`available = true`)
 
 **Note :** Pour devenir inactif, doit se désinscrire et se réinscrire.
@@ -523,35 +511,12 @@ La base de données contient **3 comptes de test** :
 ---
 
 ## 🎨 Fonctionnalités
-=======
-- **Statut :** Compte actif ✅
-
----
-
-## 🔄 Signification du Statut
->>>>>>> 076d16edc61889220576f85d851fd828bb45505a
 
 <a id="features-fr"></a>
 
 ### Pour les Clients Réguliers
 
-<<<<<<< HEAD
 - ✅ Parcourir le catalogue de pizzas
-=======
-Si un compte a son Statut inactif (`available = false`), l'utilisateur doit :
-1. Cliquer sur "S'inscrire" dans le login
-2. Entrer le même email
-3. Choisir un nouveau mot de passe
-4. Le compte sera réactivé (`available = true`)
-
----
-
-## 🎨 Fonctionnalités Principales
-
-### 👨‍💼 Pour les Clients Réguliers
-
-- ✅ Consulter le catalogue de pizzas
->>>>>>> 076d16edc61889220576f85d851fd828bb45505a
 - ✅ Voir les détails et ingrédients de chaque pizza
 - ✅ Ajouter des pizzas au panier
 - ✅ Gérer le panier (quantité, suppression)
@@ -566,7 +531,6 @@ Si un compte a son Statut inactif (`available = false`), l'utilisateur doit :
 - ✅ **Gestion du Catalogue :**
   - Ajouter/modifier/supprimer des pizzas
   - Gérer les ingrédients
-<<<<<<< HEAD
   - Gérer les tailles disponibles
 - ✅ **Gestion des Tarifs :**
   - Définir les prix par pizza et taille
@@ -574,10 +538,6 @@ Si un compte a son Statut inactif (`available = false`), l'utilisateur doit :
 - ✅ **Gestion des Utilisateurs :**
   - Lister tous les clients
   - Gérer les rôles et statuts
-=======
-- ✅ **Gestion tarifaire :**
-  - Définir les prix par pizza
->>>>>>> 076d16edc61889220576f85d851fd828bb45505a
 
 ---
 
@@ -604,7 +564,6 @@ Le frontend utilise une architecture **composant-service** :
 └──────────────────────┘
 ```
 
-<<<<<<< HEAD
 ### Points de Connexion Clés
 
 - **Login :** `POST /api-backend/customers/login` → Récupère le token JWT
@@ -619,8 +578,6 @@ Le frontend utilise une architecture **composant-service** :
 
 La configuration par défaut se connecte à `http://localhost:8081/api-backend`. Voir [Installation - Étape 3](#installation-fr) pour personnaliser cette adresse.
 
-=======
->>>>>>> 076d16edc61889220576f85d851fd828bb45505a
 ---
 
 ## 🔗 Ressources
@@ -655,7 +612,6 @@ npm install
 ```bash
 ng serve --port 4201
 ```
-<<<<<<< HEAD
 
 ---
 
@@ -666,5 +622,3 @@ ng serve --port 4201
 Ce projet et tous ses contenus sont la propriété exclusive de Royal Pizza. Toute copie, distribution ou utilisation non autorisée est strictement interdite.
 
 Pour les demandes de licence, contactez l'équipe de développement de Royal Pizza.
-=======
->>>>>>> 076d16edc61889220576f85d851fd828bb45505a
