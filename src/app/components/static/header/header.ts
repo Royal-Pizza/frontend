@@ -7,7 +7,6 @@ import { AuthService } from '../../../services/httpRequest/auth/auth-service';
 
 @Component({
   selector: 'app-header',
-  standalone: true,
   imports: [CommonModule, RouterModule, MatBadgeModule],
   templateUrl: './header.html',
   styleUrls: ['./header.css']

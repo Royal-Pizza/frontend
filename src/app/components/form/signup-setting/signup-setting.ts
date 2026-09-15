@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
@@ -11,7 +11,6 @@ import { CustomerService } from '../../../services/httpRequest/customer/customer
 
 @Component({
   selector: 'app-signup',
-  standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './signup-setting.html',
   styleUrls: ['./signup-setting.css']
@@ -29,9 +28,11 @@ export class SignupAndSettingComponent extends BaseFormComponent {
   passwordHasLower = false;
   passwordHasSpecial = false;
 
-  constructor(private fb: FormBuilder,
-    private authService: AuthService, private customerService: CustomerService,
-    private route: Router) {
+  private fb = inject(FormBuilder);
+  private authService = inject(AuthService);
+  private customerService = inject(CustomerService);
+
+  constructor() {
     super();
 
     this.customer = JSON.parse(localStorage.getItem('customer') || 'null');
@@ -89,7 +90,6 @@ export class SignupAndSettingComponent extends BaseFormComponent {
     return password === confirmPassword ? null : { mismatch: true };
   };
 
-
   onSubmit() {
     this.submitted = true;
     this.error = '';
@@ -99,7 +99,7 @@ export class SignupAndSettingComponent extends BaseFormComponent {
     // Création
     if (!this.customer) {
       const newCustomer: NewCustomer = {
-        firstName: this.form.get('prenom')?.value ?? '', 
+        firstName: this.form.get('prenom')?.value ?? '',
         lastName: this.form.get('name')?.value ?? '',
         emailAddress: this.form.get('email')?.value ?? '',
         password: this.form.get('password')?.value ?? ''

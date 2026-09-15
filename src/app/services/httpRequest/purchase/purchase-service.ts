@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { AdaptedOrderLine } from '../../../models/orderLine.model';
@@ -10,7 +10,8 @@ import { getHeaders } from '../../../utils/functions';
   providedIn: 'root'
 })
 export class PurchaseService {
-  constructor(private http: HttpClient) {}
+  
+  private http = inject(HttpClient);
 
   purchasePizza(dico: { [key: string]: AdaptedOrderLine[] }): Observable<any> {
     return this.http.post(`${environment.backendBaseUrl}/purchases/buy`, dico, 

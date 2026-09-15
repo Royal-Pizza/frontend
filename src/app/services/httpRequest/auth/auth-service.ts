@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, map, Observable } from 'rxjs';
 import { Customer } from '../../../models/customer.model';
@@ -17,7 +17,8 @@ export class AuthService {
 
   isLoggedIn$ = this.loggedIn$.asObservable();
 
-  constructor(private http: HttpClient, private router: Router, private orderService: OrderService) {}
+  private http = inject(HttpClient);
+  private router = inject(Router);
 
   login(email: string, password: string): Observable<Customer> {
     return this.http.post<any>(`${environment.backendBaseUrl}/customers/login`, {

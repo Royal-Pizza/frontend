@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
@@ -22,15 +22,13 @@ export class IngredientComponent implements OnInit {
   searchValue = '';
   newIngredientName = '';
 
-  constructor(
-    private ingredientService: IngredientService,
-    private loaderService: LoaderService,
-    private popupService: PopupService,
-    private router: Router
-  ) {}
+  private ingredientService = inject(IngredientService);
+  private loaderService = inject(LoaderService);
+  private popupService = inject(PopupService);
+  private router = inject(Router);
 
   ngOnInit(): void {
-    const customer : Customer = JSON.parse(localStorage.getItem('customer')!);
+    const customer: Customer = JSON.parse(localStorage.getItem('customer')!);
     if (!customer || !customer.isAdmin) {
       this.router.navigate(['/home']);
       return;

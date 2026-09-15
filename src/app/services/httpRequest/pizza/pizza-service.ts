@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { Pizza, NewPizza, UpdatedPizza } from '../../../models/pizza.model';
@@ -9,16 +9,17 @@ import { getHeaders } from '../../../utils/functions';
   providedIn: 'root'
 })
 export class PizzaService {
-  constructor(private http: HttpClient) {}
+
+  private http = inject(HttpClient);
 
   getAvailable(): Observable<Pizza[]> {
     return this.http.get<Pizza[]>(`${environment.backendBaseUrl}/pizzas`);
   }
 
   getAll(): Observable<Pizza[]> {
-    return this.http.get<Pizza[]>(`${environment.backendBaseUrl}/pizzas/all`, 
-          { headers: getHeaders() }
-        );
+    return this.http.get<Pizza[]>(`${environment.backendBaseUrl}/pizzas/all`,
+      { headers: getHeaders() }
+    );
   }
 
   getById(id: string): Observable<Pizza> {
@@ -26,12 +27,12 @@ export class PizzaService {
   }
 
   add(newPizza: NewPizza): Observable<any> {
-    return this.http.post(`${environment.backendBaseUrl}/pizzas/add`, newPizza, 
+    return this.http.post(`${environment.backendBaseUrl}/pizzas/add`, newPizza,
       { headers: getHeaders() });
   }
 
   update(pizza: UpdatedPizza): Observable<any> {
-    return this.http.post(`${environment.backendBaseUrl}/pizzas/update`, pizza, 
+    return this.http.post(`${environment.backendBaseUrl}/pizzas/update`, pizza,
       { headers: getHeaders() });
   }
 }
