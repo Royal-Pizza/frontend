@@ -1,90 +1,92 @@
-// src/app/components/update-password/update-password.ts
-import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject, signal, computed, Signal, WritableSignal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { takeUntil } from 'rxjs/operators';
-import { BaseFormComponent } from '../baseForm.class';
 import { Router } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { of } from 'rxjs';
+
+import { BaseFormComponent } from '../baseForm.class';
 import { CustomerService } from '../../../services/httpRequest/customer/customer-service';
+import { AuthService } from '../../../services/httpRequest/auth/auth-service';
+import { formatErrorMessage } from '../../../utils/functions';
 
 @Component({
   selector: 'app-update-password',
-  imports: [CommonModule, ReactiveFormsModule],
+  standalone: true,
+  imports: [ReactiveFormsModule],
   templateUrl: './update-password.html',
   styleUrls: ['./update-password.css']
 })
-export class UpdatePasswordComponent extends BaseFormComponent {
-  showNewPassword = false;
-  showConfirmPassword = false;
+export class UpdatePasswordComponent extends BaseFormComponent implements OnInit {
+  private readonly fb = inject(FormBuilder);
+  private readonly customerService = inject(CustomerService);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
 
-  passwordLength = false;
-  passwordHasUpper = false;
-  passwordHasLower = false;
-  passwordHasSpecial = false;
+  public readonly showNewPassword = signal(false);
+  public readonly showConfirmPassword = signal(false);
 
-  private fb = inject(FormBuilder);
-  private customerService = inject(CustomerService)
-  private router = inject(Router);
-  
+  // --- 1. INITIALISER LE FORMULAIRE ICI DIRECTEMENT ---
+  public override form = this.fb.group({
+    newPassword: ['', [Validators.required, (control: AbstractControl) => this.passwordStrengthValidator(control)]],
+    confirmPassword: ['', [Validators.required]]
+  }, { validators: (form: AbstractControl) => this.passwordMatchValidator(form) });
+
+  // --- 2. MAINTENANT LE SIGNAL PEUT LIRE LE FORMULAIRE ---
+  private readonly _passwordValue = toSignal(
+    this.form.get('newPassword')!.valueChanges,
+    { initialValue: '' }
+  );
+
+  public readonly passwordCriteria = computed(() => {
+    const val = this._passwordValue() || '';
+    return {
+      length: val.length >= 8,
+      upper: /[A-Z]/.test(val),
+      lower: /[a-z]/.test(val),
+      special: /[!@#$%^&.*]/.test(val)
+    };
+  });
+
   constructor() {
     super();
-
-    if (!localStorage.getItem('customer')) {
-      this.router.navigate(['/login']);
-    }
-
-    this.form = this.fb.group(
-      {
-        newPassword: ['', [Validators.required, this.passwordStrengthValidator]],
-        confirmPassword: ['', [Validators.required]]
-      },
-      { validators: this.passwordMatchValidator }
-    );
-
-    this.form.get('newPassword')?.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(value => {
-        value = value || '';
-        this.passwordLength = value.length >= 8;
-        this.passwordHasUpper = /[A-Z]/.test(value);
-        this.passwordHasLower = /[a-z]/.test(value);
-        this.passwordHasSpecial = /[!@#$%^&.*]/.test(value);
-      });
   }
 
-  // Mot de passe fort
-  passwordStrengthValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
-    const value = control.value || '';
-    const hasUpper = /[A-Z]/.test(value);
-    const hasLower = /[a-z]/.test(value);
-    const hasSpecial = /[!@#$%^&.*]/.test(value);
-    const hasMinLength = value.length >= 8;
-    return hasUpper && hasLower && hasSpecial && hasMinLength ? null : { weakPassword: true };
-  };
+  ngOnInit(): void {
+    if (!this.authService.isLoggedIn()) {
+      this.router.navigate(['/login']);
+    }
+  }
 
-  // Mots de passe identiques
-  passwordMatchValidator: ValidatorFn = (form: AbstractControl): ValidationErrors | null => {
+  // Validateurs (simplifiés pour éviter les erreurs de contexte 'this')
+  private passwordStrengthValidator(control: AbstractControl): ValidationErrors | null {
+    const val = control.value || '';
+    const isValid = /[A-Z]/.test(val) && /[a-z]/.test(val) && /[!@#$%^&.*]/.test(val) && val.length >= 8;
+    return isValid ? null : { weakPassword: true };
+  }
+
+  private passwordMatchValidator(form: AbstractControl): ValidationErrors | null {
     const p1 = form.get('newPassword')?.value;
     const p2 = form.get('confirmPassword')?.value;
     return p1 === p2 ? null : { mismatch: true };
-  };
+  }
 
-  onSubmit() {
-    this.submitted = true;
-    this.error = '';
-
-    if (!this.form || this.form.invalid) return;
+  onSubmit(): void {
+    this.submitted.set(true);
+    this.error.set('');
+    if (this.form.invalid) return;
 
     const newPassword = this.form.get('newPassword')?.value;
-
-    this.customerService.changePassword(newPassword).subscribe({
+    this.customerService.changePassword(newPassword!).subscribe({
       next: () => {
-        this.success = true;
+        this.success.set(true);
+        setTimeout(() => this.router.navigate(['/settings']), 2000);
       },
-      error: (msg) => {
-        this.success = false;
-        this.error = msg; // ou formatErrorMessage(msg) si tu utilises la fonction
-      }
+      error: (err) => this.error.set(formatErrorMessage(err))
     });
+  }
+
+  toggleVisibility(field: 'new' | 'confirm'): void {
+    if (field === 'new') this.showNewPassword.update(v => !v);
+    else this.showConfirmPassword.update(v => !v);
   }
 }

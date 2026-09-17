@@ -1,56 +1,61 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal, WritableSignal } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { finalize } from 'rxjs/operators';
+
 import { Invoice } from '../../models/invoice.model';
 import { LoaderService } from '../../services/tools/loader/loader-service';
-import { formatErrorMessage } from '../../utils/functions';
-import { CommonModule } from '@angular/common';
-import { PdfInvoiceService } from '../../services/PdfInvoice/pdf-invoice-service';
-import { delay, finalize } from 'rxjs/operators';
 import { PurchaseService } from '../../services/httpRequest/purchase/purchase-service';
+import { PdfInvoiceService } from '../../services/PdfInvoice/pdf-invoice-service';
+import { AuthService } from '../../services/httpRequest/auth/auth-service';
+import { formatErrorMessage } from '../../utils/functions';
 
 @Component({
   selector: 'app-invoices',
-  imports: [CommonModule],
+  standalone: true, // Toujours privilégier le standalone en Angular 18+
+  imports: [CommonModule], // On garde CommonModule pour les PIPES (date, number)
   templateUrl: './invoices.html',
   styleUrls: ['./invoices.css']
 })
 export class InvoicesComponent implements OnInit {
-  err: string = '';
-  invoices: Invoice[] = [];
+  private readonly purchaseService = inject(PurchaseService);
+  private readonly pdfInvoiceService = inject(PdfInvoiceService);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly loaderService = inject(LoaderService);
 
-    private purchaseService = inject(PurchaseService);
-    private pdfInvoiceService = inject(PdfInvoiceService);
-    private router = inject(Router);
-    private loaderService = inject(LoaderService);
-  constructor(
-  ) {
-    if (!localStorage.getItem('customer')) {
-      this.router.navigate(['/home']);
-    }
-  }
+  public readonly err: WritableSignal<string> = signal('');
+  public readonly invoices: WritableSignal<Invoice[]> = signal([]);
 
   ngOnInit(): void {
-    this.loaderService.show();
+    // Vérification de connexion via le service
+    if (!this.authService.isLoggedIn()) {
+      this.router.navigate(['/home']);
+      return;
+    }
 
-    const idCustomer = JSON.parse(localStorage.getItem('customer') || '{}').idCustomer;
+    this.loadInvoices();
+  }
+
+  private loadInvoices(): void {
+    this.loaderService.show();
+    
     this.purchaseService.getAllInvoicesByCustomer()
       .pipe(
         finalize(() => this.loaderService.hide())
       )
       .subscribe({
-        next: (invoices) => {
-          this.err = '';
-          this.invoices = invoices;
-          console.log('Invoices loaded:', this.invoices);
+        next: (data) => {
+          this.err.set('');
+          this.invoices.set(data);
         },
         error: (error) => {
-          this.err = formatErrorMessage(error);
-          console.error(this.err);
+          this.err.set(formatErrorMessage(error));
         }
       });
   }
 
-  downloadPDF(invoice: Invoice) {
+  downloadPDF(invoice: Invoice): void {
     this.pdfInvoiceService.generatePDF(invoice);
   }
 }

@@ -1,29 +1,29 @@
-<div class="form-container">
-  <h2>Recharger le portefeuille</h2>
+<div class="form-container signup-container">
+  <h2>Recharger mon compte</h2>
 
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
-
     <div class="form-group">
-      <label>Montant (€)</label>
-      <input type="number" formControlName="amount" min="0" step="0.01" />
+      <label for="amount">Montant (€)</label>
+      <input id="amount" type="number" formControlName="amount" placeholder="Ex: 20">
     </div>
 
-    <div *ngIf="submitted && f['amount'].errors" class="error">
-      <small *ngIf="f['amount'].errors['required']">Le montant est requis.</small>
-      <small *ngIf="f['amount'].errors['minAmount']">Le montant doit être strictement supérieur à 9.99 €.</small>
-      <small *ngIf="f['amount'].errors['twoDecimals']">Le montant ne peut avoir que 2 chiffres après la virgule.</small>
+    @if (submitted() && form.get('amount')?.invalid) {
+    <div class="error">
+      <small>Veuillez entrer un montant valide (min 1€).</small>
     </div>
+    }
 
-    <button type="submit">Recharger</button>
+    <div class="connected-actions">
+      <button type="submit" class="wallet-recharge">Recharger maintenant</button>
+      <button type="button" class="delete-account" routerLink="/settings">Annuler</button>
+    </div>
   </form>
 </div>
-
-<!-- Message dynamique après soumission -->
-<div *ngIf="message" class="submission-message">
-  <div *ngIf="success === true" class="success-message">
-    {{ message }}
-  </div>
-  <div *ngIf="success === false" class="error-message">
-    {{ message }}
-  </div>
+<div class="submission-message">
+  @if (success()) {
+  <div class="success-message">🎉 Compte rechargé avec succès !</div>
+  }
+  @if (error()) {
+  <div class="error-message">❌ {{ error() }}</div>
+  }
 </div>

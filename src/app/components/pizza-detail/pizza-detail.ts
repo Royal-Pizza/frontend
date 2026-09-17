@@ -1,35 +1,40 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { Pizza } from '../../models/pizza.model';
+import { Component, OnInit, inject, signal, WritableSignal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CurrencyPipe, KeyValuePipe } from '@angular/common';
+import { Pizza } from '../../models/pizza.model';
 import { OrderService } from '../../services/order/order-service';
 import { PizzaService } from '../../services/httpRequest/pizza/pizza-service';
+import { AuthService } from '../../services/httpRequest/auth/auth-service';
 
 @Component({
   selector: 'app-pizza-detail',
-  imports: [CommonModule],
+  standalone: true,
+  imports: [CurrencyPipe, KeyValuePipe], // Plus besoin de CommonModule avec @if et @for
   templateUrl: './pizza-detail.html',
   styleUrls: ['./pizza-detail.css']
 })
 export class PizzaDetailComponent implements OnInit {
-  pizza?: Pizza;
-  isConnected: boolean = false;
+  public readonly pizza: WritableSignal<Pizza | null> = signal(null);
+  
+  private readonly authService = inject(AuthService);
+  public readonly isConnected = this.authService.isLoggedIn;
 
-    private route = inject(ActivatedRoute);
-    private pizzaService = inject(PizzaService);
-    private orderService = inject(OrderService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly pizzaService = inject(PizzaService);
+  private readonly orderService = inject(OrderService);
+
+  ngOnInit(): void {
+    const namePizza = this.route.snapshot.paramMap.get('namePizza');
+    
+    if (namePizza) {
+      this.pizzaService.getById(namePizza).subscribe({
+        next: (data) => this.pizza.set(data),
+        error: (err) => console.error('Erreur chargement pizza', err)
+      });
+    }
+  }
 
   addToBasket(pizzaName: string, sizeName: string, price: number): void {
     this.orderService.addToBasket(pizzaName, sizeName, price);
-  }
-
-  ngOnInit(): void {
-    this.isConnected = !!localStorage.getItem('customer');
-    const namePizza = this.route.snapshot.paramMap.get('namePizza')!;
-    console.log("namePizza = " + namePizza);
-    this.pizzaService.getById(namePizza).subscribe({
-      next: (data) => this.pizza = data,
-      error: (err) => console.error('Erreur chargement pizza', err)
-    });
   }
 }

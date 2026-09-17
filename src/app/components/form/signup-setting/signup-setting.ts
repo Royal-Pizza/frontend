@@ -1,159 +1,162 @@
-import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { takeUntil } from 'rxjs/operators';
+import { Component, OnInit, inject, signal, computed, Signal } from '@angular/core';
+import { ReactiveFormsModule, FormBuilder, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { finalize, map } from 'rxjs'; // Ajout de map
+
 import { BaseFormComponent } from '../baseForm.class';
 import { Customer, NewCustomer } from '../../../models/customer.model';
 import { formatErrorMessage } from '../../../utils/functions';
 import { AuthService } from '../../../services/httpRequest/auth/auth-service';
 import { CustomerService } from '../../../services/httpRequest/customer/customer-service';
+import { LoaderService } from '../../../services/tools/loader/loader-service';
+import { PopupService } from '../../../services/tools/popup/popup';
 
 @Component({
   selector: 'app-signup',
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  standalone: true,
+  imports: [ReactiveFormsModule, RouterModule],
   templateUrl: './signup-setting.html',
   styleUrls: ['./signup-setting.css']
 })
-export class SignupAndSettingComponent extends BaseFormComponent {
+export class SignupAndSettingComponent extends BaseFormComponent implements OnInit {
+  private readonly fb = inject(FormBuilder);
+  private readonly authService = inject(AuthService);
+  private readonly customerService = inject(CustomerService);
+  private readonly loaderService = inject(LoaderService);
+  private readonly popupService = inject(PopupService);
+  private readonly router = inject(Router);
 
-  showPassword = false;
-  showConfirmPassword = false;
-  successRegister: boolean | null = null;
-  customer: Customer | null = null;
+  public readonly showPassword = signal<boolean>(false);
+  public readonly showConfirmPassword = signal<boolean>(false);
 
-  // critères mot de passe
-  passwordLength = false;
-  passwordHasUpper = false;
-  passwordHasLower = false;
-  passwordHasSpecial = false;
+  public readonly customer: Signal<Customer | null> = this.authService.currentUser;
 
-  private fb = inject(FormBuilder);
-  private authService = inject(AuthService);
-  private customerService = inject(CustomerService);
-
-  constructor() {
-    super();
-
-    this.customer = JSON.parse(localStorage.getItem('customer') || 'null');
-
-    const formOptions = { validators: this.passwordMatchValidator };
-
-    this.form = this.fb.group({
-      prenom: ['', [Validators.required, Validators.minLength(2)]],
-      name: ['', [Validators.required, Validators.minLength(2)]],
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, this.passwordStrengthValidator]],
-      confirmPassword: ['', [Validators.required]]
-    }, formOptions);
-
-    // Mode modification
-    if (this.customer) {
-      this.form.patchValue({
-        prenom: this.customer.firstName,
-        name: this.customer.lastName,
-        email: this.customer.emailAddress
-      });
-
-      this.form.get('password')?.clearValidators();
-      this.form.get('confirmPassword')?.clearValidators();
-      this.form.setValidators(null);
-      this.form.updateValueAndValidity();
-    }
-
-    // suivi dynamique mot de passe
-    this.form.get('password')?.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(value => {
-        value = value || '';
-        this.passwordLength = value.length >= 8;
-        this.passwordHasUpper = /[A-Z]/.test(value);
-        this.passwordHasLower = /[a-z]/.test(value);
-        this.passwordHasSpecial = /[!@#$%^&.*]/.test(value);
-      });
-  }
-
-  // Validators
-  passwordStrengthValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+  // --- VALIDATEURS (Déclarés avant le formulaire pour éviter TS2729) ---
+  private readonly passwordStrengthValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
     const value = control.value || '';
-    const hasUpper = /[A-Z]/.test(value);
-    const hasLower = /[a-z]/.test(value);
-    const hasSpecial = /[!@#$%^&.*]/.test(value);
-    const hasMinLength = value.length >= 8;
-
-    return hasUpper && hasLower && hasSpecial && hasMinLength ? null : { weakPassword: true };
+    const isValid = /[A-Z]/.test(value) && /[a-z]/.test(value) && /[!@#$%^&.*]/.test(value) && value.length >= 8;
+    return isValid ? null : { weakPassword: true };
   };
 
-  passwordMatchValidator: ValidatorFn = (form: AbstractControl): ValidationErrors | null => {
+  private readonly passwordMatchValidator: ValidatorFn = (form: AbstractControl): ValidationErrors | null => {
     const password = form.get('password')?.value;
     const confirmPassword = form.get('confirmPassword')?.value;
     return password === confirmPassword ? null : { mismatch: true };
   };
 
-  onSubmit() {
-    this.submitted = true;
-    this.error = '';
+  // --- FORMULAIRE ---
+  public override form = this.fb.group({
+    prenom: ['', [Validators.required, Validators.minLength(2)]],
+    name: ['', [Validators.required, Validators.minLength(2)]],
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required, this.passwordStrengthValidator]],
+    confirmPassword: ['', [Validators.required]]
+  }, { validators: this.passwordMatchValidator });
 
-    if (!this.form || this.form.invalid) return;
+  // --- SIGNALS ---
+  // On ajoute .pipe(map(...)) pour garantir que le flux renvoie toujours une string (règle l'erreur TS2322)
+  private readonly _passwordStream: Signal<string> = toSignal(
+    this.form.get('password')!.valueChanges.pipe(map(val => val ?? '')),
+    { initialValue: '' }
+  );
 
-    // Création
-    if (!this.customer) {
-      const newCustomer: NewCustomer = {
-        firstName: this.form.get('prenom')?.value ?? '',
-        lastName: this.form.get('name')?.value ?? '',
-        emailAddress: this.form.get('email')?.value ?? '',
-        password: this.form.get('password')?.value ?? ''
-      };
-
-      this.customerService.register(newCustomer).subscribe({
-        next: (data: Customer) => {
-          this.successRegister = true;
-          console.log('Inscription réussie', data);
-        },
-        error: (msg) => {
-          this.successRegister = false;
-          console.error('Erreur lors de l’inscription : ', msg);
-          this.error = formatErrorMessage(msg);
-        }
-      });
-      return;
-    }
-
-    // Modification
-    const updatedCustomer: Customer = {
-      idCustomer: this.customer.idCustomer,
-      firstName: this.form.get('prenom')?.value ?? '',
-      lastName: this.form.get('name')?.value ?? '',
-      emailAddress: this.form.get('email')?.value ?? '',
-      isAdmin: this.customer.isAdmin,
-      wallet: this.customer.wallet
+  public readonly passwordCriteria = computed(() => {
+    const val = this._passwordStream();
+    return {
+      length: val.length >= 8,
+      upper: /[A-Z]/.test(val),
+      lower: /[a-z]/.test(val),
+      special: /[!@#$%^&.*]/.test(val)
     };
+  });
 
-    this.customerService.update(updatedCustomer).subscribe({
-      next: (response) => {
-        this.successRegister = true;
-        localStorage.setItem('authToken', response.token);
-        console.log('Mise à jour réussie', response);
-      },
-      error: (msg) => {
-        this.successRegister = false;
-        console.error('Erreur lors de la mise à jour : ', msg);
-        this.error = formatErrorMessage(msg);
-      }
-    });
+  constructor() {
+    super();
   }
 
-  deleteAccount() {
-    this.customerService.delete().subscribe({
-      next: () => {
-        console.log("Compte supprimé avec succès");
-        this.authService.logout();
-      },
-      error: (msg) => {
-        this.successRegister = false;
-        console.error('Erreur lors de la suppression : ', msg);
-        this.error = formatErrorMessage(msg);
-      }
-    });
+  ngOnInit(): void {
+    const currentCustomer = this.customer();
+    if (currentCustomer) {
+      this.form.patchValue({
+        prenom: currentCustomer.firstName,
+        name: currentCustomer.lastName,
+        email: currentCustomer.emailAddress
+      });
+      this.form.get('password')?.clearValidators();
+      this.form.get('confirmPassword')?.clearValidators();
+      this.form.setValidators(null); // setValidators permet en genéral de définir plusieurs validateurs à la fois, ici on n'en veut plus
+      this.form.updateValueAndValidity(); // updateValueAndValidity permet de recalculer l'état du formulaire
+    }
+  }
+
+  togglePasswordVisibility(field: 'password' | 'confirm'): void {
+    if (field === 'password') this.showPassword.update(v => !v);
+    else this.showConfirmPassword.update(v => !v);
+  }
+
+  onSubmit(): void {
+    this.submitted.set(true);
+    this.error.set('');
+    this.success.set(null);
+
+    if (this.form.invalid) return;
+
+    this.loaderService.show();
+    const val = this.form.getRawValue(); // Plus sûr pour récupérer les valeurs
+
+    if (this.customer()) {
+      const updatedData: Customer = {
+        ...this.customer()!,
+        firstName: val.prenom!,
+        lastName: val.name!,
+        emailAddress: val.email!
+      };
+
+      this.customerService.update(updatedData)
+        .pipe(finalize(() => this.loaderService.hide()))
+        .subscribe({
+          next: (data) => {
+            this.success.set(true);
+            this.authService.updateLocalCusomerDataFromToken(data.token)
+            this.popupService.showMessage('Profil mis à jour !');
+          },
+          error: (err) => this.error.set(formatErrorMessage(err))
+        });
+    } else {
+      const newCustomer: NewCustomer = {
+        firstName: val.prenom!,
+        lastName: val.name!,
+        emailAddress: val.email!,
+        password: val.password!
+      };
+
+      this.customerService.register(newCustomer)
+        .pipe(finalize(() => this.loaderService.hide()))
+        .subscribe({
+          next: () => {
+            this.success.set(true);
+            this.popupService.showMessage('Compte créé ! Vous pouvez à présent vous connecter.');
+            setTimeout(() => this.router.navigate(['/login']), 2000);
+          },
+          error: (err) => this.error.set(formatErrorMessage(err))
+        });
+    }
+  }
+
+  deleteAccount(): void {
+    if (confirm('Êtes-vous sûr de vouloir supprimer votre compte ?')) {
+      this.loaderService.show();
+      this.customerService.delete()
+        .pipe(finalize(() => this.loaderService.hide()))
+        .subscribe({
+          next: () => {
+            this.authService.logout();
+            this.popupService.showMessage('Compte supprimé.');
+            this.router.navigate(['/']);
+          },
+          error: (err) => this.popupService.showMessage(formatErrorMessage(err))
+        });
+    }
   }
 }

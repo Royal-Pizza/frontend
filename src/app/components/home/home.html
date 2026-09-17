@@ -1,6 +1,17 @@
 <div class="home-container">
-  <h1 *ngIf="customer">Bonjour {{customer.firstName}} bon retour chez Royal Pizza 🍕</h1>
-  <h1 *ngIf="!customer">Bienvenue chez Royal Pizza 🍕</h1>
+  
+  @if (customer(); as user) {
+    <h1>Bonjour {{ user.firstName }} bon retour chez Royal Pizza 🍕</h1>
+  } @else {
+    <h1>Bienvenue chez Royal Pizza 🍕</h1>
+  }
+
   <p>Régalez-vous avec nos délicieuses pizzas faites maison !</p>
   <img [src]="logoUrl" alt="Logo Royal Pizza">
+
+  @if (!isLoggedIn()) {
+    <div class="actions">
+      <p>Connectez-vous pour commander votre pizza préférée !</p>
+    </div>
+  }
 </div>

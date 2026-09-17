@@ -1,49 +1,36 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, effect } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { OrderService } from '../../../services/order/order-service';
 import { MatBadgeModule } from '@angular/material/badge';
+import { OrderService } from '../../../services/order/order-service';
 import { AuthService } from '../../../services/httpRequest/auth/auth-service';
 
 @Component({
   selector: 'app-header',
-  imports: [CommonModule, RouterModule, MatBadgeModule],
+  standalone: true,
+  imports: [RouterModule, MatBadgeModule],
   templateUrl: './header.html',
   styleUrls: ['./header.css']
 })
-export class HeaderComponent implements OnInit {
-  isLoggedIn: boolean = false;
-  isAdmin: boolean = false;
-  countItems: number = 0;
-  private orderService: OrderService;
+export class HeaderComponent {
+  private readonly router = inject(Router);
+  private readonly authService = inject(AuthService);
+  private readonly orderService = inject(OrderService);
 
-  constructor(private router: Router, private authService: AuthService, orderService: OrderService) {
-    this.orderService = orderService;
-  }
+  public readonly isLoggedIn = this.authService.isLoggedIn;
+  public readonly isAdmin = this.authService.isAdmin;
+  public readonly countItems = this.orderService.countItem;
 
-  ngOnInit() {
-    this.authService.isLoggedIn$.subscribe(isLoggedIn => {
-      this.isLoggedIn = isLoggedIn;
+  constructor() {
 
-      if (isLoggedIn) {
-        // nouvel utilisateur → recharger panier
+    effect(() => { // Lorsque le statut de connexion change
+      if (this.isLoggedIn()) {
         this.orderService.refreshBasketFromServer();
       } else {
-        // déconnexion → vider panier
-        this.orderService.clearBasket();
       }
-
-      const customer = localStorage.getItem('customer');
-      this.isAdmin = customer ? JSON.parse(customer).isAdmin : false;
-    });
-
-    this.orderService.countItem$.subscribe(count => {
-      this.countItems = count;
     });
   }
 
-
-  logout() {
+  logout(): void {
     this.authService.logout();
     console.log('Déconnecté !');
   }

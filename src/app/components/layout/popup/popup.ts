@@ -1,39 +1,22 @@
-import { Component, OnInit, OnDestroy, EventEmitter, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, computed, Signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { PopupService } from '../../../services/tools/popup/popup';
-import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-popup',
-  imports: [CommonModule, MatIconModule],
+  standalone: true,
+  imports: [MatIconModule],
   templateUrl: './popup.html',
   styleUrls: ['./popup.css']
 })
-export class PopupComponent implements OnInit, OnDestroy {
-  message: string = '';
-  visible: boolean = false;
-  closed = new EventEmitter<void>();
-  private destroy$ = new Subject<void>();
+export class PopupComponent {
 
-  private popupService = inject(PopupService);
+  private readonly popupService = inject(PopupService);
 
-  ngOnInit(): void {
-    this.popupService.msgSubject$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(msg => {
-        this.message = msg;
-        this.visible = msg !== '';
-      });
-  }
+  public readonly message: Signal<string> = this.popupService.message;
+  public readonly isVisible: Signal<boolean> = computed(() => this.message() !== '');
 
   closePopup(): void {
-    this.popupService.closeMessage(); // reset message
-    this.closed.emit();
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+    this.popupService.closeMessage();
   }
 }
