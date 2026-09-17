@@ -2,9 +2,9 @@ import { Component, OnInit, inject, signal, WritableSignal } from '@angular/core
 import { ActivatedRoute } from '@angular/router';
 import { CurrencyPipe, KeyValuePipe } from '@angular/common';
 import { Pizza } from '../../models/pizza.model';
-import { OrderService } from '../../services/order/order-service';
-import { PizzaService } from '../../services/httpRequest/pizza/pizza-service';
-import { AuthService } from '../../services/httpRequest/auth/auth-service';
+import { OrderService } from '../../services/httpRequest/order-service';
+import { PizzaService } from '../../services/httpRequest/pizza-service';
+import { AuthService } from '../../services/httpRequest/auth-service';
 
 @Component({
   selector: 'app-pizza-detail',
@@ -15,7 +15,7 @@ import { AuthService } from '../../services/httpRequest/auth/auth-service';
 })
 export class PizzaDetailComponent implements OnInit {
   public readonly pizza: WritableSignal<Pizza | null> = signal(null);
-  
+
   private readonly authService = inject(AuthService);
   public readonly isConnected = this.authService.isLoggedIn;
 
@@ -25,7 +25,7 @@ export class PizzaDetailComponent implements OnInit {
 
   ngOnInit(): void {
     const namePizza = this.route.snapshot.paramMap.get('namePizza');
-    
+
     if (namePizza) {
       this.pizzaService.getById(namePizza).subscribe({
         next: (data) => this.pizza.set(data),

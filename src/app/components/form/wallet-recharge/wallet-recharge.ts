@@ -2,11 +2,11 @@ import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { BaseFormComponent } from '../baseForm.class';
-import { LoaderService } from '../../../services/tools/loader/loader-service';
-import { CustomerService } from '../../../services/httpRequest/customer/customer-service';
+import { LoaderService } from '../../../services/tools/loader-service';
+import { CustomerService } from '../../../services/httpRequest/customer-service';
 import { delay, finalize } from 'rxjs';
 import { Customer } from '../../../models/customer.model';
-import { AuthService } from '../../../services/httpRequest/auth/auth-service';
+import { AuthService } from '../../../services/httpRequest/auth-service';
 
 @Component({
   selector: 'app-wallet-recharge',

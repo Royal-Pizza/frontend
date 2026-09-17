@@ -1,7 +1,7 @@
 import { inject, Injectable, signal, computed, Signal, WritableSignal } from '@angular/core';
 import { finalize } from 'rxjs';
-import { LoaderService } from '../tools/loader/loader-service';
-import { BasketService } from '../httpRequest/basket/basket-service';
+import { LoaderService } from '../tools/loader-service';
+import { BasketService } from './basket-service';
 import { BasketData } from '../../models/basket.model';
 
 @Injectable({
@@ -53,7 +53,7 @@ export class OrderService {
   public saveBasketToServer(): void {
     const currentBasket = this._basket();
     this.loaderService.show();
-    
+
     this.basketService.saveBasket(currentBasket)
       .pipe(finalize(() => this.loaderService.hide()))
       .subscribe({
@@ -77,7 +77,7 @@ export class OrderService {
   public addToBasket(pizzaName: string, sizeName: string, price: number): void {
     // 1. On crée une copie profonde pour respecter l'immutabilité des signaux
     const current: BasketData = JSON.parse(JSON.stringify(this._basket()));
-    
+
     if (!current[pizzaName]) {
       current[pizzaName] = [];
     }
@@ -92,7 +92,7 @@ export class OrderService {
 
     // 2. On met à jour l'UI immédiatement sans attendre le serveur
     this.updateState(current);
-    this.saveBasketToServer();  
+    this.saveBasketToServer();
   }
 
   public removeFromBasket(pizzaName: string, sizeName: string): void {

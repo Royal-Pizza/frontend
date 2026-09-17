@@ -7,12 +7,12 @@ import { finalize, startWith } from 'rxjs';
 import { BaseFormComponent } from '../baseForm.class';
 import { Ingredient } from '../../../models/ingredient.model';
 import { NewPizza, Pizza, UpdatedPizza } from '../../../models/pizza.model';
-import { LoaderService } from '../../../services/tools/loader/loader-service';
-import { PopupService } from '../../../services/tools/popup/popup';
-import { OrderService } from '../../../services/order/order-service';
-import { IngredientService } from '../../../services/httpRequest/ingredient/ingredient-service';
-import { PizzaService } from '../../../services/httpRequest/pizza/pizza-service';
-import { AuthService } from '../../../services/httpRequest/auth/auth-service';
+import { LoaderService } from '../../../services/tools/loader-service';
+import { PopupService } from '../../../services/tools/popup';
+import { OrderService } from '../../../services/httpRequest/order-service';
+import { IngredientService } from '../../../services/httpRequest/ingredient-service';
+import { PizzaService } from '../../../services/httpRequest/pizza-service';
+import { AuthService } from '../../../services/httpRequest/auth-service';
 import { toTitleCase, formatErrorMessage } from '../../../utils/functions';
 
 @Component({

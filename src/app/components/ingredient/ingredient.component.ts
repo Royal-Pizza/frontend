@@ -6,10 +6,10 @@ import { Subject } from 'rxjs';
 import { finalize, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 import { Ingredient } from '../../models/ingredient.model';
-import { LoaderService } from '../../services/tools/loader/loader-service';
-import { PopupService } from '../../services/tools/popup/popup';
-import { IngredientService } from '../../services/httpRequest/ingredient/ingredient-service';
-import { AuthService } from '../../services/httpRequest/auth/auth-service';
+import { LoaderService } from '../../services/tools/loader-service';
+import { PopupService } from '../../services/tools/popup';
+import { IngredientService } from '../../services/httpRequest/ingredient-service';
+import { AuthService } from '../../services/httpRequest/auth-service';
 import { formatErrorMessage, toTitleCase } from '../../utils/functions';
 
 @Component({

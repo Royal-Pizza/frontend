@@ -1,9 +1,9 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../../environments/environment';
-import { Pizza, NewPizza, UpdatedPizza } from '../../../models/pizza.model';
-import { getHeaders } from '../../../utils/functions';
+import { environment } from '../../../environments/environment';
+import { Pizza, NewPizza, UpdatedPizza } from '../../models/pizza.model';
+import { getHeaders } from '../../utils/functions';
 
 @Injectable({
   providedIn: 'root'
@@ -23,8 +23,8 @@ export class PizzaService {
    * Récupère toutes les pizzas (y compris indisponibles) - Réservé Admin
    */
   getAll(): Observable<Pizza[]> {
-    return this.http.get<Pizza[]>(`${this.baseUrl}/all`, { 
-      headers: getHeaders() 
+    return this.http.get<Pizza[]>(`${this.baseUrl}/all`, {
+      headers: getHeaders()
     });
   }
 
@@ -39,8 +39,8 @@ export class PizzaService {
    * Ajoute une nouvelle pizza
    */
   add(newPizza: NewPizza): Observable<any> {
-    return this.http.post(`${this.baseUrl}/add`, newPizza, { 
-      headers: getHeaders() 
+    return this.http.post(`${this.baseUrl}/add`, newPizza, {
+      headers: getHeaders()
     });
   }
 
@@ -48,8 +48,8 @@ export class PizzaService {
    * Met à jour une pizza existante
    */
   update(pizza: UpdatedPizza): Observable<any> {
-    return this.http.post(`${this.baseUrl}/update`, pizza, { 
-      headers: getHeaders() 
+    return this.http.post(`${this.baseUrl}/update`, pizza, {
+      headers: getHeaders()
     });
   }
 }
