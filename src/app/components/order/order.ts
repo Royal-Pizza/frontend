@@ -7,9 +7,9 @@ import { finalize } from 'rxjs';
 import { OrderService } from '../../services/httpRequest/order-service';
 import { LoaderService } from '../../services/tools/loader-service';
 import { PopupService } from '../../services/tools/popup';
-import { AuthService } from '../../services/httpRequest/auth-service';
 import { PurchaseService } from '../../services/httpRequest/purchase-service';
 import { formatErrorMessage } from '../../utils/functions';
+import { AuthService } from '../../services/httpRequest/auth-service';
 
 @Component({
   selector: 'app-order',

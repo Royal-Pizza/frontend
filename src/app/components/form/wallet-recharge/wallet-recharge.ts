@@ -5,7 +5,6 @@ import { BaseFormComponent } from '../baseForm.class';
 import { LoaderService } from '../../../services/tools/loader-service';
 import { CustomerService } from '../../../services/httpRequest/customer-service';
 import { delay, finalize } from 'rxjs';
-import { Customer } from '../../../models/customer.model';
 import { AuthService } from '../../../services/httpRequest/auth-service';
 
 @Component({

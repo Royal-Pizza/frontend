@@ -7,8 +7,8 @@ import { Invoice } from '../../models/invoice.model';
 import { LoaderService } from '../../services/tools/loader-service';
 import { PurchaseService } from '../../services/httpRequest/purchase-service';
 import { PdfInvoiceService } from '../../services/httpRequest/pdf-invoice-service';
-import { AuthService } from '../../services/httpRequest/auth-service';
 import { formatErrorMessage } from '../../utils/functions';
+import { AuthService } from '../../services/httpRequest/auth-service';
 
 @Component({
   selector: 'app-invoices',
