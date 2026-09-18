@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { FooterComponent } from './components/static/footer/footer';
-import { LoaderComponent } from './components/layout/loader/loader';
-import { PopupComponent } from './components/layout/popup/popup';
-import { HeaderComponent } from './components/static/header/header';
+import { FooterComponent } from './shared/components/layout/footer/footer';
+import { LoaderComponent } from './shared/components/ui/loader/loader';
+import { PopupComponent } from './shared/components/ui/popup/popup';
+import { HeaderComponent } from './shared/components/layout/header/header';
 
 @Component({
   selector: 'app-root',
@@ -11,4 +11,4 @@ import { HeaderComponent } from './components/static/header/header';
   templateUrl: './app.html',
   styleUrls: ['./app.css']
 })
-export class App {}
+export class App { }
