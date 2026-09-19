@@ -1,5 +1,4 @@
 <div class="home-container">
-  
   @if (customer(); as user) {
     <h1>Bonjour {{ user.firstName }} bon retour chez Royal Pizza 🍕</h1>
   } @else {
@@ -7,7 +6,7 @@
   }
 
   <p>Régalez-vous avec nos délicieuses pizzas faites maison !</p>
-  <img [src]="logoUrl" alt="Logo Royal Pizza">
+  <img [src]="logoUrl" alt="Logo Royal Pizza" />
 
   @if (!isLoggedIn()) {
     <div class="actions">

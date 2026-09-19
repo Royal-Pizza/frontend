@@ -2,29 +2,26 @@
   <h2>Gestion des ingrédients</h2>
 
   <div class="search-box">
-    <input 
-      type="text" 
-      placeholder="Rechercher un ingrédient..." 
-      [ngModel]="searchValue()" 
+    <input
+      type="text"
+      placeholder="Rechercher un ingrédient..."
+      [ngModel]="searchValue()"
       (ngModelChange)="searchValue.set($event)"
       (input)="onSearchChange()"
     />
   </div>
 
   @if (hasNoResults()) {
-    <button
-      type="button"
-      class="add-button-quick"
-      (click)="addIngredient(searchValue())">
+    <button type="button" class="add-button-quick" (click)="addIngredient(searchValue())">
       ➕ Ajouter "{{ searchValue() }}" à la base de données
     </button>
   }
 
   <ul class="ingredient-list">
-    @for (ingredient of ingredients(); track (ingredient.idIngredient || $index)) {
+    @for (ingredient of ingredients(); track ingredient.idIngredient || $index) {
       <li class="ingredient-item">
         <input [(ngModel)]="ingredient.nameIngredient" class="edit-input" />
-        
+
         <div class="actions">
           <button (click)="updateIngredient(ingredient)" title="Enregistrer">💾</button>
           <button (click)="deleteIngredient(ingredient.idIngredient)" title="Supprimer">🗑️</button>
@@ -48,10 +45,7 @@
         [ngModel]="newIngredientName()"
         (ngModelChange)="newIngredientName.set($event)"
       />
-      <button 
-        type="button"
-        (click)="addIngredient()" 
-        [disabled]="!newIngredientName()">
+      <button type="button" (click)="addIngredient()" [disabled]="!newIngredientName()">
         Ajouter
       </button>
     </div>

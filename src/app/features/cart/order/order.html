@@ -1,10 +1,9 @@
 @if (orders(); as basketData) {
   @if ((basketData | keyvalue).length > 0) {
     <div class="order-container">
-      
       @if (customer(); as user) {
         <div class="customer-budget">
-          Votre budget est de : {{ user.wallet | number:'1.2-2' }}€
+          Votre budget est de : {{ user.wallet | number: '1.2-2' }}€
         </div>
       }
 
@@ -15,17 +14,23 @@
             @for (line of pizza.value; track line.nameSize) {
               <li class="line-item">
                 <div class="line-details">
-                  Taille : {{ line.nameSize }}<br>
+                  Taille : {{ line.nameSize }}<br />
                   <em>Quantité : {{ line.quantity }} x {{ line.price }}€</em>
                 </div>
-                <div class="line-price">
-                  {{ (line.quantity * line.price) | number:'1.2-2' }}€
-                </div>
+                <div class="line-price">{{ line.quantity * line.price | number: '1.2-2' }}€</div>
                 <div class="line-actions">
-                  <button type="button" color="warn" (click)="removeFromBasket(pizza.key, line.nameSize)">
+                  <button
+                    type="button"
+                    color="warn"
+                    (click)="removeFromBasket(pizza.key, line.nameSize)"
+                  >
                     <mat-icon>remove</mat-icon>
                   </button>
-                  <button type="button" color="primary" (click)="addToBasket(pizza.key, line.nameSize, line.price)">
+                  <button
+                    type="button"
+                    color="primary"
+                    (click)="addToBasket(pizza.key, line.nameSize, line.price)"
+                  >
                     <mat-icon>add</mat-icon>
                   </button>
                 </div>
@@ -34,10 +39,8 @@
           </ul>
         </div>
       }
-      
-      <div class="order-total">
-        Total : {{ totalAmount() | number:'1.2-2' }}€
-      </div>
+
+      <div class="order-total">Total : {{ totalAmount() | number: '1.2-2' }}€</div>
 
       <div class="button-section">
         <button type="button" class="button" color="clear" (click)="clearBasket()">
@@ -49,8 +52,6 @@
       </div>
     </div>
   } @else {
-    <div class="empty-basket-message">
-      Votre panier est vide.
-    </div>
+    <div class="empty-basket-message">Votre panier est vide.</div>
   }
 }

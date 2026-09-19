@@ -1,10 +1,9 @@
 import { Injectable, signal, Signal, WritableSignal } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PopupService {
-
   private _message: WritableSignal<string> = signal<string>('');
   public readonly message: Signal<string> = this._message.asReadonly();
 

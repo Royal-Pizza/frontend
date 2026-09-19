@@ -2,41 +2,56 @@
   <h2>{{ isNew() ? 'Ajouter une nouvelle pizza' : 'Modifier la pizza' }}</h2>
 
   <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
-
     <div class="form-group">
       <label for="namePizza">Nom de la pizza</label>
-      <input id="namePizza" type="text" formControlName="namePizza">
-      
+      <input id="namePizza" type="text" formControlName="namePizza" />
+
       @if (submitted() && form.get('namePizza')?.invalid) {
         <div class="error">
-          @if (form.get('namePizza')?.hasError('required')) { <small>Le nom est requis.</small> }
-          @if (form.get('namePizza')?.hasError('minlength')) { <small>Minimum 2 caractères.</small> }
+          @if (form.get('namePizza')?.hasError('required')) {
+            <small>Le nom est requis.</small>
+          }
+          @if (form.get('namePizza')?.hasError('minlength')) {
+            <small>Minimum 2 caractères.</small>
+          }
         </div>
       }
     </div>
 
     <div class="form-group">
       <label for="pricePizza">Prix (€)</label>
-      <input id="pricePizza" type="text" formControlName="pricePizza" (blur)="onPriceBlur()" placeholder="0.00">
-      
+      <input
+        id="pricePizza"
+        type="text"
+        formControlName="pricePizza"
+        (blur)="onPriceBlur()"
+        placeholder="0.00"
+      />
+
       @if (submitted() && form.get('pricePizza')?.invalid) {
         <div class="error">
-          @if (form.get('pricePizza')?.hasError('required')) { <small>Le prix est requis.</small> }
-          @if (form.get('pricePizza')?.hasError('positiveNumber')) { <small>Le prix doit être supérieur à 0.</small> }
+          @if (form.get('pricePizza')?.hasError('required')) {
+            <small>Le prix est requis.</small>
+          }
+          @if (form.get('pricePizza')?.hasError('positiveNumber')) {
+            <small>Le prix doit être supérieur à 0.</small>
+          }
         </div>
       }
     </div>
 
     <div class="form-group ingredients-container">
       <label>Ingrédients</label>
-      <input type="text" [value]="ingredientsDisplay()" readonly (click)="toggleDropdown()">
-      
+      <input type="text" [value]="ingredientsDisplay()" readonly (click)="toggleDropdown()" />
+
       @if (dropdownOpen()) {
         <div class="ingredients-dropdown">
           @for (ing of allIngredients(); track ing.idIngredient) {
-            <div class="ingredient-item"
-                 [class.selected]="(form.get('ingredients')?.value ?? []).includes(ing.nameIngredient)"
-                 (click)="toggleIngredient(ing)">
+            <div
+              class="ingredient-item"
+              [class.selected]="(form.get('ingredients')?.value ?? []).includes(ing.nameIngredient)"
+              (click)="toggleIngredient(ing)"
+            >
               {{ ing.nameIngredient }}
             </div>
           } @empty {
@@ -53,11 +68,11 @@
 
     <div class="form-group">
       <label>Image de la pizza</label>
-      <input type="file" accept="image/*" (change)="onImageSelected($event)">
-      
+      <input type="file" accept="image/*" (change)="onImageSelected($event)" />
+
       @if (imagePreviewUrl(); as url) {
         <div class="image-preview">
-          <img [src]="url" alt="Aperçu">
+          <img [src]="url" alt="Aperçu" />
         </div>
       }
       @if (submitted() && form.get('imagePreview')?.invalid) {

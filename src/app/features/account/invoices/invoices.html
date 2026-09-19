@@ -1,6 +1,6 @@
 <div class="invoices-container flex-center">
   <h2>Mes Factures</h2>
-  
+
   @if (invoices().length > 0) {
     <table class="invoices-table">
       <thead>
@@ -15,8 +15,8 @@
         @for (invoice of invoices(); track invoice.idInvoice) {
           <tr>
             <td>#{{ invoice.idInvoice }}</td>
-            <td>{{ invoice.date | date:'dd/MM/yyyy' }} à {{ invoice.date | date:'HH:mm' }}</td> 
-            <td>{{ invoice.totalAmount | number:'1.2-2' }} €</td>
+            <td>{{ invoice.date | date: 'dd/MM/yyyy' }} à {{ invoice.date | date: 'HH:mm' }}</td>
+            <td>{{ invoice.totalAmount | number: '1.2-2' }} €</td>
             <td>
               <button class="btn download-btn" (click)="downloadPDF(invoice)">
                 📄 Télécharger
@@ -30,15 +30,11 @@
 
   <div class="info-messages">
     @if (invoices().length === 0 && !err()) {
-      <p class="empty-msg">
-        Aucune facture disponible pour le moment.
-      </p>
+      <p class="empty-msg">Aucune facture disponible pour le moment.</p>
     }
-    
+
     @if (err()) {
-      <p class="error-message">
-        ❌ {{ err() }}
-      </p>
+      <p class="error-message">❌ {{ err() }}</p>
     }
   </div>
 </div>

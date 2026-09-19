@@ -8,7 +8,7 @@ import { LoaderService } from '../../shared/services/loader-service';
 import { getHeaders } from '../../shared/utils/functions';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class OrderService {
   private readonly http = inject(HttpClient);
@@ -32,7 +32,7 @@ export class OrderService {
     const currentBasket = this._basket();
     let total = 0;
     for (const pizzaName in currentBasket) {
-      total += currentBasket[pizzaName].reduce((sum, line) => sum + (line.quantity * line.price), 0);
+      total += currentBasket[pizzaName].reduce((sum, line) => sum + line.quantity * line.price, 0);
     }
     return Math.round(total * 100) / 100;
   });
@@ -68,8 +68,8 @@ export class OrderService {
     this.getBasketRemote()
       .pipe(finalize(() => this.loaderService.hide()))
       .subscribe({
-        next: basket => this.updateState(basket),
-        error: err => console.error('Erreur récupération panier:', err)
+        next: (basket) => this.updateState(basket),
+        error: (err) => console.error('Erreur récupération panier:', err),
       });
   }
 
@@ -80,7 +80,7 @@ export class OrderService {
       .pipe(finalize(() => this.loaderService.hide()))
       .subscribe({
         next: () => console.log('Panier synchronisé sur le serveur'),
-        error: err => console.error('Erreur sync serveur:', err)
+        error: (err) => console.error('Erreur sync serveur:', err),
       });
   }
 
@@ -93,7 +93,7 @@ export class OrderService {
       current[pizzaName] = [];
     }
 
-    const orderLine = current[pizzaName].find(line => line.nameSize === sizeName);
+    const orderLine = current[pizzaName].find((line) => line.nameSize === sizeName);
 
     if (orderLine) {
       orderLine.quantity += 1;
@@ -111,7 +111,7 @@ export class OrderService {
 
     if (!allSizes) return;
 
-    const index = allSizes.findIndex(line => line.nameSize === sizeName);
+    const index = allSizes.findIndex((line) => line.nameSize === sizeName);
     if (index === -1) return;
 
     allSizes[index].quantity -= 1;

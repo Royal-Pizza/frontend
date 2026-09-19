@@ -12,7 +12,7 @@
   width: 350px;
   height: auto;
   border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .pizza-info {
@@ -44,7 +44,6 @@
   text-align: left;
 }
 
-
 .pizza-ingredients p {
   font-size: 1rem;
   color: #555;
@@ -67,7 +66,9 @@
   border-radius: 8px;
   cursor: pointer;
   font-size: 0.95rem;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition:
+    background-color 0.3s ease,
+    transform 0.2s ease;
 }
 
 .add-to-cart-btn:hover {

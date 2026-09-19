@@ -4,13 +4,13 @@
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <div class="form-group">
       <label for="amount">Montant (€)</label>
-      <input id="amount" type="number" formControlName="amount" placeholder="Ex: 20">
+      <input id="amount" type="number" formControlName="amount" placeholder="Ex: 20" />
     </div>
 
     @if (submitted() && form.get('amount')?.invalid) {
-    <div class="error">
-      <small>Veuillez entrer un montant valide (min 1€).</small>
-    </div>
+      <div class="error">
+        <small>Veuillez entrer un montant valide (min 1€).</small>
+      </div>
     }
 
     <div class="connected-actions">
@@ -21,9 +21,9 @@
 </div>
 <div class="submission-message">
   @if (success()) {
-  <div class="success-message">🎉 Compte rechargé avec succès !</div>
+    <div class="success-message">🎉 Compte rechargé avec succès !</div>
   }
   @if (error()) {
-  <div class="error-message">❌ {{ error() }}</div>
+    <div class="error-message">❌ {{ error() }}</div>
   }
 </div>

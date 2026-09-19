@@ -7,10 +7,9 @@ import { PopupService } from '../../../services/popup';
   standalone: true,
   imports: [MatIconModule],
   templateUrl: './popup.html',
-  styleUrls: ['./popup.css']
+  styleUrls: ['./popup.css'],
 })
 export class PopupComponent {
-
   private readonly popupService = inject(PopupService);
 
   public readonly message: Signal<string> = this.popupService.message;

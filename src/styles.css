@@ -2,9 +2,9 @@
    Variables globales pour couleurs et police
    ========================================= */
 :root {
-  --main-orange: #e0850f;      /* couleur principale du site pour le background */
-  --main-yellow: #f1c40f;      /* couleur secondaire pour header */
-  --main-red: #b1000f;         /* couleur pour titres et hover */
+  --main-orange: #e0850f; /* couleur principale du site pour le background */
+  --main-yellow: #f1c40f; /* couleur secondaire pour header */
+  --main-red: #b1000f; /* couleur pour titres et hover */
   --main-font: Arial, sans-serif; /* police globale */
 }
 
@@ -15,33 +15,31 @@
 body {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;  /* prend toute la hauteur de l’écran */
+  min-height: 100vh; /* prend toute la hauteur de l’écran */
   margin: 0;
   padding: 0;
   font-family: var(--main-font);
 }
 
-
 /* Main prend tout l'espace restant entre header et footer */
 main {
-  flex: 1;                 /* s’étend automatiquement */
+  flex: 1; /* s’étend automatiquement */
   display: flex;
   flex-direction: column;
-  justify-content: center;  /* centre verticalement le contenu */
-  align-items: center;      /* centre horizontalement */
+  justify-content: center; /* centre verticalement le contenu */
+  align-items: center; /* centre horizontalement */
   text-align: center;
   background-color: var(--main-orange);
   padding: 20px;
 }
 
-
-
 /* =========================================
    Titres globaux
    ========================================= */
-h1, h2 {
+h1,
+h2 {
   color: var(--main-red); /* rouge pour tous les titres */
-  text-align: center;     /* toujours centrés */
+  text-align: center; /* toujours centrés */
 }
 
 /* =========================================
@@ -49,7 +47,7 @@ h1, h2 {
    ========================================= */
 p {
   font-size: 1.2rem; /* taille lisible */
-  margin: 20px 0;    /* espace vertical */
+  margin: 20px 0; /* espace vertical */
 }
 
 /* =========================================
@@ -57,8 +55,8 @@ p {
    ========================================= */
 img {
   border-radius: 20px; /* coins arrondis */
-  max-width: 100%;     /* ne dépasse jamais le parent */
-  height: auto;        /* conserve les proportions */
+  max-width: 100%; /* ne dépasse jamais le parent */
+  height: auto; /* conserve les proportions */
 }
 
 /* =========================================
@@ -70,7 +68,6 @@ img {
   justify-content: center;
   align-items: center;
 }
-
 
 /* Conteneur générique pour tous les formulaires */
 .form-container {
@@ -92,7 +89,7 @@ img {
   margin: 8px 0;
   border-radius: 5px;
   border: 1px solid #000000;
-  box-sizing: border-box; 
+  box-sizing: border-box;
 }
 
 /* Styles communs aux boutons */
@@ -184,5 +181,11 @@ img {
   border-radius: 5px;
 }
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+}

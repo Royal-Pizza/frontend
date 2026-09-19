@@ -7,15 +7,18 @@ import { environment } from '../../../environments/environment';
 import { getHeaders } from '../../shared/utils/functions';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
 
-  private _isLoggedIn: WritableSignal<boolean> = signal<boolean>(!!localStorage.getItem('authToken'));
-  private _currentUser: WritableSignal<Customer | null> = signal<Customer | null>(this.getUserFromStorage());
-
+  private _isLoggedIn: WritableSignal<boolean> = signal<boolean>(
+    !!localStorage.getItem('authToken'),
+  );
+  private _currentUser: WritableSignal<Customer | null> = signal<Customer | null>(
+    this.getUserFromStorage(),
+  );
 
   public readonly isLoggedIn: Signal<boolean> = this._isLoggedIn.asReadonly();
   public readonly currentUser: Signal<Customer | null> = this._currentUser.asReadonly();
@@ -31,23 +34,25 @@ export class AuthService {
       lastName: payload.lastName,
       emailAddress: payload.emailAddress,
       wallet: payload.wallet,
-      isAdmin: payload.isAdmin
+      isAdmin: payload.isAdmin,
     };
     localStorage.setItem('customer', JSON.stringify(customer));
     this._currentUser.set(customer);
   }
 
   login(email: string, password: string): Observable<Customer> {
-    return this.http.post<any>(`${environment.backendBaseUrl}/customers/login`, {
-      email: email.trim().toLowerCase(),
-      password
-    }).pipe(
-      tap(dico => {
-        this.updateLocalCusomerDataFromToken(dico.token);
-        this._isLoggedIn.set(true);
-      }),
-      map(() => this._currentUser()!)
-    );
+    return this.http
+      .post<any>(`${environment.backendBaseUrl}/customers/login`, {
+        email: email.trim().toLowerCase(),
+        password,
+      })
+      .pipe(
+        tap((dico) => {
+          this.updateLocalCusomerDataFromToken(dico.token);
+          this._isLoggedIn.set(true);
+        }),
+        map(() => this._currentUser()!),
+      );
   }
 
   logout(): void {
@@ -58,9 +63,9 @@ export class AuthService {
   }
 
   checkToken(): Observable<any> {
-    return this.http.get(`${environment.backendBaseUrl}/customers/checkToken`,
-      { headers: getHeaders() }
-    );
+    return this.http.get(`${environment.backendBaseUrl}/customers/checkToken`, {
+      headers: getHeaders(),
+    });
   }
 
   private getUserFromStorage(): Customer | null {
